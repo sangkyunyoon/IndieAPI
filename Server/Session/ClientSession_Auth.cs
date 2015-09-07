@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Aegis.Network;
+
+
+
+namespace Server.Session
+{
+    public partial class ClientSession
+    {
+        private void OnCS_Auth_RegisterGuest_Req(SecurityPacket reqPacket)
+        {
+            String udid = reqPacket.GetStringFromUtf16();
+            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_RegisterGuest_Res);
+            resPacket.SeqNo = reqPacket.SeqNo;
+
+
+            Services.Membership.Instance.RegisterGuest(udid, (result) =>
+            {
+                resPacket.PutInt32(result);
+                SendPacket(resPacket);
+            });
+        }
+
+
+        private void OnCS_Auth_RegisterMember_Req(SecurityPacket reqPacket)
+        {
+            String udid = reqPacket.GetStringFromUtf16();
+            String userId = reqPacket.GetStringFromUtf16();
+            String userPwd = reqPacket.GetStringFromUtf16();
+            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_RegisterMember_Res);
+            resPacket.SeqNo = reqPacket.SeqNo;
+
+
+            Services.Membership.Instance.RegisterMember(udid, userId, userPwd, (result) =>
+            {
+                resPacket.PutInt32(result);
+                SendPacket(resPacket);
+            });
+        }
+
+
+        private void OnCS_Auth_LoginGuest_Req(SecurityPacket reqPacket)
+        {
+            String udid = reqPacket.GetStringFromUtf16();
+            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_LoginGuest_Res);
+            resPacket.SeqNo = reqPacket.SeqNo;
+
+
+            Services.Membership.Instance.LoginGuest(udid, async (result, userNo) =>
+            {
+                if (result == ResultCode.Ok)
+                {
+                    _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    await _user.LoadFromDB();
+                }
+
+
+                resPacket.PutInt32(result);
+                resPacket.PutInt32(userNo);
+                SendPacket(resPacket);
+            });
+        }
+
+
+        private void OnCS_Auth_LoginMember_Req(SecurityPacket reqPacket)
+        {
+            String udid = reqPacket.GetStringFromUtf16();
+            String userId = reqPacket.GetStringFromUtf16();
+            String userPwd = reqPacket.GetStringFromUtf16();
+            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_LoginMember_Res);
+            resPacket.SeqNo = reqPacket.SeqNo;
+
+
+            Services.Membership.Instance.LoginMember(udid, userId, userPwd, async (result, userNo) =>
+            {
+                if (result == ResultCode.Ok)
+                {
+                    _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    await _user.LoadFromDB();
+                }
+
+
+                resPacket.PutInt32(result);
+                resPacket.PutInt32(userNo);
+                SendPacket(resPacket);
+            });
+        }
+    }
+}

@@ -1,43 +1,13 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
+*.suo
+*.csproj.user
 
-# Folder config file
-Desktop.ini
+synczone.mwb
+synczone.mwb.bak
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+IndieAPI/bin
+IndieAPI/obj
+Server/bin
+Server/obj
+TestClient/bin
+TestClient/obj
