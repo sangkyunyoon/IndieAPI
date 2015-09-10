@@ -9,7 +9,7 @@
                   listenPortNo="10100" />
 
   <CustomData>
-    <SyncZoneDB ipaddress="192.168.0.10" port="3306" userid="root" userpwd="3382" dbname="synczone" />
+    <GameDB ipaddress="192.168.0.10" port="3306" userid="root" userpwd="3382" dbname="indie_gamedb" />
     <AES IV="AEGIS For Indie!" Key="AEGIS Indie APIs" />
     <CloudSheet storagePath=".\"
                 maxTableCount="10"

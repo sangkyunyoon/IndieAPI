@@ -27,16 +27,53 @@ namespace TestClient
             _tbTextData.Text = "";
 
 
+            FormMain.SetMessage(Color.Blue, "Requesting 'Storage_GetTextData'...");
+            FormMain.API.Profile_GetData(OnRecv_Profile);
+        }
+
+
+        private void OnRecv_Profile(SecurityPacket resPacket)
+        {
+            Int32 result = resPacket.GetInt32();
+            _tbNickname.Text = resPacket.GetStringFromUtf16();
+            _tbLevel.Text = resPacket.GetInt16().ToString();
+            _tbExp.Text = resPacket.GetInt16().ToString();
+
+            _tbRegDate.Text = DateTime.FromOADate(resPacket.GetDouble()).ToString();
+            _tbLastLoginDate.Text = DateTime.FromOADate(resPacket.GetDouble()).ToString();
+            _tbContinuousCount.Text = resPacket.GetByte().ToString();
+            _tbDailyCount.Text = resPacket.GetByte().ToString();
+
+
             FormMain.SetMessage(Color.Black, "Ready");
         }
 
 
-        ////////////////////////////////////////////////////////////////////////////////
-        //   TextData
+        private void OnClick_UpdateProfile(object sender, EventArgs e)
+        {
+            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetData'...");
+            FormMain.API.Profile_SetData(
+                _tbNickname.Text,
+                Int16.Parse(_tbLevel.Text),
+                Int16.Parse(_tbExp.Text),
+                OnRecv_SetProfileData);
+        }
+
+
+        private void OnRecv_SetProfileData(SecurityPacket resPacket)
+        {
+            Int32 result = resPacket.GetInt32();
+            if (result != ResultCode.Ok)
+                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
+            else
+                FormMain.SetMessage(Color.Black, "Ready");
+        }
+
+
         private void OnClick_GetTextData(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'Storage_GetTextData'...");
-            FormMain.API.Storage_Text_GetData(OnRecv_GetTextData);
+            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetTextData'...");
+            FormMain.API.Profile_GetTextData(OnRecv_GetTextData);
         }
 
 
@@ -53,8 +90,8 @@ namespace TestClient
 
         private void OnClick_SetTextData(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'Storage_SetTextData'...");
-            FormMain.API.Storage_Test_SetData(_tbTextData.Text, OnRecv_SetTextData);
+            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_Text_SetData'...");
+            FormMain.API.Profile_SetTextData(_tbTextData.Text, OnRecv_SetTextData);
         }
 
 
@@ -68,85 +105,9 @@ namespace TestClient
         }
 
 
-        private void OnClick_RefreshCloudSheet(object sender, EventArgs e)
+        private void OnClick_CloudSheet(object sender, EventArgs e)
         {
-            FormMain.API.Storage_Sheet_Refresh(_tbFilename.Text, OnComplete_RefreshCloudSheet);
-        }
-
-
-        private void OnComplete_RefreshCloudSheet(Int32 result)
-        {
-            if (InvokeRequired)
-                BeginInvoke((MethodInvoker)delegate { OnComplete_RefreshCloudSheet(result); });
-            else
-            {
-                _lvTables.Items.Clear();
-                _lvData.Columns.Clear();
-                _lvData.Items.Clear();
-
-                foreach (var table in FormMain.API.CloudSheetTables.Items)
-                {
-                    ListViewItem lvi = new ListViewItem();
-                    lvi.Text = table.Name;
-                    lvi.SubItems.Add(table.RecordCount.ToString());
-
-                    _lvTables.Items.Add(lvi);
-                }
-            }
-        }
-
-
-        private void OnSelected_Table(object sender, EventArgs e)
-        {
-            if (_lvTables.SelectedItems.Count == 0)
-                return;
-
-            ListViewItem lviTable = _lvTables.SelectedItems[0];
-            var table = FormMain.API.CloudSheetTables.GetTable(lviTable.Text);
-
-
-            _lvData.Columns.Clear();
-            _lvData.Items.Clear();
-            _lvData.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-
-
-            //  테이블의 컬럼정보
-            foreach (var column in table.Columns)
-            {
-                ColumnHeader hdr = new ColumnHeader();
-                hdr.Text = column.name;
-                _lvData.Columns.Add(hdr);
-            }
-
-
-            //  데이터 리스트
-            foreach (var record in table.Records)
-            {
-                ListViewItem lvi = new ListViewItem();
-                Int32 idx = 0;
-
-
-                foreach (var column in table.Columns)
-                {
-                    String text = record[column.name];
-
-
-                    //  DateTime은 OADate 형식에서 변환한다.
-                    if (column.type == IndieAPI.CloudSheet.FieldDataType.DateTime)
-                    {
-                        Double dt = Double.Parse(text);
-                        text = DateTime.FromOADate(dt).ToString();
-                    }
-
-
-                    if (idx++ == 0)
-                        lvi.Text = text;
-                    else
-                        lvi.SubItems.Add(text);
-                }
-
-                _lvData.Items.Add(lvi);
-            }
+            FormMain.ChangeView(FormMain.View_Service_Sheet);
         }
     }
 }

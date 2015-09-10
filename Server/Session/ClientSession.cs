@@ -83,12 +83,16 @@ namespace Server.Session
                         return;
                     }
 
+
                     switch (packet.PID)
                     {
-                        case Protocol.CS_Storage_Text_GetData_Req: OnCS_Storage_Text_GetData_Req(packet); break;
-                        case Protocol.CS_Storage_Text_SetData_Req: OnCS_Storage_Text_SetData_Req(packet); break;
-                        case Protocol.CS_Storage_Sheet_GetTableList_Req: OnCS_Storage_Sheet_GetTableList_Req(packet); break;
-                        case Protocol.CS_Storage_Sheet_GetRecords_Req: OnCS_Storage_Sheet_GetRecords_Req(packet); break;
+                        case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(packet); break;
+                        case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(packet); break;
+                        case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(packet); break;
+                        case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(packet); break;
+
+                        case Protocol.CS_Sheet_GetTableList_Req: OnCS_Sheet_GetTableList_Req(packet); break;
+                        case Protocol.CS_Sheet_GetRecords_Req: OnCS_Sheet_GetRecords_Req(packet); break;
                     }
                 }
             });

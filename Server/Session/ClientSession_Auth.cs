@@ -56,6 +56,8 @@ namespace Server.Session
                 {
                     _user = Services.UserData.UserManager.Instance.GetUser(userNo);
                     await _user.LoadFromDB();
+
+                    _user.LoginCounter.OnLoggedIn();
                 }
 
 
@@ -81,6 +83,8 @@ namespace Server.Session
                 {
                     _user = Services.UserData.UserManager.Instance.GetUser(userNo);
                     await _user.LoadFromDB();
+
+                    _user.LoginCounter.OnLoggedIn();
                 }
 
 

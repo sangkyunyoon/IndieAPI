@@ -4,35 +4,35 @@ using System.Diagnostics;
 
 
 
-namespace IndieAPI.CloudSheet
+namespace IndieAPI.Sheet
 {
     [DebuggerDisplay("TableName={Name}, RecordCount={RecordCount}")]
     public class Table
     {
         private String _name;
-        private ColumnInfo[] _columns;
+        private FieldInfo[] _fields;
         private Record[] _records;
         private Int32 _nextFieldIdx = 0;
 
 
         public String Name { get { return _name; } }
-        public ColumnInfo[] Columns { get { return _columns; } }
+        public FieldInfo[] Fields { get { return _fields; } }
         public Record[] Records { get { return _records; } }
         public Int32 RecordCount { get { return _records.Count(); } }
 
 
 
-        internal Table(String name, Int32 recordCount, Int32 columnCount)
+        internal Table(String name, Int32 recordCount, Int32 fieldCount)
         {
             _name = name;
             _records = new Record[recordCount];
-            _columns = new ColumnInfo[columnCount];
+            _fields = new FieldInfo[fieldCount];
         }
 
 
         internal void AddField(FieldDataType type, String name)
         {
-            _columns[_nextFieldIdx] = new ColumnInfo() { type = type, name = name };
+            _fields[_nextFieldIdx] = new FieldInfo() { type = type, name = name };
             ++_nextFieldIdx;
         }
 
@@ -42,7 +42,7 @@ namespace IndieAPI.CloudSheet
             Int32 idx = 0;
 
             _records[rowNo] = new Record(rowNo);
-            foreach (ColumnInfo fieldInfo in _columns)
+            foreach (FieldInfo fieldInfo in _fields)
             {
                 _records[rowNo][fieldInfo.name] = values[idx];
                 ++idx;

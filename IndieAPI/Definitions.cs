@@ -41,16 +41,22 @@ namespace IndieAPI
         public const UInt16 CS_Auth_LoginMember_Res = 0x2008;
 
 
-        //  Storage
-        public const UInt16 CS_Storage_Text_GetData_Req = 0x2101;
-        public const UInt16 CS_Storage_Text_GetData_Res = 0x2102;
-        public const UInt16 CS_Storage_Text_SetData_Req = 0x2103;
-        public const UInt16 CS_Storage_Text_SetData_Res = 0x2104;
+        //  User Profile
+        public const UInt16 CS_Profile_GetData_Req = 0x2101;
+        public const UInt16 CS_Profile_GetData_Res = 0x2102;
+        public const UInt16 CS_Profile_SetData_Req = 0x2103;
+        public const UInt16 CS_Profile_SetData_Res = 0x2104;
+        public const UInt16 CS_Profile_Text_GetData_Req = 0x2105;
+        public const UInt16 CS_Profile_Text_GetData_Res = 0x2106;
+        public const UInt16 CS_Profile_Text_SetData_Req = 0x2107;
+        public const UInt16 CS_Profile_Text_SetData_Res = 0x2108;
 
-        public const UInt16 CS_Storage_Sheet_GetTableList_Req = 0x2111;
-        public const UInt16 CS_Storage_Sheet_GetTableList_Res = 0x2112;
-        public const UInt16 CS_Storage_Sheet_GetRecords_Req = 0x2113;
-        public const UInt16 CS_Storage_Sheet_GetRecords_Res = 0x2114;
+
+        //  Sheet
+        public const UInt16 CS_Sheet_GetTableList_Req = 0x2211;
+        public const UInt16 CS_Sheet_GetTableList_Res = 0x2212;
+        public const UInt16 CS_Sheet_GetRecords_Req = 0x2213;
+        public const UInt16 CS_Sheet_GetRecords_Res = 0x2214;
 
 
         //  Instant Messaging Channel

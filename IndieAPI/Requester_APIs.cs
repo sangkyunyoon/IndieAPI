@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Aegis.Client;
-using IndieAPI.CloudSheet;
+using IndieAPI.Sheet;
 
 
 
@@ -54,28 +54,40 @@ namespace IndieAPI
 
 
         ////////////////////////////////////////////////////////////////////////////////
-        //  Storage
-        private ResultHandler _cloudsheetResultHandler;
-        private Int32 _cloudsheetRequestedTableNo;
-        private String _cloudsheetFilename;
-        public CloudSheet.Tables CloudSheetTables { get; private set; }
-
-
-
-
-
-        public void Storage_Text_GetData(PacketCallbackHandler callback)
+        //  Profile
+        public void Profile_GetData(PacketCallbackHandler callback)
         {
-            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Text_GetData_Req);
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_GetData_Req);
             reqPacket.PutInt32(_userNo);
 
             SendPacket(reqPacket, callback);
         }
 
 
-        public void Storage_Test_SetData(String text, PacketCallbackHandler callback)
+        public void Profile_SetData(String nickname, Int16 level, Int16 exp, PacketCallbackHandler callback)
         {
-            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Text_SetData_Req);
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_SetData_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(nickname);
+            reqPacket.PutInt16(level);
+            reqPacket.PutInt16(exp);
+
+            SendPacket(reqPacket, callback);
+        }
+
+
+        public void Profile_GetTextData(PacketCallbackHandler callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_Text_GetData_Req);
+            reqPacket.PutInt32(_userNo);
+
+            SendPacket(reqPacket, callback);
+        }
+
+
+        public void Profile_SetTextData(String text, PacketCallbackHandler callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_Text_SetData_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(text);
 
@@ -83,14 +95,25 @@ namespace IndieAPI
         }
 
 
+        ////////////////////////////////////////////////////////////////////////////////
+        //  Sheet
+        private ResultHandler _sheetResultHandler;
+        private Int32 _sheetRequestedTableNo;
+        private String _sheetFilename;
+        public Tables SheetTables { get; private set; }
+
+
+
+
+
         public void Storage_Sheet_Refresh(String filename, ResultHandler handler)
         {
-            _cloudsheetResultHandler = handler;
-            _cloudsheetFilename = filename;
+            _sheetResultHandler = handler;
+            _sheetFilename = filename;
 
-            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Sheet_GetTableList_Req);
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetTableList_Req);
             reqPacket.PutInt32(_userNo);
-            reqPacket.PutStringAsUtf16(_cloudsheetFilename);
+            reqPacket.PutStringAsUtf16(_sheetFilename);
 
             SendPacket(reqPacket, OnRecv_Storage_Sheet_GetTableList);
         }
@@ -101,13 +124,13 @@ namespace IndieAPI
             Int32 result = resPacket.GetInt32();
             if (result != ResultCode.Ok)
             {
-                if (_cloudsheetResultHandler != null)
-                    _cloudsheetResultHandler(result);
+                if (_sheetResultHandler != null)
+                    _sheetResultHandler(result);
                 return;
             }
 
 
-            CloudSheetTables = new Tables();
+            SheetTables = new Tables();
 
             Int32 tableCount = resPacket.GetInt32();
             while (tableCount-- > 0)
@@ -117,7 +140,7 @@ namespace IndieAPI
                 Int32 columnCount = resPacket.GetInt32();
 
 
-                Table table = CloudSheetTables.CreateTable(tableName, recordCount, columnCount);
+                Table table = SheetTables.CreateTable(tableName, recordCount, columnCount);
                 while (columnCount-- > 0)
                 {
                     FieldDataType type = (FieldDataType)resPacket.GetInt32();
@@ -128,15 +151,15 @@ namespace IndieAPI
             }
 
 
-            _cloudsheetRequestedTableNo = 0;
-            if (CloudSheetTables.Items.Count() > _cloudsheetRequestedTableNo)
+            _sheetRequestedTableNo = 0;
+            if (SheetTables.Items.Count() > _sheetRequestedTableNo)
             {
-                Table table = CloudSheetTables.Items[_cloudsheetRequestedTableNo];
-                SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Sheet_GetRecords_Req);
+                Table table = SheetTables.Items[_sheetRequestedTableNo];
+                SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
 
 
                 reqPacket.PutInt32(_userNo);
-                reqPacket.PutStringAsUtf16(_cloudsheetFilename);
+                reqPacket.PutStringAsUtf16(_sheetFilename);
                 reqPacket.PutStringAsUtf16(table.Name);
                 reqPacket.PutUInt32(0);
                 SendPacket(reqPacket, OnRecv_Storage_Sheet_GetRecords);
@@ -149,8 +172,8 @@ namespace IndieAPI
             Int32 result = resPacket.GetInt32();
             if (result != ResultCode.Ok)
             {
-                if (_cloudsheetResultHandler != null)
-                    _cloudsheetResultHandler(result);
+                if (_sheetResultHandler != null)
+                    _sheetResultHandler(result);
                 return;
             }
 
@@ -161,15 +184,15 @@ namespace IndieAPI
                 Boolean hasMore = (resPacket.GetByte() == 1);
                 Int32 rowCount = resPacket.GetInt32();
                 UInt32 lastRowNo = 0;
-                Table table = CloudSheetTables.GetTable(tableName);
+                Table table = SheetTables.GetTable(tableName);
 
 
                 while (rowCount-- > 0)
                 {
-                    String[] values = new String[table.Columns.Count()];
+                    String[] values = new String[table.Fields.Count()];
 
                     lastRowNo = resPacket.GetUInt32();
-                    for (Int32 i = 0; i < table.Columns.Count(); ++i)
+                    for (Int32 i = 0; i < table.Fields.Count(); ++i)
                         values[i] = resPacket.GetStringFromUtf16();
 
                     table.AddRowData(lastRowNo, values);
@@ -177,9 +200,9 @@ namespace IndieAPI
 
                 if (hasMore)
                 {
-                    SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Sheet_GetRecords_Req);
+                    SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
                     reqPacket.PutInt32(_userNo);
-                    reqPacket.PutStringAsUtf16(_cloudsheetFilename);
+                    reqPacket.PutStringAsUtf16(_sheetFilename);
                     reqPacket.PutStringAsUtf16(tableName);
                     reqPacket.PutUInt32(lastRowNo + 1);
 
@@ -187,30 +210,30 @@ namespace IndieAPI
                 }
                 else
                 {
-                    ++_cloudsheetRequestedTableNo;
-                    if (CloudSheetTables.Items.Count() > _cloudsheetRequestedTableNo)
+                    ++_sheetRequestedTableNo;
+                    if (SheetTables.Items.Count() > _sheetRequestedTableNo)
                     {
-                        SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Storage_Sheet_GetRecords_Req);
+                        SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
 
-                        table = CloudSheetTables.Items[_cloudsheetRequestedTableNo];
+                        table = SheetTables.Items[_sheetRequestedTableNo];
 
                         reqPacket.PutInt32(_userNo);
-                        reqPacket.PutStringAsUtf16(_cloudsheetFilename);
+                        reqPacket.PutStringAsUtf16(_sheetFilename);
                         reqPacket.PutStringAsUtf16(table.Name);
                         reqPacket.PutUInt32(0);
                         SendPacket(reqPacket, OnRecv_Storage_Sheet_GetRecords);
                     }
                     else
                     {
-                        if (_cloudsheetResultHandler != null)
-                            _cloudsheetResultHandler(ResultCode.Ok);
+                        if (_sheetResultHandler != null)
+                            _sheetResultHandler(ResultCode.Ok);
                     }
                 }
             }
             catch (Exception)
             {
-                if (_cloudsheetResultHandler != null)
-                    _cloudsheetResultHandler(ResultCode.UnknownError);
+                if (_sheetResultHandler != null)
+                    _sheetResultHandler(ResultCode.UnknownError);
             }
         }
     }

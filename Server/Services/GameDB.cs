@@ -12,7 +12,7 @@ using Aegis.Converter;
 
 namespace Server.Services
 {
-    public static class SyncZoneDB
+    public static class GameDB
     {
         private static MySqlDatabase _mysql;
 
@@ -23,20 +23,23 @@ namespace Server.Services
         public static void Initialize()
         {
             _mysql = new MySqlDatabase(
-                Starter.CustomData.GetValue("SyncZoneDB/ipaddress"),
-                Starter.CustomData.GetValue("SyncZoneDB/port").ToInt32(),
+                Starter.CustomData.GetValue("GameDB/ipaddress"),
+                Starter.CustomData.GetValue("GameDB/port").ToInt32(),
                 "",
-                Starter.CustomData.GetValue("SyncZoneDB/dbname"),
-                Starter.CustomData.GetValue("SyncZoneDB/userid"),
-                Starter.CustomData.GetValue("SyncZoneDB/userpwd"));
+                Starter.CustomData.GetValue("GameDB/dbname"),
+                Starter.CustomData.GetValue("GameDB/userid"),
+                Starter.CustomData.GetValue("GameDB/userpwd"));
             _mysql.SetWorketQueue(4);
         }
 
 
         public static void Release()
         {
-            _mysql.Release();
-            _mysql = null;
+            if (_mysql != null)
+            {
+                _mysql.Release();
+                _mysql = null;
+            }
         }
 
 

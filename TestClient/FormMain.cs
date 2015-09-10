@@ -16,7 +16,8 @@ namespace TestClient
     {
         public static Int32 View_Login = 0;
         public static Int32 View_ServiceMain = 1;
-        public static Int32 View_Count = 2;
+        public static Int32 View_Service_Sheet = 2;
+        public static Int32 View_Count = 3;
 
 
         public static IndieAPI.Requester API { get; } = new IndieAPI.Requester();
@@ -36,6 +37,7 @@ namespace TestClient
             _forms = new Form[View_Count];
             _forms[View_Login] = new FormLogin();
             _forms[View_ServiceMain] = new FormServiceMain();
+            _forms[View_Service_Sheet] = new FormService_Sheet();
 
 
             foreach (Form item in _forms)

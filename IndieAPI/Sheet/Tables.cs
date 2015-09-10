@@ -4,7 +4,7 @@ using System.Linq;
 
 
 
-namespace IndieAPI.CloudSheet
+namespace IndieAPI.Sheet
 {
     public class Tables
     {

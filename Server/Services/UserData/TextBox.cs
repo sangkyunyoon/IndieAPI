@@ -11,7 +11,7 @@ namespace Server.Services.UserData
 {
     public class TextBox
     {
-        private User _parentUser;
+        private User _user;
         private String _textData;
 
 
@@ -31,15 +31,15 @@ namespace Server.Services.UserData
 
         public TextBox(User user)
         {
-            _parentUser = user;
+            _user = user;
         }
 
 
         public void LoadFromDB()
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
-                cmd.CommandText.Append($"select textdata from t_textbox where userno={_parentUser.UserNo};");
+                cmd.CommandText.Append($"select textdata from t_textbox where userno={_user.UserNo};");
 
 
                 DataReader reader = cmd.Query();
@@ -53,11 +53,11 @@ namespace Server.Services.UserData
 
         private void UpdateToDB()
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
                 cmd.CommandText.Append("insert into t_textbox(userno, textdata) values(@userno, @data)");
                 cmd.CommandText.Append(" on duplicate key update textdata=@data;");
-                cmd.BindParameter("@userno", _parentUser.UserNo);
+                cmd.BindParameter("@userno", _user.UserNo);
                 cmd.BindParameter("@data", _textData);
                 cmd.PostQuery();
             }

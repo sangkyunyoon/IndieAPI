@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Network;
+using Aegis.Configuration;
 
 
 
@@ -30,14 +31,15 @@ namespace Server
 
             try
             {
-                Logger.Write(LogType.Info, 2, $"INDIE-API Server Build {Version.BuildNo}");
+                Logger.Write(LogType.Info, 2, $"INDIE-API Server ({Aegis.Configuration.Environment.ExecutingVersion})");
+                Logger.Write(LogType.Info, 2, $"Powered by AegisNetwork ({Aegis.Configuration.Environment.AegisVersion})");
 
-                Aegis.Configuration.Starter.Initialize(System.Reflection.Assembly.GetExecutingAssembly(), "./Config.xml");
+                Starter.Initialize("./Config.xml");
                 {
-                    Services.SyncZoneDB.Initialize();
+                    Services.GameDB.Initialize();
                     Global.Refresh();
                 }
-                Aegis.Configuration.Starter.StartNetwork();
+                Starter.StartNetwork();
             }
             catch (Exception e)
             {
@@ -48,22 +50,15 @@ namespace Server
 
         public void StopServer()
         {
-            Services.SyncZoneDB.Release();
-            Aegis.Configuration.Starter.Release();
+            Services.GameDB.Release();
+            Starter.Release();
             Logger.Release();
         }
 
 
         public Int32 GetActiveSessionCount()
         {
-            lock (NetworkChannel.Channels)
-            {
-                NetworkChannel channel = NetworkChannel.Channels.Find(v => v.Name == "NetworkClient");
-                if (channel == null)
-                    return 0;
-
-                return channel.SessionManager.ActiveSessionCount;
-            }
+            return NetworkChannel.FindChannel("NetworkClient").SessionManager.ActiveSessionCount;
         }
     }
 }

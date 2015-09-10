@@ -25,7 +25,7 @@ namespace Server.Services
 
         public void RegisterGuest(String udid, Action<Int32> onComplete)
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
                 cmd.CommandText.Append("call sp_auth_register_guest(@udid);");
                 cmd.BindParameter("@udid", udid);
@@ -45,7 +45,7 @@ namespace Server.Services
 
         public void RegisterMember(String udid, String userId, String userPwd, Action<Int32> onComplete)
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
                 cmd.CommandText.Append("call sp_auth_register_member(@udid, @userid, @pwd);");
                 cmd.BindParameter("@udid", udid);
@@ -70,7 +70,7 @@ namespace Server.Services
 
         public void LoginGuest(String udid, Action<Int32, Int32> onComplete)
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
                 cmd.CommandText.Append("select userno from t_accounts where udid=@udid and isguest=1;");
                 cmd.BindParameter("@udid", udid);
@@ -90,7 +90,7 @@ namespace Server.Services
 
         public void LoginMember(String udid, String userId, String userPwd, Action<Int32, Int32> onComplete)
         {
-            using (DBCommand cmd = SyncZoneDB.NewCommand())
+            using (DBCommand cmd = GameDB.NewCommand())
             {
                 cmd.CommandText.Append("select userno, udid from t_accounts where userid=@userid and userpwd=@userpwd and isguest=0;");
                 cmd.BindParameter("@userid", userId);

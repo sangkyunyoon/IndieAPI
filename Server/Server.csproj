@@ -59,10 +59,6 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>packages\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\MySql\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -85,23 +81,24 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
-    <Compile Include="Services\CloudSheetPackage\CacheItem.cs" />
-    <Compile Include="Services\CloudSheetPackage\CloudSheet.cs" />
-    <Compile Include="Services\CloudSheetPackage\Cache.cs" />
-    <Compile Include="Services\CloudSheetPackage\ExcelLoader.cs" />
-    <Compile Include="Services\CloudSheetPackage\ExcelSheet.cs" />
-    <Compile Include="Services\CloudSheetPackage\Record.cs" />
-    <Compile Include="Services\CloudSheetPackage\Table.cs" />
-    <Compile Include="Services\CloudSheetPackage\TableCollection.cs" />
-    <Compile Include="Services\UserData\LoginCount.cs" />
+    <Compile Include="Services\SheetPackage\CacheItem.cs" />
+    <Compile Include="Services\SheetPackage\CloudSheet.cs" />
+    <Compile Include="Services\SheetPackage\Cache.cs" />
+    <Compile Include="Services\SheetPackage\ExcelLoader.cs" />
+    <Compile Include="Services\SheetPackage\ExcelSheet.cs" />
+    <Compile Include="Services\SheetPackage\Record.cs" />
+    <Compile Include="Services\SheetPackage\Table.cs" />
+    <Compile Include="Services\SheetPackage\TableCollection.cs" />
+    <Compile Include="Services\UserData\LoginCounter.cs" />
     <Compile Include="Services\UserData\TextBox.cs" />
     <Compile Include="Services\UserData\User.cs" />
     <Compile Include="Services\UserData\UserManager.cs" />
     <Compile Include="Services\UserData\UserProfile.cs" />
     <Compile Include="Session\ClientSession.cs" />
     <Compile Include="Session\ClientSession_Auth.cs" />
-    <Compile Include="Session\ClientSession_Storage.cs" />
-    <Compile Include="Services\SyncZoneDB.cs" />
+    <Compile Include="Session\ClientSession_Profile.cs" />
+    <Compile Include="Session\ClientSession_Sheet.cs" />
+    <Compile Include="Services\GameDB.cs" />
     <Compile Include="LogMedia.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -13,7 +13,7 @@ namespace Server.Services.UserData
     {
         public Int32 UserNo { get; }
         public UserProfile Profile { get; }
-        public LoginCount LoginCount { get; }
+        public LoginCounter LoginCounter { get; }
         public TextBox TextBox { get; }
 
 
@@ -24,8 +24,8 @@ namespace Server.Services.UserData
         {
             UserNo = userNo;
 
-            Profile = new UserProfile();
-            LoginCount = new LoginCount();
+            Profile = new UserProfile(this);
+            LoginCounter = new LoginCounter(this);
             TextBox = new TextBox(this);
         }
 
@@ -34,8 +34,8 @@ namespace Server.Services.UserData
         {
             await AegisTask.Run(() =>
             {
-                Profile.LoadFromDB(this);
-                LoginCount.LoadFromDB(this);
+                Profile.LoadFromDB();
+                LoginCounter.LoadFromDB();
                 TextBox.LoadFromDB();
             });
         }

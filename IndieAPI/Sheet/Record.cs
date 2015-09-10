@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 
 
-namespace IndieAPI.CloudSheet
+namespace IndieAPI.Sheet
 {
     [DebuggerDisplay("RowNo={RowNo}")]
     public class Record
@@ -14,6 +15,7 @@ namespace IndieAPI.CloudSheet
 
         public UInt32 RowNo { get { return _rowNo; } }
         public String this[String fieldName] { get { return _data[fieldName]; } set { _data[fieldName] = value; } }
+        public List<String> Values { get { return _data.Values.ToList(); } }
 
 
 

@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 
 
-namespace IndieAPI.CloudSheet
+namespace IndieAPI.Sheet
 {
     public enum FieldDataType
     {
@@ -18,7 +18,7 @@ namespace IndieAPI.CloudSheet
 
 
     [DebuggerDisplay("Type={type}, Name={name}")]
-    public struct ColumnInfo
+    public struct FieldInfo
     {
         public FieldDataType type;
         public String name;
