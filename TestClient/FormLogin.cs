@@ -106,7 +106,7 @@ namespace TestClient
         {
             Int32 result = resPacket.GetInt32();
             if (result == ResultCode.Ok)
-                FormMain.ChangeView(FormMain.View_ServiceMain);
+                FormMain.ChangeView(FormMain.View_Service_Profile);
 
             else
                 FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
@@ -191,7 +191,7 @@ namespace TestClient
         {
             Int32 result = resPacket.GetInt32();
             if (result == ResultCode.Ok)
-                FormMain.ChangeView(FormMain.View_ServiceMain);
+                FormMain.ChangeView(FormMain.View_Service_Profile);
 
             else
                 FormMain.SetMessage(Color.Red, ResultCode.ToString(result));

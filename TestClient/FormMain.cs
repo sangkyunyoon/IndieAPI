@@ -15,7 +15,7 @@ namespace TestClient
     public partial class FormMain : Form
     {
         public static Int32 View_Login = 0;
-        public static Int32 View_ServiceMain = 1;
+        public static Int32 View_Service_Profile = 1;
         public static Int32 View_Service_Sheet = 2;
         public static Int32 View_Count = 3;
 
@@ -24,6 +24,8 @@ namespace TestClient
         public static FormMain Instance { get; private set; }
         private Form _curForm;
         private Form[] _forms;
+
+
 
 
 
@@ -36,7 +38,7 @@ namespace TestClient
             //  Forms setting
             _forms = new Form[View_Count];
             _forms[View_Login] = new FormLogin();
-            _forms[View_ServiceMain] = new FormServiceMain();
+            _forms[View_Service_Profile] = new FormService_Profile();
             _forms[View_Service_Sheet] = new FormService_Sheet();
 
 
@@ -49,7 +51,6 @@ namespace TestClient
                 item.TopLevel = false;
                 item.ControlBox = false;
                 item.FormBorderStyle = FormBorderStyle.None;
-
                 this.Controls.Add(item);
             }
 

@@ -30,7 +30,7 @@ namespace TestClient
 
         private void OnClick_Back(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_ServiceMain);
+            FormMain.ChangeView(FormMain.View_Service_Profile);
         }
 
 

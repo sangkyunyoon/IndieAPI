@@ -14,9 +14,9 @@ using IndieAPI;
 
 namespace TestClient
 {
-    public partial class FormServiceMain : Form
+    public partial class FormService_Profile : Form
     {
-        public FormServiceMain()
+        public FormService_Profile()
         {
             InitializeComponent();
         }

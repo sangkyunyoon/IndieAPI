@@ -5,6 +5,8 @@ synczone.mwb
 synczone.mwb.bak
 
 
+distribute/
+
 IndieAPI/bin
 IndieAPI/obj
 Server/bin

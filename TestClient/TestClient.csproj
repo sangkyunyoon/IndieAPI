@@ -62,11 +62,11 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormServiceMain.cs">
+    <Compile Include="FormService_Profile.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormServiceMain.Designer.cs">
-      <DependentUpon>FormServiceMain.cs</DependentUpon>
+    <Compile Include="FormService_Profile.Designer.cs">
+      <DependentUpon>FormService_Profile.cs</DependentUpon>
     </Compile>
     <Compile Include="FormService_Sheet.cs">
       <SubType>Form</SubType>
@@ -83,8 +83,8 @@
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormServiceMain.resx">
-      <DependentUpon>FormServiceMain.cs</DependentUpon>
+    <EmbeddedResource Include="FormService_Profile.resx">
+      <DependentUpon>FormService_Profile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormService_Sheet.resx">
       <DependentUpon>FormService_Sheet.cs</DependentUpon>

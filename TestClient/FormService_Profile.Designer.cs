@@ -1,6 +1,6 @@
 ﻿namespace TestClient
 {
-    partial class FormServiceMain
+    partial class FormService_Profile
     {
         /// <summary>
         /// Required designer variable.
