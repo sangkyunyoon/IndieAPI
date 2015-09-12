@@ -119,7 +119,7 @@ namespace IndieAPI
         }
 
 
-        private void SendPacket(SecurityPacket packet, PacketCallbackHandler callback)
+        private void SendPacket(SecurityPacket packet, Action<SecurityPacket> responseAction)
         {
             lock (_aegisClient)
             {
@@ -127,7 +127,7 @@ namespace IndieAPI
                 packet.SeqNo = seqNo;
                 packet.Encrypt(_aesIV, _aesKey);
 
-                _callbackQueue.AddCallback(seqNo, callback);
+                _callbackQueue.AddCallback(seqNo, responseAction);
                 _aegisClient.SendPacket(packet);
 
                 if (_nextSeqNo == Int32.MaxValue)

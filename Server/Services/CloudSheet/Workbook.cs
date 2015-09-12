@@ -9,38 +9,38 @@ using Aegis.Threading;
 
 
 
-namespace Server.Services.SheetPackage
+namespace Server.Services.CloudSheet
 {
-    public class TableCollection
+    public class Workbook
     {
-        public Dictionary<String, Table> Tables { get; } = new Dictionary<String, Table>();
+        public Dictionary<String, SheetData> Items { get; } = new Dictionary<String, SheetData>();
 
 
 
 
 
-        public TableCollection(String filename)
+        public Workbook(String filename)
         {
             using (ExcelLoader excel = new ExcelLoader(filename, 2, 3, 4))
             {
-                foreach (ExcelSheet sheet in excel.GetSheets())
+                foreach (ExcelSheetReader reader in excel.GetReaderEnumerator())
                 {
-                    if (sheet.Name.Length == 0 || sheet.Name[0] == '#')
+                    if (reader.SheetName.Length == 0 || reader.SheetName[0] == '#')
                         continue;
 
-                    Tables.Add(sheet.Name, new Table(sheet));
-                    if (Tables.Count() >= Global.MaxTableCount)
+                    Items.Add(reader.SheetName, new SheetData(reader));
+                    if (Items.Count() >= Global.MaxTableCount)
                         break;
                 }
             }
         }
 
 
-        public Table GetTable(String tableName)
+        public SheetData GetSheetData(String tableName)
         {
             try
             {
-                return Tables[tableName];
+                return Items[tableName];
             }
             catch (Exception)
             {

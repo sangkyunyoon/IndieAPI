@@ -81,14 +81,13 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
-    <Compile Include="Services\SheetPackage\CacheItem.cs" />
-    <Compile Include="Services\SheetPackage\CloudSheet.cs" />
-    <Compile Include="Services\SheetPackage\Cache.cs" />
-    <Compile Include="Services\SheetPackage\ExcelLoader.cs" />
-    <Compile Include="Services\SheetPackage\ExcelSheet.cs" />
-    <Compile Include="Services\SheetPackage\Record.cs" />
-    <Compile Include="Services\SheetPackage\Table.cs" />
-    <Compile Include="Services\SheetPackage\TableCollection.cs" />
+    <Compile Include="Services\CloudSheet\CacheItem.cs" />
+    <Compile Include="Services\CloudSheet\Workbooks.cs" />
+    <Compile Include="Services\CloudSheet\ExcelLoader.cs" />
+    <Compile Include="Services\CloudSheet\ExcelSheetReader.cs" />
+    <Compile Include="Services\CloudSheet\Record.cs" />
+    <Compile Include="Services\CloudSheet\SheetData.cs" />
+    <Compile Include="Services\CloudSheet\Workbook.cs" />
     <Compile Include="Services\UserData\LoginCounter.cs" />
     <Compile Include="Services\UserData\TextBox.cs" />
     <Compile Include="Services\UserData\User.cs" />
@@ -97,7 +96,7 @@
     <Compile Include="Session\ClientSession.cs" />
     <Compile Include="Session\ClientSession_Auth.cs" />
     <Compile Include="Session\ClientSession_Profile.cs" />
-    <Compile Include="Session\ClientSession_Sheet.cs" />
+    <Compile Include="Session\ClientSession_ClooudSheet.cs" />
     <Compile Include="Services\GameDB.cs" />
     <Compile Include="LogMedia.cs" />
     <Compile Include="Program.cs" />

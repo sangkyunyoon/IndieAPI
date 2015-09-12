@@ -43,10 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallbackQueue.cs" />
-    <Compile Include="Sheet\ColumnInfo.cs" />
-    <Compile Include="Sheet\Record.cs" />
-    <Compile Include="Sheet\Table.cs" />
-    <Compile Include="Sheet\Tables.cs" />
+    <Compile Include="ResponseData.cs" />
+    <Compile Include="CloudSheet\ColumnInfo.cs" />
+    <Compile Include="CloudSheet\Record.cs" />
+    <Compile Include="CloudSheet\Sheet.cs" />
+    <Compile Include="CloudSheet\Workbook.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Requester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

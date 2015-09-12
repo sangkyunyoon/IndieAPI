@@ -52,11 +52,11 @@ namespace IndieAPI
         public const UInt16 CS_Profile_Text_SetData_Res = 0x2108;
 
 
-        //  Sheet
-        public const UInt16 CS_Sheet_GetTableList_Req = 0x2211;
-        public const UInt16 CS_Sheet_GetTableList_Res = 0x2212;
-        public const UInt16 CS_Sheet_GetRecords_Req = 0x2213;
-        public const UInt16 CS_Sheet_GetRecords_Res = 0x2214;
+        //  CloudSheet
+        public const UInt16 CS_CloudSheet_GetSheetList_Req = 0x2211;
+        public const UInt16 CS_CloudSheet_GetSheetList_Res = 0x2212;
+        public const UInt16 CS_CloudSheet_GetRecords_Req = 0x2213;
+        public const UInt16 CS_CloudSheet_GetRecords_Res = 0x2214;
 
 
         //  Instant Messaging Channel

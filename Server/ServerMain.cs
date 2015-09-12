@@ -38,6 +38,7 @@ namespace Server
                 {
                     Services.GameDB.Initialize();
                     Global.Refresh();
+                    Services.CloudSheet.Workbooks.Initialize();
                 }
                 Starter.StartNetwork();
             }
@@ -50,6 +51,7 @@ namespace Server
 
         public void StopServer()
         {
+            Services.CloudSheet.Workbooks.Release();
             Services.GameDB.Release();
             Starter.Release();
             Logger.Release();

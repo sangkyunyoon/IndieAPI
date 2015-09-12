@@ -31,7 +31,7 @@
             this._tbFilename = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
-            this._lvTables = new System.Windows.Forms.ListView();
+            this._lvSheets = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._lvData = new System.Windows.Forms.ListView();
@@ -65,26 +65,26 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.OnClick_RefreshSheet);
             // 
-            // _lvTables
+            // _lvSheets
             // 
-            this._lvTables.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this._lvSheets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this._lvTables.FullRowSelect = true;
-            this._lvTables.GridLines = true;
-            this._lvTables.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this._lvTables.Location = new System.Drawing.Point(12, 87);
-            this._lvTables.MultiSelect = false;
-            this._lvTables.Name = "_lvTables";
-            this._lvTables.Size = new System.Drawing.Size(223, 394);
-            this._lvTables.TabIndex = 3;
-            this._lvTables.UseCompatibleStateImageBehavior = false;
-            this._lvTables.View = System.Windows.Forms.View.Details;
-            this._lvTables.SelectedIndexChanged += new System.EventHandler(this.OnSelected_Table);
+            this._lvSheets.FullRowSelect = true;
+            this._lvSheets.GridLines = true;
+            this._lvSheets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this._lvSheets.Location = new System.Drawing.Point(12, 87);
+            this._lvSheets.MultiSelect = false;
+            this._lvSheets.Name = "_lvSheets";
+            this._lvSheets.Size = new System.Drawing.Size(223, 394);
+            this._lvSheets.TabIndex = 3;
+            this._lvSheets.UseCompatibleStateImageBehavior = false;
+            this._lvSheets.View = System.Windows.Forms.View.Details;
+            this._lvSheets.SelectedIndexChanged += new System.EventHandler(this.OnSelectChanged_Sheet);
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Table";
+            this.columnHeader1.Text = "Sheet";
             this.columnHeader1.Width = 127;
             // 
             // columnHeader2
@@ -124,7 +124,7 @@
             this.Controls.Add(this._tbFilename);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this._lvTables);
+            this.Controls.Add(this._lvSheets);
             this.Controls.Add(this._lvData);
             this.Name = "FormService_Sheet";
             this.Text = "FormService_Sheet";
@@ -138,7 +138,7 @@
         private System.Windows.Forms.TextBox _tbFilename;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.ListView _lvTables;
+        private System.Windows.Forms.ListView _lvSheets;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ListView _lvData;

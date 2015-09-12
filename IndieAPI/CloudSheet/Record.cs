@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 
 
-namespace IndieAPI.Sheet
+namespace IndieAPI.CloudSheet
 {
     [DebuggerDisplay("RowNo={RowNo}")]
     public class Record

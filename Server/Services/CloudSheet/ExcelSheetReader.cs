@@ -10,7 +10,7 @@ using Aegis;
 
 
 
-namespace Server.Services.SheetPackage
+namespace Server.Services.CloudSheet
 {
     public enum DataType
     {
@@ -22,7 +22,7 @@ namespace Server.Services.SheetPackage
 
 
 
-    public class ExcelSheet
+    public class ExcelSheetReader
     {
         private Sheet _sheet;
         private SharedStringTablePart _sstp;
@@ -32,7 +32,7 @@ namespace Server.Services.SheetPackage
         public ExcelLoader ExcelLoader { get; private set; }
         public UInt32 MaxRowIndex { get; private set; }
         public Int32 RowCount { get; private set; }
-        public String Name { get { return _sheet.Name; } }
+        public String SheetName { get { return _sheet.Name; } }
         public FieldInfo[] Fields { get; private set; }
         public Row CurrentRow { get { return _iter.Current; } }
 
@@ -40,18 +40,18 @@ namespace Server.Services.SheetPackage
 
 
 
-        internal ExcelSheet(ExcelLoader parent, Sheet sheet)
+        internal ExcelSheetReader(ExcelLoader parent, Sheet sheet)
         {
             ExcelLoader = parent;
             _sheet = sheet;
         }
 
 
-        public ExcelSheet Load()
+        public ExcelSheetReader Load()
         {
-            WorkbookPart wbp = ExcelLoader.Workbook.WorkbookPart;
+            WorkbookPart wbp = ExcelLoader.SSDocument.WorkbookPart;
             WorksheetPart wsp = (WorksheetPart)wbp.GetPartById(_sheet.Id.Value);
-            SheetData sheetData = wsp.Worksheet.GetFirstChild<SheetData>();
+            DocumentFormat.OpenXml.Spreadsheet.SheetData sheetData = wsp.Worksheet.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.SheetData>();
 
 
             _iter = sheetData.Elements<Row>().GetEnumerator();

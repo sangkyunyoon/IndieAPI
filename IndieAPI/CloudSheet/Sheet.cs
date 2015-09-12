@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 
 
-namespace IndieAPI.Sheet
+namespace IndieAPI.CloudSheet
 {
-    [DebuggerDisplay("TableName={Name}, RecordCount={RecordCount}")]
-    public class Table
+    [DebuggerDisplay("Name={Name}, RecordCount={RecordCount}")]
+    public class Sheet
     {
         private String _name;
         private FieldInfo[] _fields;
@@ -22,7 +22,7 @@ namespace IndieAPI.Sheet
 
 
 
-        internal Table(String name, Int32 recordCount, Int32 fieldCount)
+        internal Sheet(String name, Int32 recordCount, Int32 fieldCount)
         {
             _name = name;
             _records = new Record[recordCount];

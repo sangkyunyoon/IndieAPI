@@ -8,15 +8,15 @@ using Aegis;
 
 
 
-namespace Server.Services.SheetPackage
+namespace Server.Services.CloudSheet
 {
-    public static partial class Cache
+    public static partial class Workbooks
     {
         private class CacheItem
         {
             private FileInfo _fileInfo;
 
-            public TableCollection TableCollection { get; private set; }
+            public Workbook TableCollection { get; private set; }
             public DateTime LastAccessTime { get; set; }
 
 
@@ -38,7 +38,7 @@ namespace Server.Services.SheetPackage
 
                 lock (this)
                 {
-                    TableCollection = new TableCollection(filename);
+                    TableCollection = new Workbook(filename);
                     _fileInfo = new FileInfo(filename);
 
 

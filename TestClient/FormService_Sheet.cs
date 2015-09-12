@@ -36,39 +36,34 @@ namespace TestClient
 
         private void OnClick_RefreshSheet(object sender, EventArgs e)
         {
-            FormMain.API.Storage_Sheet_Refresh(_tbFilename.Text, OnComplete_RefreshSheet);
+            FormMain.API.Storage_Sheet_Refresh(_tbFilename.Text, OnResponse_RefreshSheet);
         }
 
 
-        private void OnComplete_RefreshSheet(Int32 result)
+        private void OnResponse_RefreshSheet(ResponseData response)
         {
-            if (InvokeRequired)
-                BeginInvoke((MethodInvoker)delegate { OnComplete_RefreshSheet(result); });
-            else
+            _lvSheets.Items.Clear();
+            _lvData.Columns.Clear();
+            _lvData.Items.Clear();
+
+            foreach (var sheet in FormMain.API.Workbook.Sheets)
             {
-                _lvTables.Items.Clear();
-                _lvData.Columns.Clear();
-                _lvData.Items.Clear();
+                ListViewItem lvi = new ListViewItem();
+                lvi.Text = sheet.Name;
+                lvi.SubItems.Add(sheet.RecordCount.ToString());
 
-                foreach (var table in FormMain.API.SheetTables.Items)
-                {
-                    ListViewItem lvi = new ListViewItem();
-                    lvi.Text = table.Name;
-                    lvi.SubItems.Add(table.RecordCount.ToString());
-
-                    _lvTables.Items.Add(lvi);
-                }
+                _lvSheets.Items.Add(lvi);
             }
         }
 
 
-        private void OnSelected_Table(object sender, EventArgs e)
+        private void OnSelectChanged_Sheet(object sender, EventArgs e)
         {
-            if (_lvTables.SelectedItems.Count == 0)
+            if (_lvSheets.SelectedItems.Count == 0)
                 return;
 
-            ListViewItem lviTable = _lvTables.SelectedItems[0];
-            var table = FormMain.API.SheetTables.GetTable(lviTable.Text);
+            ListViewItem lviSheet = _lvSheets.SelectedItems[0];
+            var sheet = FormMain.API.Workbook.GetSheet(lviSheet.Text);
 
 
             _lvData.Columns.Clear();
@@ -77,7 +72,7 @@ namespace TestClient
 
 
             //  테이블의 컬럼정보
-            foreach (var column in table.Fields)
+            foreach (var column in sheet.Fields)
             {
                 ColumnHeader hdr = new ColumnHeader();
                 hdr.Text = column.name;
@@ -86,19 +81,19 @@ namespace TestClient
 
 
             //  데이터 리스트
-            foreach (var record in table.Records)
+            foreach (var record in sheet.Records)
             {
                 ListViewItem lvi = new ListViewItem();
                 Int32 idx = 0;
 
 
-                foreach (var column in table.Fields)
+                foreach (var column in sheet.Fields)
                 {
                     String text = record[column.name];
 
 
                     //  DateTime은 OADate 형식에서 변환한다.
-                    if (column.type == IndieAPI.Sheet.FieldDataType.DateTime)
+                    if (column.type == IndieAPI.CloudSheet.FieldDataType.DateTime)
                     {
                         Double dt = Double.Parse(text);
                         text = DateTime.FromOADate(dt).ToString();

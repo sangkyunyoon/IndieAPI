@@ -32,8 +32,8 @@ namespace TestClient
 
             FormMain.API.Initialize(
                 _tbServerIp.Text, _tbServerPort.Text.ToInt32(),
-                "AEGIS For Indie!", "AEGIS Indie APIs"
-                , OnNetworkStatusChanged);
+                "AEGIS For Indie!", "AEGIS Indie APIs",
+                OnNetworkStatusChanged);
         }
 
 
@@ -72,17 +72,16 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_RegisterGuest(_tbGuest_UDID.Text, OnRecv_Auth_RegisterGuest);
+            FormMain.API.Auth_RegisterGuest(_tbGuest_UDID.Text, OnResponse_Auth_RegisterGuest);
         }
 
 
-        private void OnRecv_Auth_RegisterGuest(SecurityPacket resPacket)
+        private void OnResponse_Auth_RegisterGuest(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result == ResultCode.Ok)
+            if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Blue, "Guest registration completed.");
             else
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
 
 
@@ -98,18 +97,16 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_LoginGuest(_tbGuest_UDID.Text, OnRecv_Auth_LoginGuest);
+            FormMain.API.Auth_LoginGuest(_tbGuest_UDID.Text, OnResponse_Auth_LoginGuest);
         }
 
 
-        private void OnRecv_Auth_LoginGuest(SecurityPacket resPacket)
+        private void OnResponse_Auth_LoginGuest(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result == ResultCode.Ok)
+            if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.ChangeView(FormMain.View_Service_Profile);
-
             else
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
 
 
@@ -141,17 +138,16 @@ namespace TestClient
                 _tbMember_UDID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
-                OnRecv_Auth_RegisterMember);
+                OnResponse_Auth_RegisterMember);
         }
 
 
-        private void OnRecv_Auth_RegisterMember(SecurityPacket resPacket)
+        private void OnResponse_Auth_RegisterMember(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result == ResultCode.Ok)
+            if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Blue, "Member registration completed.");
             else
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
 
 
@@ -183,18 +179,16 @@ namespace TestClient
                 _tbMember_UDID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
-                OnRecv_Auth_LoginMember);
+                OnResponse_Auth_LoginMember);
         }
 
 
-        private void OnRecv_Auth_LoginMember(SecurityPacket resPacket)
+        private void OnResponse_Auth_LoginMember(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result == ResultCode.Ok)
+            if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.ChangeView(FormMain.View_Service_Profile);
-
             else
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
     }
 }

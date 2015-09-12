@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Aegis.Client;
-using IndieAPI.Sheet;
+using IndieAPI.CloudSheet;
 
 
 
@@ -13,58 +13,78 @@ namespace IndieAPI
     {
         ////////////////////////////////////////////////////////////////////////////////
         //  Authentication
-        public void Auth_RegisterGuest(String udid, PacketCallbackHandler callback)
+        public void Auth_RegisterGuest(String udid, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Auth_RegisterGuest_Req);
             reqPacket.PutStringAsUtf16(udid);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
-        public void Auth_RegisterMember(String udid, String userId, String userPwd, PacketCallbackHandler callback)
+        public void Auth_RegisterMember(String udid, String userId, String userPwd, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Auth_RegisterMember_Req);
             reqPacket.PutStringAsUtf16(udid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
-        public void Auth_LoginGuest(String udid, PacketCallbackHandler callback)
+        public void Auth_LoginGuest(String udid, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Auth_LoginGuest_Req);
             reqPacket.PutStringAsUtf16(udid);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
-        public void Auth_LoginMember(String udid, String userId, String userPwd, PacketCallbackHandler callback)
+        public void Auth_LoginMember(String udid, String userId, String userPwd, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Auth_LoginMember_Req);
             reqPacket.PutStringAsUtf16(udid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
         //  Profile
-        public void Profile_GetData(PacketCallbackHandler callback)
+        public void Profile_GetData(APICallbackHandler<Response_Profile> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_GetData_Req);
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new Response_Profile(resPacket));
+                });
         }
 
 
-        public void Profile_SetData(String nickname, Int16 level, Int16 exp, PacketCallbackHandler callback)
+        public void Profile_SetData(String nickname, Int16 level, Int16 exp, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_SetData_Req);
             reqPacket.PutInt32(_userNo);
@@ -72,168 +92,206 @@ namespace IndieAPI
             reqPacket.PutInt16(level);
             reqPacket.PutInt16(exp);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
-        public void Profile_GetTextData(PacketCallbackHandler callback)
+        public void Profile_GetTextData(APICallbackHandler<Response_Profile_Text> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_Text_GetData_Req);
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new Response_Profile_Text(resPacket));
+                });
         }
 
 
-        public void Profile_SetTextData(String text, PacketCallbackHandler callback)
+        public void Profile_SetTextData(String text, APICallbackHandler<ResponseData> callback)
         {
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_Text_SetData_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(text);
 
-            SendPacket(reqPacket, callback);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    callback(new ResponseData(resPacket));
+                });
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
-        //  Sheet
-        private ResultHandler _sheetResultHandler;
-        private Int32 _sheetRequestedTableNo;
-        private String _sheetFilename;
-        public Tables SheetTables { get; private set; }
+        //  CloudSheet
+        private Int32 _sheetRequestedNo;
+        private String _sheetFilename, _sheetName;
+        public Workbook Workbook { get; private set; }
 
 
 
 
 
-        public void Storage_Sheet_Refresh(String filename, ResultHandler handler)
+        public void Storage_Sheet_Refresh(String filename, APICallbackHandler<ResponseData> callback)
         {
-            _sheetResultHandler = handler;
             _sheetFilename = filename;
 
-            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetTableList_Req);
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetSheetList_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(_sheetFilename);
 
-            SendPacket(reqPacket, OnRecv_Storage_Sheet_GetTableList);
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    ResponseData response = new ResponseData(resPacket);
+                    if (response.ResultCodeNo != ResultCode.Ok)
+                    {
+                        callback(response);
+                        return;
+                    }
+
+                    Workbook = new Workbook();
+                    OnRecv_Storage_Sheet_GetSheetList(resPacket, callback);
+                });
         }
 
 
-        private void OnRecv_Storage_Sheet_GetTableList(SecurityPacket resPacket)
+        private void OnRecv_Storage_Sheet_GetSheetList(SecurityPacket packet, APICallbackHandler<ResponseData> callback)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result != ResultCode.Ok)
+            Int32 sheetCount = packet.GetInt32();
+            while (sheetCount-- > 0)
             {
-                if (_sheetResultHandler != null)
-                    _sheetResultHandler(result);
-                return;
-            }
+                String sheetName = packet.GetStringFromUtf16();
+                Int32 recordCount = packet.GetInt32();
+                Int32 columnCount = packet.GetInt32();
 
 
-            SheetTables = new Tables();
-
-            Int32 tableCount = resPacket.GetInt32();
-            while (tableCount-- > 0)
-            {
-                String tableName = resPacket.GetStringFromUtf16();
-                Int32 recordCount = resPacket.GetInt32();
-                Int32 columnCount = resPacket.GetInt32();
-
-
-                Table table = SheetTables.CreateTable(tableName, recordCount, columnCount);
+                Sheet sheet = Workbook.AddSheet(sheetName, recordCount, columnCount);
                 while (columnCount-- > 0)
                 {
-                    FieldDataType type = (FieldDataType)resPacket.GetInt32();
-                    String fieldname = resPacket.GetStringFromUtf16();
+                    FieldDataType type = (FieldDataType)packet.GetInt32();
+                    String fieldname = packet.GetStringFromUtf16();
 
-                    table.AddField(type, fieldname);
+                    sheet.AddField(type, fieldname);
                 }
             }
 
 
-            _sheetRequestedTableNo = 0;
-            if (SheetTables.Items.Count() > _sheetRequestedTableNo)
+            if (Workbook.Sheets.Count() == 0)
             {
-                Table table = SheetTables.Items[_sheetRequestedTableNo];
-                SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
-
-
-                reqPacket.PutInt32(_userNo);
-                reqPacket.PutStringAsUtf16(_sheetFilename);
-                reqPacket.PutStringAsUtf16(table.Name);
-                reqPacket.PutUInt32(0);
-                SendPacket(reqPacket, OnRecv_Storage_Sheet_GetRecords);
-            }
-        }
-
-
-        private void OnRecv_Storage_Sheet_GetRecords(SecurityPacket resPacket)
-        {
-            Int32 result = resPacket.GetInt32();
-            if (result != ResultCode.Ok)
-            {
-                if (_sheetResultHandler != null)
-                    _sheetResultHandler(result);
+                callback(new ResponseData(ResultCode.Ok));
                 return;
             }
 
 
+            _sheetRequestedNo = 0;
+            _sheetName = Workbook.Sheets[_sheetRequestedNo].Name;
+
+
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetRecords_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(_sheetFilename);
+            reqPacket.PutStringAsUtf16(_sheetName);
+            reqPacket.PutUInt32(0);
+
+            SendPacket(reqPacket,
+                (resPacket) =>
+                {
+                    ResponseData response = new ResponseData(resPacket);
+                    if (response.ResultCodeNo != ResultCode.Ok)
+                    {
+                        callback(response);
+                        return;
+                    }
+
+                    OnRecv_Storage_Sheet_GetRecords(resPacket, callback);
+                });
+        }
+
+
+        private void OnRecv_Storage_Sheet_GetRecords(SecurityPacket packet, APICallbackHandler<ResponseData> callback)
+        {
             try
             {
-                String tableName = resPacket.GetStringFromUtf16();
-                Boolean hasMore = (resPacket.GetByte() == 1);
-                Int32 rowCount = resPacket.GetInt32();
-                UInt32 lastRowNo = 0;
-                Table table = SheetTables.GetTable(tableName);
+                Boolean hasMore = (packet.GetByte() == 1);
+                Int32 rowCount = packet.GetInt32();
+                UInt32 rowNo = 0;
+                Sheet table = Workbook.GetSheet(_sheetName);
 
 
                 while (rowCount-- > 0)
                 {
                     String[] values = new String[table.Fields.Count()];
 
-                    lastRowNo = resPacket.GetUInt32();
+                    rowNo = packet.GetUInt32();
                     for (Int32 i = 0; i < table.Fields.Count(); ++i)
-                        values[i] = resPacket.GetStringFromUtf16();
+                        values[i] = packet.GetStringFromUtf16();
 
-                    table.AddRowData(lastRowNo, values);
+                    table.AddRowData(rowNo, values);
                 }
 
                 if (hasMore)
                 {
-                    SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
+                    SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetRecords_Req);
                     reqPacket.PutInt32(_userNo);
                     reqPacket.PutStringAsUtf16(_sheetFilename);
-                    reqPacket.PutStringAsUtf16(tableName);
-                    reqPacket.PutUInt32(lastRowNo + 1);
+                    reqPacket.PutStringAsUtf16(_sheetName);
+                    reqPacket.PutUInt32(rowNo + 1);
 
-                    SendPacket(reqPacket, OnRecv_Storage_Sheet_GetRecords);
+                    SendPacket(reqPacket,
+                        (resPacket) =>
+                        {
+                            ResponseData response = new ResponseData(resPacket);
+                            if (response.ResultCodeNo != ResultCode.Ok)
+                            {
+                                callback(response);
+                                return;
+                            }
+
+                            OnRecv_Storage_Sheet_GetRecords(resPacket, callback);
+                        });
                 }
                 else
                 {
-                    ++_sheetRequestedTableNo;
-                    if (SheetTables.Items.Count() > _sheetRequestedTableNo)
+                    ++_sheetRequestedNo;
+                    if (Workbook.Sheets.Count() > _sheetRequestedNo)
                     {
-                        SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Sheet_GetRecords_Req);
+                        table = Workbook.Sheets[_sheetRequestedNo];
+                        _sheetName = table.Name;
 
-                        table = SheetTables.Items[_sheetRequestedTableNo];
-
+                        SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetRecords_Req);
                         reqPacket.PutInt32(_userNo);
                         reqPacket.PutStringAsUtf16(_sheetFilename);
-                        reqPacket.PutStringAsUtf16(table.Name);
+                        reqPacket.PutStringAsUtf16(_sheetName);
                         reqPacket.PutUInt32(0);
-                        SendPacket(reqPacket, OnRecv_Storage_Sheet_GetRecords);
+
+                        SendPacket(reqPacket,
+                            (resPacket) =>
+                            {
+                                ResponseData response = new ResponseData(resPacket);
+                                if (response.ResultCodeNo != ResultCode.Ok)
+                                {
+                                    callback(response);
+                                    return;
+                                }
+
+                                OnRecv_Storage_Sheet_GetRecords(resPacket, callback);
+                            });
                     }
                     else
                     {
-                        if (_sheetResultHandler != null)
-                            _sheetResultHandler(ResultCode.Ok);
+                        callback(new ResponseData(packet));
                     }
                 }
             }
             catch (Exception)
             {
-                if (_sheetResultHandler != null)
-                    _sheetResultHandler(ResultCode.UnknownError);
+                callback(new ResponseData(ResultCode.UnknownError));
             }
         }
     }

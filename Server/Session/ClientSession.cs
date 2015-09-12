@@ -91,8 +91,8 @@ namespace Server.Session
                         case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(packet); break;
                         case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(packet); break;
 
-                        case Protocol.CS_Sheet_GetTableList_Req: OnCS_Sheet_GetTableList_Req(packet); break;
-                        case Protocol.CS_Sheet_GetRecords_Req: OnCS_Sheet_GetRecords_Req(packet); break;
+                        case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(packet); break;
+                        case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(packet); break;
                     }
                 }
             });

@@ -40,7 +40,7 @@
             // _lbTaskCount
             // 
             this._lbTaskCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._lbTaskCount.Location = new System.Drawing.Point(330, 89);
+            this._lbTaskCount.Location = new System.Drawing.Point(339, 89);
             this._lbTaskCount.Name = "_lbTaskCount";
             this._lbTaskCount.Size = new System.Drawing.Size(106, 23);
             this._lbTaskCount.TabIndex = 84;
@@ -49,7 +49,7 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(227, 89);
+            this.label3.Location = new System.Drawing.Point(236, 89);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(99, 23);
             this.label3.TabIndex = 83;

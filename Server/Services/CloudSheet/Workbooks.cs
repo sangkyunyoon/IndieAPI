@@ -8,9 +8,9 @@ using Aegis.Threading;
 
 
 
-namespace Server.Services.SheetPackage
+namespace Server.Services.CloudSheet
 {
-    public static partial class Cache
+    public static partial class Workbooks
     {
         private static RWLock _lock = new RWLock();
         private static Dictionary<String, CacheItem> _cache = new Dictionary<String, CacheItem>();
@@ -51,7 +51,7 @@ namespace Server.Services.SheetPackage
         }
 
 
-        public static TableCollection GetTableCollection(String filename)
+        public static Workbook GetWorkbook(String filename)
         {
             CacheItem item;
 

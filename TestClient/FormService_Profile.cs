@@ -27,22 +27,21 @@ namespace TestClient
             _tbTextData.Text = "";
 
 
-            FormMain.SetMessage(Color.Blue, "Requesting 'Storage_GetTextData'...");
-            FormMain.API.Profile_GetData(OnRecv_Profile);
+            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetData'...");
+            FormMain.API.Profile_GetData(OnResponse_Profile);
         }
 
 
-        private void OnRecv_Profile(SecurityPacket resPacket)
+        private void OnResponse_Profile(Response_Profile response)
         {
-            Int32 result = resPacket.GetInt32();
-            _tbNickname.Text = resPacket.GetStringFromUtf16();
-            _tbLevel.Text = resPacket.GetInt16().ToString();
-            _tbExp.Text = resPacket.GetInt16().ToString();
+            _tbNickname.Text = response.Nickname;
+            _tbLevel.Text = response.Level.ToString();
+            _tbExp.Text = response.Exp.ToString();
 
-            _tbRegDate.Text = DateTime.FromOADate(resPacket.GetDouble()).ToString();
-            _tbLastLoginDate.Text = DateTime.FromOADate(resPacket.GetDouble()).ToString();
-            _tbContinuousCount.Text = resPacket.GetByte().ToString();
-            _tbDailyCount.Text = resPacket.GetByte().ToString();
+            _tbRegDate.Text = response.RegDate.ToString();
+            _tbLastLoginDate.Text = response.LastLoginDate.ToString();
+            _tbContinuousCount.Text = response.LoginContinuousCount.ToString();
+            _tbDailyCount.Text = response.LoginDailyCount.ToString();
 
 
             FormMain.SetMessage(Color.Black, "Ready");
@@ -56,52 +55,46 @@ namespace TestClient
                 _tbNickname.Text,
                 Int16.Parse(_tbLevel.Text),
                 Int16.Parse(_tbExp.Text),
-                OnRecv_SetProfileData);
+                OnResponse_SetProfileData);
         }
 
 
-        private void OnRecv_SetProfileData(SecurityPacket resPacket)
+        private void OnResponse_SetProfileData(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result != ResultCode.Ok)
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
-            else
+            if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Black, "Ready");
+            else
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
 
 
         private void OnClick_GetTextData(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetTextData'...");
-            FormMain.API.Profile_GetTextData(OnRecv_GetTextData);
+            FormMain.API.Profile_GetTextData(OnResponse_GetTextData);
         }
 
 
-        private void OnRecv_GetTextData(SecurityPacket resPacket)
+        private void OnResponse_GetTextData(Response_Profile_Text response)
         {
-            Int32 result = resPacket.GetInt32();
-            String textData = resPacket.GetStringFromUtf16();
-
-            _tbTextData.Text = textData;
-
+            _tbTextData.Text = response.TextData;
             FormMain.SetMessage(Color.Black, "Ready");
         }
 
 
         private void OnClick_SetTextData(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_Text_SetData'...");
-            FormMain.API.Profile_SetTextData(_tbTextData.Text, OnRecv_SetTextData);
+            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetTextData'...");
+            FormMain.API.Profile_SetTextData(_tbTextData.Text, OnResponse_SetTextData);
         }
 
 
-        private void OnRecv_SetTextData(SecurityPacket resPacket)
+        private void OnResponse_SetTextData(ResponseData response)
         {
-            Int32 result = resPacket.GetInt32();
-            if (result != ResultCode.Ok)
-                FormMain.SetMessage(Color.Red, ResultCode.ToString(result));
-
-            FormMain.SetMessage(Color.Black, "Ready");
+            if (response.ResultCodeNo == ResultCode.Ok)
+                FormMain.SetMessage(Color.Black, "Ready");
+            else
+                FormMain.SetMessage(Color.Red, response.ResultString);
         }
 
 
