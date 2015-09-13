@@ -46,7 +46,7 @@ namespace Server.Services.CloudSheet
                 _cache.Clear();
             }
 
-            _cancelCleaner.Cancel();
+            _cancelCleaner?.Cancel();
             _cancelCleaner = null;
         }
 

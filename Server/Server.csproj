@@ -53,11 +53,13 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aegis">
-      <HintPath>packages\AegisNetwork\x64\Aegis.dll</HintPath>
+    <Reference Include="Aegis, Version=0.1.23.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AegisNetwork\x64\Aegis.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>packages\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -60,7 +60,7 @@ namespace Server
 
         public Int32 GetActiveSessionCount()
         {
-            return NetworkChannel.FindChannel("NetworkClient").SessionManager.ActiveSessionCount;
+            return NetworkChannel.FindChannel("NetworkClient")?.SessionManager.ActiveSessionCount ?? 0;
         }
     }
 }
