@@ -27,6 +27,8 @@ namespace Server
 
             _btnStart.Enabled = true;
             _btnStop.Enabled = false;
+
+            this.Text = String.Format("IndieAPI Server v{0}", Aegis.Configuration.Environment.ExecutingVersion.ToString());
         }
 
 

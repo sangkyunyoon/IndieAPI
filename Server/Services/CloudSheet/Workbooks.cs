@@ -35,7 +35,7 @@ namespace Server.Services.CloudSheet
         public static void Initialize()
         {
             _cancelCleaner = new CancellationTokenSource();
-            AegisTask.RunPeriodically(60 * 1000, _cancelCleaner.Token, CleanUnusedData);
+            ClearUnusedCache();
         }
 
 
@@ -47,7 +47,6 @@ namespace Server.Services.CloudSheet
             }
 
             _cancelCleaner?.Cancel();
-            _cancelCleaner = null;
         }
 
 
@@ -96,24 +95,36 @@ namespace Server.Services.CloudSheet
         }
 
 
-        private static void CleanUnusedData()
+        private static async void ClearUnusedCache()
         {
-            List<String> items;
-
-
-            using (_lock.ReaderLock)
+            while (_cancelCleaner.IsCancellationRequested == false)
             {
-                items = _cache
-                    .Where(v => DateTime.Now.Subtract(v.Value.LastAccessTime).Minutes > Global.DataCacheTime)
-                    .Select(v => v.Key)
-                    .ToList();
-            }
-
-            using (_lock.WriterLock)
-            {
-                foreach (String filename in items)
+                try
                 {
-                    _cache.Remove(filename);
+                    await System.Threading.Tasks.Task.Delay(60 * 1000, _cancelCleaner.Token);
+                }
+                catch (Exception)
+                {
+                    _cancelCleaner = null;
+                    break;
+                }
+
+
+                List<String> items;
+                using (_lock.ReaderLock)
+                {
+                    items = _cache
+                        .Where(v => DateTime.Now.Subtract(v.Value.LastAccessTime).Minutes > Global.DataCacheTime)
+                        .Select(v => v.Key)
+                        .ToList();
+                }
+
+                using (_lock.WriterLock)
+                {
+                    foreach (String filename in items)
+                    {
+                        _cache.Remove(filename);
+                    }
                 }
             }
         }
