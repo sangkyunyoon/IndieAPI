@@ -55,6 +55,7 @@ namespace Server.Session
                 if (result == ResultCode.Ok)
                 {
                     _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    _user.LastSeqNo = reqPacket.SeqNo;
                     await _user.LoadFromDB();
 
                     _user.LoginCounter.OnLoggedIn();
@@ -82,6 +83,7 @@ namespace Server.Session
                 if (result == ResultCode.Ok)
                 {
                     _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    _user.LastSeqNo = reqPacket.SeqNo;
                     await _user.LoadFromDB();
 
                     _user.LoginCounter.OnLoggedIn();

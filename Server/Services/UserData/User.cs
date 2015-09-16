@@ -11,6 +11,7 @@ namespace Server.Services.UserData
 {
     public class User
     {
+        public Int32 LastSeqNo { get; set; }
         public Int32 UserNo { get; }
         public UserProfile Profile { get; }
         public LoginCounter LoginCounter { get; }

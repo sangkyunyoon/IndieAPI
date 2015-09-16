@@ -18,6 +18,12 @@ namespace IndieAPI
         private Int32 _nextSeqNo, _userNo;
         private String _aesIV, _aesKey;
 
+        public Int32 ConnectionAliveTime
+        {
+            get { return _aegisClient.ConnectionAliveTime; }
+            set { _aegisClient.ConnectionAliveTime = value; }
+        }
+
 
 
 
@@ -38,8 +44,10 @@ namespace IndieAPI
             _aesKey = aesKey;
             _handlerNetworkStatus = handler;
 
-            _nextSeqNo = 0;
+            _nextSeqNo = 1;
             _userNo = 0;
+
+            ConnectionAliveTime = 3000;
         }
 
 
@@ -47,6 +55,12 @@ namespace IndieAPI
         {
             _aegisClient.Release();
             _callbackQueue.Clear();
+        }
+
+
+        public void Disconnect()
+        {
+            _aegisClient.Close();
         }
 
 
@@ -101,6 +115,9 @@ namespace IndieAPI
 
             if (packet.PID == Protocol.CS_Hello_Ntf)
                 _aegisClient.EnableSend = true;
+
+            if (packet.PID == Protocol.CS_ForceClosing_Ntf)
+                OnNetworkStatusChanged(NetworkStatus.SessionForceClosed);
 
             else
             {

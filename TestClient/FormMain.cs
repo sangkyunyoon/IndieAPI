@@ -111,5 +111,11 @@ namespace TestClient
         {
             API.Release();
         }
+
+
+        private void OnClick_Disconnect(object sender, EventArgs e)
+        {
+            API.Disconnect();
+        }
     }
 }

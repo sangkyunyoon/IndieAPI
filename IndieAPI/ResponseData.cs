@@ -12,13 +12,13 @@ namespace IndieAPI
     {
         public Int32 ResultCodeNo { get; private set; }
         public String ResultString { get; private set; }
-        public SecurityPacket Packet { get; private set; }
+        public StreamBuffer Packet { get; private set; }
 
 
         internal ResponseData(SecurityPacket packet)
         {
+            packet.SkipHeader();
             Packet = packet;
-            Packet.SkipHeader();
 
             ResultCodeNo = packet.GetInt32();
             ResultString = ResultCode.ToString(ResultCodeNo);

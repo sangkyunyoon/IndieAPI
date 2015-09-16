@@ -78,10 +78,16 @@ namespace Server.Session
                     _user = UserManager.Instance.FindUser(userNo);
                     if (_user == null)
                     {
-                        //  Force close
-                        SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), () => { Close(); });
+                        SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
                         return;
                     }
+                    if (_user.LastSeqNo + 1 != packet.SeqNo)
+                    {
+                        Logger.Write(LogType.Info, 2, "Invalid SequenceNo(UserNo={0}).", _user.UserNo);
+                        SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
+                        return;
+                    }
+                    _user.LastSeqNo = packet.SeqNo;
 
 
                     switch (packet.PID)
@@ -99,7 +105,7 @@ namespace Server.Session
         }
 
 
-        public void SendPacket(SecurityPacket buffer, Action onSent = null)
+        public void SendPacket(SecurityPacket buffer, Action<StreamBuffer> onSent = null)
         {
             buffer.Encrypt(Global.AES_IV, Global.AES_Key);
             base.SendPacket(buffer, onSent);

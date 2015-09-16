@@ -10,13 +10,13 @@ namespace IndieAPI.CloudSheet
     {
         private Dictionary<String, Sheet> _sheets = new Dictionary<String, Sheet>();
 
-        public List<Sheet> Sheets { get { return _sheets.Select(v => v.Value).ToList(); } }
+        public List<Sheet> Sheets { get { return _sheets.Values.ToList(); } }
 
 
 
 
 
-        public Sheet AddSheet(String name, Int32 recordCount, Int32 fieldCount)
+        internal Sheet AddSheet(String name, Int32 recordCount, Int32 fieldCount)
         {
             Sheet sheet = new Sheet(name, recordCount, fieldCount);
             _sheets[name] = sheet;
@@ -28,12 +28,6 @@ namespace IndieAPI.CloudSheet
         public Sheet GetSheet(String name)
         {
             return _sheets[name];
-        }
-
-
-        public void Clear()
-        {
-            _sheets.Clear();
         }
     }
 }

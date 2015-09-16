@@ -115,6 +115,10 @@ namespace IndieAPI
 
         public void Profile_SetTextData(String text, APICallbackHandler<ResponseData> callback)
         {
+            if (text.Length > 32500)
+                throw new AegisException("The 'text' length must be less than 32500.");
+
+
             SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_Profile_Text_SetData_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(text);
