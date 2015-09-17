@@ -42,14 +42,15 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this._tbDailyCount = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this._tbContinuousCount = new System.Windows.Forms.TextBox();
             this._tbRegDate = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this._tbLastLoginDate = new System.Windows.Forms.TextBox();
-            this._tbDailyCount = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -200,6 +201,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login Count";
             // 
+            // _tbDailyCount
+            // 
+            this._tbDailyCount.Location = new System.Drawing.Point(32, 280);
+            this._tbDailyCount.Name = "_tbDailyCount";
+            this._tbDailyCount.ReadOnly = true;
+            this._tbDailyCount.Size = new System.Drawing.Size(166, 20);
+            this._tbDailyCount.TabIndex = 21;
+            this._tbDailyCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label5.Location = new System.Drawing.Point(32, 254);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(166, 23);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Daily Count";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // label6
             // 
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -257,34 +277,26 @@
             this._tbLastLoginDate.TabIndex = 17;
             this._tbLastLoginDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // _tbDailyCount
+            // button5
             // 
-            this._tbDailyCount.Location = new System.Drawing.Point(32, 280);
-            this._tbDailyCount.Name = "_tbDailyCount";
-            this._tbDailyCount.ReadOnly = true;
-            this._tbDailyCount.Size = new System.Drawing.Size(166, 20);
-            this._tbDailyCount.TabIndex = 21;
-            this._tbDailyCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.button5.Location = new System.Drawing.Point(146, 432);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(128, 54);
+            this.button5.TabIndex = 16;
+            this.button5.Text = "Chatting";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.OnClick_Chatting);
             // 
-            // label5
-            // 
-            this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label5.Location = new System.Drawing.Point(32, 254);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(166, 23);
-            this.label5.TabIndex = 20;
-            this.label5.Text = "Daily Count";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // FormServiceMain
+            // FormService_Profile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.button3);
-            this.Name = "FormServiceMain";
+            this.Name = "FormService_Profile";
             this.Text = "FormServiceMain";
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -317,5 +329,6 @@
         private System.Windows.Forms.TextBox _tbLastLoginDate;
         private System.Windows.Forms.TextBox _tbDailyCount;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button5;
     }
 }

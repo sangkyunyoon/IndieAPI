@@ -8,6 +8,7 @@ using System.Text;
 namespace IndieAPI
 {
     public delegate void NetworkStatusChanged(NetworkStatus status);
+    public delegate void NotifyPacketHandler<T>(T response);
 
 
 
@@ -60,6 +61,25 @@ namespace IndieAPI
 
 
         //  Instant Messaging Channel
+        public const UInt16 CS_IMC_ChannelList_Req = 0x2301;
+        public const UInt16 CS_IMC_ChannelList_Res = 0x2302;
+        public const UInt16 CS_IMC_Create_Req = 0x2303;
+        public const UInt16 CS_IMC_Create_Res = 0x2304;
+        public const UInt16 CS_IMC_ChannelStatus_Ntf = 0x2305;
+        public const UInt16 CS_IMC_Enter_Req = 0x2306;
+        public const UInt16 CS_IMC_Enter_Res = 0x2307;
+        public const UInt16 CS_IMC_EnteredUser_Ntf = 0x2308;
+        public const UInt16 CS_IMC_Leave_Req = 0x2309;
+        public const UInt16 CS_IMC_Leave_Res = 0x230A;
+        public const UInt16 CS_IMC_LeavedUser_Ntf = 0x230B;
+
+        public const UInt16 CS_IMC_UserList_Req = 0x230C;
+        public const UInt16 CS_IMC_UserList_Res = 0x230D;
+        public const UInt16 CS_IMC_SendToAny_Req = 0x230E;
+        public const UInt16 CS_IMC_SendToAny_Res = 0x230F;
+        public const UInt16 CS_IMC_SendToOne_Req = 0x2310;
+        public const UInt16 CS_IMC_SendToOne_Res = 0x2311;
+        public const UInt16 CS_IMC_Message_Ntf = 0x2312;
     }
 
 
@@ -68,24 +88,31 @@ namespace IndieAPI
         public const Int32 Ok = 0;
         public const Int32 UnknownError = 1;
 
-        public const Int32 AlreadyExistsUDID = 11;
-        public const Int32 AlreadyExistsUserId = 12;
+        public const Int32 AlreadyExistsUDID = 1001;
+        public const Int32 AlreadyExistsUserId = 1002;
 
-        public const Int32 InvalidUDID = 13;
-        public const Int32 InvalidUserId = 14;
+        public const Int32 InvalidUDID = 1003;
+        public const Int32 InvalidUserId = 1004;
 
 
-        public const Int32 InvalidFileType = 101;
-        public const Int32 InvalidFileName = 102;
-        public const Int32 InvalidTableName = 103;
+        public const Int32 InvalidFileType = 1101;
+        public const Int32 InvalidFileName = 1102;
+        public const Int32 InvalidTableName = 1103;
 
-        public const Int32 NoDataInSheet = 106;
-        public const Int32 ColumnCountIsNotMatch = 107;
-        public const Int32 EmptyColumnName = 108;
-        public const Int32 DuplicateColumnName = 109;
-        public const Int32 TooManyColumns = 111;
-        public const Int32 TooManyRecords = 112;
-        public const Int32 TooBigFileSize = 113;
+        public const Int32 CloudSheet_NoDataInSheet = 1201;
+        public const Int32 CloudSheet_ColumnCountIsNotMatch = 1202;
+        public const Int32 CloudSheet_EmptyColumnName = 1203;
+        public const Int32 CloudSheet_DuplicateColumnName = 1204;
+        public const Int32 CloudSheet_TooManyColumns = 1205;
+        public const Int32 CloudSheet_TooManyRecords = 1206;
+        public const Int32 CloudSheet_TooBigFileSize = 1207;
+
+        public const Int32 CastChannel_InvalidChannelNo = 1301;
+        public const Int32 CastChannel_ExistsName = 1302;
+        public const Int32 CastChannel_ExistsUser = 1303;
+        public const Int32 CastChannel_NotExistsUser = 1304;
+        public const Int32 CastChannel_InChannel = 1305;
+        public const Int32 CastChannel_NotInChannel = 1306;
 
 
 
@@ -105,13 +132,20 @@ namespace IndieAPI
                 case InvalidFileName: return "Invalid filename.";
                 case InvalidTableName: return "Invalid table name.";
 
-                case NoDataInSheet: return "There is no data in sheet.";
-                case ColumnCountIsNotMatch: return "Column count is not match.";
-                case EmptyColumnName: return "There is empty column name.";
-                case DuplicateColumnName: return "There is same column names.";
-                case TooManyColumns: return "Too many columns defined.";
-                case TooManyRecords: return "Too many records in sheet.";
-                case TooBigFileSize: return "File size too big.";
+                case CloudSheet_NoDataInSheet: return "There is no data in sheet.";
+                case CloudSheet_ColumnCountIsNotMatch: return "Column count is not match.";
+                case CloudSheet_EmptyColumnName: return "There is empty column name.";
+                case CloudSheet_DuplicateColumnName: return "There is same column names.";
+                case CloudSheet_TooManyColumns: return "Too many columns defined.";
+                case CloudSheet_TooManyRecords: return "Too many records in sheet.";
+                case CloudSheet_TooBigFileSize: return "File size too big.";
+
+                case CastChannel_InvalidChannelNo: return "Invalid ChannelNo.";
+                case CastChannel_ExistsName: return "Already exists channel name.";
+                case CastChannel_ExistsUser: return "Already exists user.";
+                case CastChannel_NotExistsUser: return "Not exists user.";
+                case CastChannel_InChannel: return "Cannot process because you're in channel.";
+                case CastChannel_NotInChannel: return "Cannot process because you're not in channel.";
             }
 
             return String.Format($"Unknown ResultCode(0x:{resultCode:X})");

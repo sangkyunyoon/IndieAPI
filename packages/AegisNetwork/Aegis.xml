@@ -371,6 +371,11 @@
             데이터 읽기의 경우, 쓰기된 크기 이상으로 읽어들일 수 없습니다.
             </summary>
         </member>
+        <member name="F:Aegis.Network.Packet.HeaderSize">
+            <summary>
+            패킷의 해더 크기(Byte)
+            </summary>
+        </member>
         <member name="M:Aegis.Network.Packet.#ctor(System.UInt16)">
             <summary>
             고유번호를 지정하여 패킷을 생성합니다.
@@ -397,6 +402,12 @@
             <param name="source">복사할 데이터가 담긴 byte 배열</param>
             <param name="startIndex">source에서 복사할 시작 위치</param>
             <param name="size">복사할 크기(Byte)</param>
+        </member>
+        <member name="M:Aegis.Network.Packet.Clone">
+            <summary>
+            이 SecurityPacket 객체와 동일한 내용의 새로운 객체를 생성합니다.
+            </summary>
+            <returns>현재 SecurityPacket의 데이터가 복제된 객체</returns>
         </member>
         <member name="M:Aegis.Network.Packet.GetPID(System.Byte[])">
             <summary>
@@ -456,6 +467,11 @@
             패킷의 고유번호를 지정하거나 가져옵니다.
             </summary>
         </member>
+        <member name="F:Aegis.Network.SecurityPacket.HeaderSize">
+            <summary>
+            패킷의 해더 크기(Byte)
+            </summary>
+        </member>
         <member name="M:Aegis.Network.SecurityPacket.#ctor(System.UInt16)">
             <summary>
             고유번호를 지정하여 패킷을 생성합니다.
@@ -482,6 +498,12 @@
             <param name="source">복사할 데이터가 담긴 byte 배열</param>
             <param name="startIndex">source에서 복사할 시작 위치</param>
             <param name="size">복사할 크기(Byte)</param>
+        </member>
+        <member name="M:Aegis.Network.SecurityPacket.Clone">
+            <summary>
+            이 SecurityPacket 객체와 동일한 내용의 새로운 객체를 생성합니다.
+            </summary>
+            <returns>현재 SecurityPacket의 데이터가 복제된 객체</returns>
         </member>
         <member name="M:Aegis.Network.SecurityPacket.GetPID(System.Byte[])">
             <summary>

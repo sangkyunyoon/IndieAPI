@@ -23,6 +23,36 @@ namespace Server.Services
         }
 
 
+        public static String GeneratePasswordHash(String source)
+        {
+            String saltKey = "Indie+API@Salt#";
+            Int32 count;
+
+
+            source += saltKey;
+            count = source.Length % 5;
+
+            for (int i = 0; i < count; ++i)
+                source = MD5Hash(source);
+
+            return source;
+        }
+
+
+        private static String MD5Hash(String source)
+        {
+            StringBuilder result = new StringBuilder();
+            byte[] bytePassword = Encoding.ASCII.GetBytes(source);
+            byte[] byteHash = (new System.Security.Cryptography.MD5CryptoServiceProvider()).ComputeHash(bytePassword);
+
+
+            for (int i = 0; i < byteHash.Length; ++i)
+                result.Append(byteHash[i].ToString("X2"));
+
+            return result.ToString();
+        }
+
+
         public void RegisterGuest(String udid, Action<Int32> onComplete)
         {
             using (DBCommand cmd = GameDB.NewCommand())
@@ -47,10 +77,12 @@ namespace Server.Services
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
+                String passwordHash = GeneratePasswordHash(userPwd);
+
                 cmd.CommandText.Append("call sp_auth_register_member(@udid, @userid, @pwd);");
                 cmd.BindParameter("@udid", udid);
                 cmd.BindParameter("@userId", userId);
-                cmd.BindParameter("@pwd", userPwd);
+                cmd.BindParameter("@pwd", passwordHash);
                 cmd.PostQuery((reader) =>
                 {
                     reader.Read();
@@ -92,9 +124,12 @@ namespace Server.Services
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
+                String passwordHash = GeneratePasswordHash(userPwd);
+
+
                 cmd.CommandText.Append("select userno, udid from t_accounts where userid=@userid and userpwd=@userpwd and isguest=0;");
                 cmd.BindParameter("@userid", userId);
-                cmd.BindParameter("@userpwd", userPwd);
+                cmd.BindParameter("@userpwd", passwordHash);
                 cmd.PostQuery((reader) =>
                 {
                     if (reader.Read() == true)

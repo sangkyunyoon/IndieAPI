@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Aegis.Client;
 using IndieAPI;
 
 
@@ -101,6 +100,12 @@ namespace TestClient
         private void OnClick_CloudSheet(object sender, EventArgs e)
         {
             FormMain.ChangeView(FormMain.View_Service_Sheet);
+        }
+
+
+        private void OnClick_Chatting(object sender, EventArgs e)
+        {
+            FormMain.ChangeView(FormMain.View_Chat);
         }
     }
 }

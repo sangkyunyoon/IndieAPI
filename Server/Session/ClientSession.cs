@@ -52,6 +52,14 @@ namespace Server.Session
 
         private void OnClosed(NetworkSession session)
         {
+            if (_user != null)
+            {
+                _user.CastChannel?.Leave(_user);
+                _user.CastChannel = null;
+
+                _user.Session = null;
+            }
+
             _user = null;
         }
 
@@ -61,53 +69,71 @@ namespace Server.Session
             SecurityPacket packet = new SecurityPacket(buffer);
             AegisTask.Run(() =>
             {
-                packet.Decrypt(Global.AES_IV, Global.AES_Key);
-                packet.SkipHeader();
-
-
-                //  Authentication Packets
-                if (packet.PID == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(packet);
-                else if (packet.PID == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(packet);
-                else if (packet.PID == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(packet);
-                else if (packet.PID == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(packet);
-
-                //  Service Packets
-                else
+                try
                 {
-                    Int32 userNo = packet.GetInt32();
-                    _user = UserManager.Instance.FindUser(userNo);
-                    if (_user == null)
-                    {
-                        SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
-                        return;
-                    }
-                    if (_user.LastSeqNo + 1 != packet.SeqNo)
-                    {
-                        Logger.Write(LogType.Info, 2, "Invalid SequenceNo(UserNo={0}).", _user.UserNo);
-                        SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
-                        return;
-                    }
-                    _user.LastSeqNo = packet.SeqNo;
+                    packet.Decrypt(Global.AES_IV, Global.AES_Key);
+                    packet.SkipHeader();
 
 
-                    switch (packet.PID)
-                    {
-                        case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(packet); break;
-                        case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(packet); break;
-                        case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(packet); break;
-                        case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(packet); break;
+                    //  Authentication Packets
+                    if (packet.PID == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(packet);
+                    else if (packet.PID == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(packet);
+                    else if (packet.PID == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(packet);
+                    else if (packet.PID == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(packet);
 
-                        case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(packet); break;
-                        case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(packet); break;
+                    //  Service Packets
+                    else
+                    {
+                        Int32 userNo = packet.GetInt32();
+                        _user = UserManager.Instance.FindUser(userNo);
+                        if (_user == null)
+                        {
+                            SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
+                            return;
+                        }
+                        if (_user.LastSeqNo + 1 != packet.SeqNo)
+                        {
+                            Logger.Write(LogType.Info, 2, "Invalid SequenceNo(UserNo={0}).", _user.UserNo);
+                            SendPacket(new SecurityPacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
+                            return;
+                        }
+
+                        _user.LastSeqNo = packet.SeqNo;
+                        _user.Session = this;
+
+                        switch (packet.PID)
+                        {
+                            case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(packet); break;
+                            case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(packet); break;
+                            case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(packet); break;
+                            case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(packet); break;
+
+                            case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(packet); break;
+                            case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(packet); break;
+
+                            case Protocol.CS_IMC_ChannelList_Req: OnCS_IMC_ChannelList_Req(packet); break;
+                            case Protocol.CS_IMC_Create_Req: OnCS_IMC_Create_Req(packet); break;
+                            case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(packet); break;
+                            case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(packet); break;
+                            case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(packet); break;
+                            case Protocol.CS_IMC_SendToAny_Req: OnCS_IMC_SendToAny_Req(packet); break;
+                            case Protocol.CS_IMC_SendToOne_Req: OnCS_IMC_SendToOne_Req(packet); break;
+                        }
                     }
+                }
+                catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)
+                {
+                    Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", packet.PID);
                 }
             });
         }
 
 
-        public void SendPacket(SecurityPacket buffer, Action<StreamBuffer> onSent = null)
+        public override void SendPacket(StreamBuffer buffer, Action<StreamBuffer> onSent = null)
         {
-            buffer.Encrypt(Global.AES_IV, Global.AES_Key);
+            SecurityPacket packet = (SecurityPacket)buffer;
+            packet.Encrypt(Global.AES_IV, Global.AES_Key);
+
             base.SendPacket(buffer, onSent);
         }
     }

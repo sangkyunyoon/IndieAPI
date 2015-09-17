@@ -9,6 +9,7 @@ using Aegis.Client;
 namespace IndieAPI
 {
     public delegate void APICallbackHandler<T>(T response) where T : ResponseData;
+    public delegate void NoMatchesPacketHandler(SecurityPacket packet);
 
 
 
@@ -18,6 +19,7 @@ namespace IndieAPI
     {
         private Dictionary<Int32, Action<SecurityPacket>> _callbacks = new Dictionary<Int32, Action<SecurityPacket>>();
         private Queue<SecurityPacket> _receivedPackets = new Queue<SecurityPacket>();
+        public NoMatchesPacketHandler NoMatchesPacket;
 
 
 
@@ -77,6 +79,8 @@ namespace IndieAPI
                         _callbacks.Remove(key);
                         callback(packet);
                     }
+                    else
+                        NoMatchesPacket(packet);
                 }
             }
         }

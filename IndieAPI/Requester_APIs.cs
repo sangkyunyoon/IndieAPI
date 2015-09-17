@@ -19,10 +19,7 @@ namespace IndieAPI
             reqPacket.PutStringAsUtf16(udid);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -34,10 +31,7 @@ namespace IndieAPI
             reqPacket.PutStringAsUtf16(userPwd);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -47,10 +41,7 @@ namespace IndieAPI
             reqPacket.PutStringAsUtf16(udid);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -62,10 +53,7 @@ namespace IndieAPI
             reqPacket.PutStringAsUtf16(userPwd);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -77,10 +65,7 @@ namespace IndieAPI
             reqPacket.PutInt32(_userNo);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new Response_Profile(resPacket));
-                });
+                       (resPacket) => { callback(new Response_Profile(resPacket)); });
         }
 
 
@@ -93,10 +78,7 @@ namespace IndieAPI
             reqPacket.PutInt16(exp);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -106,10 +88,7 @@ namespace IndieAPI
             reqPacket.PutInt32(_userNo);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new Response_Profile_Text(resPacket));
-                });
+                       (resPacket) => { callback(new Response_Profile_Text(resPacket)); });
         }
 
 
@@ -124,10 +103,7 @@ namespace IndieAPI
             reqPacket.PutStringAsUtf16(text);
 
             SendPacket(reqPacket,
-                (resPacket) =>
-                {
-                    callback(new ResponseData(resPacket));
-                });
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
 
 
@@ -297,6 +273,91 @@ namespace IndieAPI
             {
                 callback(new ResponseData(ResultCode.UnknownError));
             }
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //  Instant Messaging Channel
+        public NotifyPacketHandler<Response_IMC_EnteredUser> IMC_EnteredUser;
+        public NotifyPacketHandler<Response_IMC_LeavedUser> IMC_LeavedUser;
+        public NotifyPacketHandler<Response_IMC_Message> IMC_Message;
+
+
+
+
+
+        public void IMC_ChannelList(APICallbackHandler<Response_IMC_ChannelList> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_ChannelList_Req);
+            reqPacket.PutInt32(_userNo);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response_IMC_ChannelList(resPacket)); });
+        }
+
+
+        public void IMC_Create(String channelName, APICallbackHandler<Response_IMC_Create> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_Create_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(channelName);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response_IMC_Create(resPacket)); });
+        }
+
+
+        public void IMC_Enter(Int32 channelNo, APICallbackHandler<Response_IMC_Enter> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_Enter_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutInt32(channelNo);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response_IMC_Enter(resPacket)); });
+        }
+
+
+        public void IMC_Leave(APICallbackHandler<ResponseData> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_Leave_Req);
+            reqPacket.PutInt32(_userNo);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
+        }
+
+
+        public void IMC_UserList(APICallbackHandler<Response_IMC_UserList> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_UserList_Req);
+            reqPacket.PutInt32(_userNo);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response_IMC_UserList(resPacket)); });
+        }
+
+
+        public void IMC_SendToAny(StreamBuffer data, APICallbackHandler<ResponseData> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_SendToAny_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.Write(data.Buffer);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
+        }
+
+
+        public void IMC_SendToOne(String targetNickname, StreamBuffer data, APICallbackHandler<ResponseData> callback)
+        {
+            SecurityPacket reqPacket = new SecurityPacket(Protocol.CS_IMC_SendToOne_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(targetNickname);
+            reqPacket.Write(data.Buffer);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseData(resPacket)); });
         }
     }
 }

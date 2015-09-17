@@ -43,7 +43,7 @@ namespace Server.Services.CloudSheet
 
 
                     if (_fileInfo.Length > Global.MaxFileSize)
-                        throw new AegisException(ResultCode.TooBigFileSize, "File size too large({0}).", filename);
+                        throw new AegisException(ResultCode.CloudSheet_TooBigFileSize, "File size too large({0}).", filename);
                 }
             }
 

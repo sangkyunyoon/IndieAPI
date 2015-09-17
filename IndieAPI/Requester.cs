@@ -44,10 +44,12 @@ namespace IndieAPI
             _aesKey = aesKey;
             _handlerNetworkStatus = handler;
 
+            _callbackQueue.NoMatchesPacket = OnNoMatchesPacket;
+
             _nextSeqNo = 1;
             _userNo = 0;
 
-            ConnectionAliveTime = 3000;
+            //ConnectionAliveTime = 3000;
         }
 
 
@@ -132,6 +134,32 @@ namespace IndieAPI
                 }
 
                 _callbackQueue.AddPacket(packet);
+            }
+        }
+
+
+        private void OnNoMatchesPacket(SecurityPacket packet)
+        {
+            packet.SkipHeader();
+
+            switch (packet.PID)
+            {
+                case Protocol.CS_IMC_EnteredUser_Ntf:
+                    if (IMC_EnteredUser != null)
+                        IMC_EnteredUser(new Response_IMC_EnteredUser(packet));
+                    break;
+
+
+                case Protocol.CS_IMC_LeavedUser_Ntf:
+                    if (IMC_LeavedUser != null)
+                        IMC_LeavedUser(new Response_IMC_LeavedUser(packet));
+                    break;
+
+
+                case Protocol.CS_IMC_Message_Ntf:
+                    if (IMC_Message != null)
+                        IMC_Message(new Response_IMC_Message(packet));
+                    break;
             }
         }
 

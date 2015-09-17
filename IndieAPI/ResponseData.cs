@@ -10,9 +10,9 @@ namespace IndieAPI
 {
     public class ResponseData
     {
-        public Int32 ResultCodeNo { get; private set; }
-        public String ResultString { get; private set; }
-        public StreamBuffer Packet { get; private set; }
+        public readonly int ResultCodeNo;
+        public readonly string ResultString;
+        public readonly StreamBuffer Packet;
 
 
         internal ResponseData(SecurityPacket packet)
@@ -25,7 +25,7 @@ namespace IndieAPI
         }
 
 
-        internal ResponseData(Int32 resultCodeNo)
+        internal ResponseData(int resultCodeNo)
         {
             ResultCodeNo = resultCodeNo;
         }
@@ -34,14 +34,14 @@ namespace IndieAPI
 
     public class Response_Profile : ResponseData
     {
-        public String Nickname { get; private set; }
-        public Int16 Level { get; private set; }
-        public Int16 Exp { get; private set; }
+        public readonly string Nickname;
+        public readonly Int16 Level;
+        public readonly Int16 Exp;
 
-        public DateTime RegDate { get; private set; }
-        public DateTime LastLoginDate { get; private set; }
-        public Int16 LoginContinuousCount { get; private set; }
-        public Int16 LoginDailyCount { get; private set; }
+        public readonly DateTime RegDate;
+        public readonly DateTime LastLoginDate;
+        public readonly Int16 LoginContinuousCount;
+        public readonly Int16 LoginDailyCount;
 
 
 
@@ -65,7 +65,7 @@ namespace IndieAPI
 
     public class Response_Profile_Text : ResponseData
     {
-        public String TextData { get; private set; }
+        public readonly string TextData;
 
 
 
@@ -76,6 +76,182 @@ namespace IndieAPI
                 return;
 
             TextData = packet.GetStringFromUtf16();
+        }
+    }
+
+
+    public class Response_IMC_ChannelList : ResponseData
+    {
+        public struct ChannelInfo
+        {
+            public int ChannelNo;
+            public string ChannelName;
+        }
+        public readonly List<ChannelInfo> Channels = new List<ChannelInfo>();
+
+
+
+        internal Response_IMC_ChannelList(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+
+            int count = packet.GetInt32();
+            while (count-- > 0)
+            {
+                Channels.Add(new ChannelInfo()
+                {
+                    ChannelNo = packet.GetInt32(),
+                    ChannelName = packet.GetStringFromUtf16()
+                });
+            }
+        }
+    }
+
+
+    public class Response_IMC_Create : ResponseData
+    {
+        public readonly int ChannelNo;
+        public readonly string ChannelName;
+
+
+
+        internal Response_IMC_Create(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            ChannelNo = packet.GetInt32();
+            ChannelName = packet.GetStringFromUtf16();
+        }
+    }
+
+
+    public class Response_IMC_ChannelStatus : ResponseData
+    {
+        public readonly int ChannelNo;
+        public readonly string ChannelName;
+        public readonly int UserCount;
+
+
+
+        internal Response_IMC_ChannelStatus(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            ChannelNo = packet.GetInt32();
+            ChannelName = packet.GetStringFromUtf16();
+            UserCount = packet.GetInt32();
+        }
+    }
+
+
+    public class Response_IMC_Enter : ResponseData
+    {
+        public readonly int ChannelNo;
+        public readonly string ChannelName;
+
+
+
+        internal Response_IMC_Enter(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            ChannelNo = packet.GetInt32();
+            ChannelName = packet.GetStringFromUtf16();
+        }
+    }
+
+
+    public class Response_IMC_EnteredUser : ResponseData
+    {
+        public readonly int UserNo;
+        public readonly string Nickname;
+
+
+
+        internal Response_IMC_EnteredUser(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            UserNo = packet.GetInt32();
+            Nickname = packet.GetStringFromUtf16();
+        }
+    }
+
+
+    public class Response_IMC_LeavedUser : ResponseData
+    {
+        public readonly int UserNo;
+
+
+
+        internal Response_IMC_LeavedUser(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            UserNo = packet.GetInt32();
+        }
+    }
+
+
+    public class Response_IMC_UserList : ResponseData
+    {
+        public struct UserData
+        {
+            public int UserNo;
+            public string Nickname;
+        }
+        public readonly List<UserData> Users = new List<UserData>();
+
+
+
+        internal Response_IMC_UserList(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+
+            int count = packet.GetInt32();
+            while (count-- > 0)
+            {
+                Users.Add(new UserData()
+                {
+                    UserNo = packet.GetInt32(),
+                    Nickname = packet.GetStringFromUtf16()
+                });
+            }
+        }
+    }
+
+
+    public class Response_IMC_Message : ResponseData
+    {
+        public readonly int SenderUserNo;
+        public readonly StreamBuffer Message;
+
+
+
+        internal Response_IMC_Message(SecurityPacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            SenderUserNo = packet.GetInt32();
+            Message = new StreamBuffer(packet.Buffer, packet.ReadBytes, packet.ReadableSize);
         }
     }
 }
