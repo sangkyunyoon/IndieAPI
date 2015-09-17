@@ -2,28 +2,28 @@ IndieAPI for Indie Game Developers
 ===================
 
 
-IndieAPI´Â **Stand-alone °ÔÀÓ**¿¡ ¼­¹ö/³×Æ®¿öÅ© ±â´ÉÀ» ºü¸£°í °£´ÜÇÏ°Ô Àû¿ëÇØ Áï½Ã ¼­ºñ½ºÇÒ ¼ö ÀÖ´Â °ÍÀ» ÁöÇâÇÏ´Â ¿ÀÇÂ¼Ò½º ÇÁ·ÎÁ§Æ® ÀÔ´Ï´Ù. °ÔÀÓ ¼­ºñ½º¿¡ ²À ÇÊ¿äÇÑ ¼­¹öÃø ±â´ÉÀ» Á¦°øÇÏ°í ÀÖÀ¸¸ç, **Unity ÇÁ·ÎÁ§Æ®**¿¡ ºü¸£°Ô Àû¿ëÇÒ ¼ö ÀÖ´Â **Àü¿ë API**¸¦ Áö¿øÇÕ´Ï´Ù.
+IndieAPIëŠ” **Stand-alone ê²Œìž„**ì— ì„œë²„/ë„¤íŠ¸ì›Œí¬ ê¸°ëŠ¥ì„ ë¹ ë¥´ê³  ê°„ë‹¨í•˜ê²Œ ì ìš©í•´ ì¦‰ì‹œ ì„œë¹„ìŠ¤í•  ìˆ˜ ìžˆëŠ” ê²ƒì„ ì§€í–¥í•˜ëŠ” ì˜¤í”ˆì†ŒìŠ¤ í”„ë¡œì íŠ¸ ìž…ë‹ˆë‹¤. ê²Œìž„ ì„œë¹„ìŠ¤ì— ê¼­ í•„ìš”í•œ ì„œë²„ì¸¡ ê¸°ëŠ¥ì„ ì œê³µí•˜ê³  ìžˆìœ¼ë©°, **Unity í”„ë¡œì íŠ¸**ì— ë¹ ë¥´ê²Œ ì ìš©í•  ìˆ˜ ìžˆëŠ” **ì „ìš© API**ë¥¼ ì§€ì›í•©ë‹ˆë‹¤.
 
-IndieAPI´Â **[AegisNetwork](https://github.com/SyncZone/AegisNetwork)** ¿ÀÇÂ¼Ò½º¸¦ È°¿ëÇÏ¿© ¼­¹ö¿Í Å¬¶óÀÌ¾ðÆ®ÀÇ ³×Æ®¿öÅ© ±â´ÉÀ» ±¸ÇöÇÏ°í ÀÖ½À´Ï´Ù.
+IndieAPIëŠ” **[AegisNetwork](https://github.com/SyncZone/AegisNetwork)** ì˜¤í”ˆì†ŒìŠ¤ë¥¼ í™œìš©í•˜ì—¬ ì„œë²„ì™€ í´ë¼ì´ì–¸íŠ¸ì˜ ë„¤íŠ¸ì›Œí¬ ê¸°ëŠ¥ì„ êµ¬í˜„í•˜ê³  ìžˆìŠµë‹ˆë‹¤.
 
 
 
 #### <i class="icon-folder-open"></i> Features
 > **Authentication**
-> Guest / Member °¡ÀÔ ¹× ·Î±×ÀÎ
+> - Guest / Member ê°€ìž… ë° ë¡œê·¸ì¸
 
 > **Profile**
-> - À¯ÀúÀÇ ±âº» °ÔÀÓµ¥ÀÌÅÍ(Nickname, Level, ...) °ü¸®
-> - ·Î±×ÀÎ Ä«¿îÅÍ
+> - ìœ ì €ì˜ ê¸°ë³¸ ê²Œìž„ë°ì´í„°(Nickname, Level, ...) ê´€ë¦¬
+> - ë¡œê·¸ì¸ ì¹´ìš´í„°
 
 > **Text Storage**
-> À¯Àú ´ÜÀ§·Î ÅØ½ºÆ® ±â¹ÝÀÇ ÀÓÀÇ µ¥ÀÌÅÍ¸¦ ÀúÀå
+> - ìœ ì € ë‹¨ìœ„ë¡œ í…ìŠ¤íŠ¸ ê¸°ë°˜ì˜ ìž„ì˜ ë°ì´í„°ë¥¼ ì €ìž¥
 
 > **Cloud Sheet**
-> °øÁö, µµ°¨ µî Excel·Î ÀÛ¼ºÇÑ µ¥ÀÌÅÍ¸¦ API ÇÑ¹ø È£Ãâ·Î ÀÐ¾î¿À´Â ±â´É
+> - ê³µì§€, ë„ê° ë“± Excelë¡œ ìž‘ì„±í•œ ë°ì´í„°ë¥¼ API í•œë²ˆ í˜¸ì¶œë¡œ ì½ì–´ì˜¤ëŠ” ê¸°ëŠ¥
 
 > **Cast Channel**
-> Å¬¶óÀÌ¾ðÆ®°£ ½Ç½Ã°£ ÆÐÅ¶Åë½Å ±â´É
+> - í´ë¼ì´ì–¸íŠ¸ê°„ ì‹¤ì‹œê°„ íŒ¨í‚·í†µì‹  ê¸°ëŠ¥
 
 
 
