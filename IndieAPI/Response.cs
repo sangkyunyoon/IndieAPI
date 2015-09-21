@@ -130,27 +130,6 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_ChannelStatus : Response
-    {
-        public readonly int ChannelNo;
-        public readonly string ChannelName;
-        public readonly int UserCount;
-
-
-
-        internal Response_IMC_ChannelStatus(SecurePacket packet)
-            : base(packet)
-        {
-            if (ResultCodeNo != ResultCode.Ok)
-                return;
-
-            ChannelNo = packet.GetInt32();
-            ChannelName = packet.GetStringFromUtf16();
-            UserCount = packet.GetInt32();
-        }
-    }
-
-
     public class Response_IMC_Enter : Response
     {
         public readonly int ChannelNo;

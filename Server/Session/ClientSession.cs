@@ -124,8 +124,7 @@ namespace Server.Session
                             case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(packet); break;
                             case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(packet); break;
                             case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(packet); break;
-                            case Protocol.CS_IMC_SendToAny_Req: OnCS_IMC_SendToAny_Req(packet); break;
-                            case Protocol.CS_IMC_SendToOne_Req: OnCS_IMC_SendToOne_Req(packet); break;
+                            case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(packet); break;
                         }
                     }
                     catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)

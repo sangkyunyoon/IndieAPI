@@ -46,21 +46,18 @@ namespace Server
         public const UInt16 CS_IMC_ChannelList_Res = 0x2302;
         public const UInt16 CS_IMC_Create_Req = 0x2303;
         public const UInt16 CS_IMC_Create_Res = 0x2304;
-        public const UInt16 CS_IMC_ChannelStatus_Ntf = 0x2305;
-        public const UInt16 CS_IMC_Enter_Req = 0x2306;
-        public const UInt16 CS_IMC_Enter_Res = 0x2307;
-        public const UInt16 CS_IMC_EnteredUser_Ntf = 0x2308;
-        public const UInt16 CS_IMC_Leave_Req = 0x2309;
-        public const UInt16 CS_IMC_Leave_Res = 0x230A;
-        public const UInt16 CS_IMC_LeavedUser_Ntf = 0x230B;
+        public const UInt16 CS_IMC_Enter_Req = 0x2305;
+        public const UInt16 CS_IMC_Enter_Res = 0x2306;
+        public const UInt16 CS_IMC_EnteredUser_Ntf = 0x2307;
+        public const UInt16 CS_IMC_Leave_Req = 0x2308;
+        public const UInt16 CS_IMC_Leave_Res = 0x2309;
+        public const UInt16 CS_IMC_LeavedUser_Ntf = 0x230A;
 
-        public const UInt16 CS_IMC_UserList_Req = 0x230C;
-        public const UInt16 CS_IMC_UserList_Res = 0x230D;
-        public const UInt16 CS_IMC_SendToAny_Req = 0x230E;
-        public const UInt16 CS_IMC_SendToAny_Res = 0x230F;
-        public const UInt16 CS_IMC_SendToOne_Req = 0x2310;
-        public const UInt16 CS_IMC_SendToOne_Res = 0x2311;
-        public const UInt16 CS_IMC_Message_Ntf = 0x2312;
+        public const UInt16 CS_IMC_UserList_Req = 0x230B;
+        public const UInt16 CS_IMC_UserList_Res = 0x230C;
+        public const UInt16 CS_IMC_SendMessage_Req = 0x230D;
+        public const UInt16 CS_IMC_SendMessage_Res = 0x230E;
+        public const UInt16 CS_IMC_Message_Ntf = 0x230F;
     }
 
 
@@ -92,9 +89,8 @@ namespace Server
         public const Int32 IMC_InvalidChannelNo = 1301;
         public const Int32 IMC_ExistsChannelName = 1302;
         public const Int32 IMC_ExistsUser = 1303;
-        public const Int32 IMC_InvalidNickname = 1304;
-        public const Int32 IMC_NotExistsUser = 1305;
-        public const Int32 IMC_InChannel = 1306;
-        public const Int32 IMC_NotInChannel = 1307;
+        public const Int32 IMC_NotExistsUser = 1304;
+        public const Int32 IMC_InChannel = 1305;
+        public const Int32 IMC_NotInChannel = 1306;
     }
 }

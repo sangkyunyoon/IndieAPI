@@ -13,7 +13,7 @@ namespace IndieAPI
     {
         ////////////////////////////////////////////////////////////////////////////////
         //  Authentication
-        public void Auth_RegisterGuest(String udid, APICallbackHandler<Response> callback)
+        public void Auth_RegisterGuest(string udid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterGuest_Req);
             reqPacket.PutStringAsUtf16(udid);
@@ -23,7 +23,7 @@ namespace IndieAPI
         }
 
 
-        public void Auth_RegisterMember(String udid, String userId, String userPwd, APICallbackHandler<Response> callback)
+        public void Auth_RegisterMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterMember_Req);
             reqPacket.PutStringAsUtf16(udid);
@@ -35,7 +35,7 @@ namespace IndieAPI
         }
 
 
-        public void Auth_LoginGuest(String udid, APICallbackHandler<Response> callback)
+        public void Auth_LoginGuest(string udid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginGuest_Req);
             reqPacket.PutStringAsUtf16(udid);
@@ -45,7 +45,7 @@ namespace IndieAPI
         }
 
 
-        public void Auth_LoginMember(String udid, String userId, String userPwd, APICallbackHandler<Response> callback)
+        public void Auth_LoginMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginMember_Req);
             reqPacket.PutStringAsUtf16(udid);
@@ -69,7 +69,7 @@ namespace IndieAPI
         }
 
 
-        public void Profile_SetData(String nickname, Int16 level, Int16 exp, APICallbackHandler<Response> callback)
+        public void Profile_SetData(string nickname, Int16 level, Int16 exp, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Profile_SetData_Req);
             reqPacket.PutInt32(_userNo);
@@ -92,7 +92,7 @@ namespace IndieAPI
         }
 
 
-        public void Profile_SetTextData(String text, APICallbackHandler<Response> callback)
+        public void Profile_SetTextData(string text, APICallbackHandler<Response> callback)
         {
             if (text.Length > 32500)
                 throw new AegisException("The 'text' length must be less than 32500.");
@@ -109,15 +109,15 @@ namespace IndieAPI
 
         ////////////////////////////////////////////////////////////////////////////////
         //  CloudSheet
-        private Int32 _sheetRequestedNo;
-        private String _sheetFilename, _sheetName;
+        private int _sheetRequestedNo;
+        private string _sheetFilename, _sheetName;
         public Workbook Workbook { get; private set; }
 
 
 
 
 
-        public void Storage_Sheet_Refresh(String filename, APICallbackHandler<Response> callback)
+        public void Storage_Sheet_Refresh(string filename, APICallbackHandler<Response> callback)
         {
             _sheetFilename = filename;
 
@@ -143,19 +143,19 @@ namespace IndieAPI
 
         private void OnRecv_Storage_Sheet_GetSheetList(SecurePacket packet, APICallbackHandler<Response> callback)
         {
-            Int32 sheetCount = packet.GetInt32();
+            int sheetCount = packet.GetInt32();
             while (sheetCount-- > 0)
             {
-                String sheetName = packet.GetStringFromUtf16();
-                Int32 recordCount = packet.GetInt32();
-                Int32 columnCount = packet.GetInt32();
+                string sheetName = packet.GetStringFromUtf16();
+                int recordCount = packet.GetInt32();
+                int columnCount = packet.GetInt32();
 
 
                 Sheet sheet = Workbook.AddSheet(sheetName, recordCount, columnCount);
                 while (columnCount-- > 0)
                 {
                     FieldDataType type = (FieldDataType)packet.GetInt32();
-                    String fieldname = packet.GetStringFromUtf16();
+                    string fieldname = packet.GetStringFromUtf16();
 
                     sheet.AddField(type, fieldname);
                 }
@@ -199,17 +199,17 @@ namespace IndieAPI
             try
             {
                 Boolean hasMore = (packet.GetByte() == 1);
-                Int32 rowCount = packet.GetInt32();
+                int rowCount = packet.GetInt32();
                 UInt32 rowNo = 0;
                 Sheet table = Workbook.GetSheet(_sheetName);
 
 
                 while (rowCount-- > 0)
                 {
-                    String[] values = new String[table.Fields.Count()];
+                    string[] values = new string[table.Fields.Count()];
 
                     rowNo = packet.GetUInt32();
-                    for (Int32 i = 0; i < table.Fields.Count(); ++i)
+                    for (int i = 0; i < table.Fields.Count(); ++i)
                         values[i] = packet.GetStringFromUtf16();
 
                     table.AddRowData(rowNo, values);
@@ -278,9 +278,9 @@ namespace IndieAPI
 
         ////////////////////////////////////////////////////////////////////////////////
         //  Instant Messaging Channel
-        public NotifyPacketHandler<Response_IMC_EnteredUser> IMC_EnteredUser;
-        public NotifyPacketHandler<Response_IMC_LeavedUser> IMC_LeavedUser;
-        public NotifyPacketHandler<Response_IMC_Message> IMC_Message;
+        public NotifyPacketHandler<Response_IMC_EnteredUser> IMC_EnteredUser { get; set; }
+        public NotifyPacketHandler<Response_IMC_LeavedUser> IMC_LeavedUser { get; set; }
+        public NotifyPacketHandler<Response_IMC_Message> IMC_Message { get; set; }
 
 
 
@@ -296,7 +296,7 @@ namespace IndieAPI
         }
 
 
-        public void IMC_Create(String channelName, APICallbackHandler<Response_IMC_Create> callback)
+        public void IMC_Create(string channelName, APICallbackHandler<Response_IMC_Create> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_Create_Req);
             reqPacket.PutInt32(_userNo);
@@ -307,7 +307,7 @@ namespace IndieAPI
         }
 
 
-        public void IMC_Enter(Int32 channelNo, APICallbackHandler<Response_IMC_Enter> callback)
+        public void IMC_Enter(int channelNo, APICallbackHandler<Response_IMC_Enter> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_Enter_Req);
             reqPacket.PutInt32(_userNo);
@@ -338,22 +338,11 @@ namespace IndieAPI
         }
 
 
-        public void IMC_SendToAny(StreamBuffer data, APICallbackHandler<Response> callback)
+        public void IMC_SendMessage(int targetUserNo, StreamBuffer data, APICallbackHandler<Response> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_SendToAny_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_SendMessage_Req);
             reqPacket.PutInt32(_userNo);
-            reqPacket.Write(data.Buffer);
-
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
-        }
-
-
-        public void IMC_SendToOne(String targetNickname, StreamBuffer data, APICallbackHandler<Response> callback)
-        {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_SendToOne_Req);
-            reqPacket.PutInt32(_userNo);
-            reqPacket.PutStringAsUtf16(targetNickname);
+            reqPacket.PutInt32(targetUserNo);
             reqPacket.Write(data.Buffer);
 
             SendPacket(reqPacket,

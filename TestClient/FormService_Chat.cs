@@ -130,7 +130,7 @@ namespace TestClient
 
             if (_lvUser.SelectedItems.Count == 0)
             {
-                FormMain.API.IMC_SendToAny(message, (response) =>
+                FormMain.API.IMC_SendMessage(0, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
                         FormMain.SetMessage(Color.Red, response.ResultString);
@@ -140,8 +140,8 @@ namespace TestClient
             }
             else
             {
-                String targetNickname = _lvUser.SelectedItems[0].SubItems[1].Text;
-                FormMain.API.IMC_SendToOne(targetNickname, message, (response) =>
+                Int32 targetUserNo = Int32.Parse(_lvUser.SelectedItems[0].Text);
+                FormMain.API.IMC_SendMessage(targetUserNo, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
                         FormMain.SetMessage(Color.Red, response.ResultString);
