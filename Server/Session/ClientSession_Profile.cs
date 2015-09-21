@@ -12,9 +12,9 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_Profile_GetData_Req(SecurityPacket reqPacket)
+        private void OnCS_Profile_GetData_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Profile_GetData_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Profile_GetData_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -30,9 +30,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Profile_SetData_Req(SecurityPacket reqPacket)
+        private void OnCS_Profile_SetData_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Profile_SetData_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Profile_SetData_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -47,9 +47,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Profile_Text_GetData_Req(SecurityPacket reqPacket)
+        private void OnCS_Profile_Text_GetData_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Profile_Text_GetData_Res, 65535);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Profile_Text_GetData_Res, 65535);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -59,9 +59,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Profile_Text_SetData_Req(SecurityPacket reqPacket)
+        private void OnCS_Profile_Text_SetData_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Profile_Text_SetData_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Profile_Text_SetData_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 

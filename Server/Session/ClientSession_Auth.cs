@@ -11,10 +11,10 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_Auth_RegisterGuest_Req(SecurityPacket reqPacket)
+        private void OnCS_Auth_RegisterGuest_Req(SecurePacket reqPacket)
         {
             String udid = reqPacket.GetStringFromUtf16();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_RegisterGuest_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Auth_RegisterGuest_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -26,12 +26,12 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Auth_RegisterMember_Req(SecurityPacket reqPacket)
+        private void OnCS_Auth_RegisterMember_Req(SecurePacket reqPacket)
         {
             String udid = reqPacket.GetStringFromUtf16();
             String userId = reqPacket.GetStringFromUtf16();
             String userPwd = reqPacket.GetStringFromUtf16();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_RegisterMember_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Auth_RegisterMember_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -43,10 +43,10 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Auth_LoginGuest_Req(SecurityPacket reqPacket)
+        private void OnCS_Auth_LoginGuest_Req(SecurePacket reqPacket)
         {
             String udid = reqPacket.GetStringFromUtf16();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_LoginGuest_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Auth_LoginGuest_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -69,12 +69,12 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Auth_LoginMember_Req(SecurityPacket reqPacket)
+        private void OnCS_Auth_LoginMember_Req(SecurePacket reqPacket)
         {
             String udid = reqPacket.GetStringFromUtf16();
             String userId = reqPacket.GetStringFromUtf16();
             String userPwd = reqPacket.GetStringFromUtf16();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_Auth_LoginMember_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_Auth_LoginMember_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 

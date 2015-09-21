@@ -21,7 +21,7 @@ namespace TestClient
         public static Int32 View_Count = 4;
 
 
-        public static IndieAPI.Requester API { get; } = new IndieAPI.Requester();
+        public static IndieAPI.Request API { get; } = new IndieAPI.Request();
         public static FormMain Instance { get; private set; }
         private Form _curForm;
         private Form[] _forms;

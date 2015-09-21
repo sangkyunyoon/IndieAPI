@@ -75,7 +75,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_Auth_RegisterGuest(ResponseData response)
+        private void OnResponse_Auth_RegisterGuest(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Blue, "Guest registration completed.");
@@ -100,7 +100,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_Auth_LoginGuest(ResponseData response)
+        private void OnResponse_Auth_LoginGuest(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.ChangeView(FormMain.View_Service_Profile);
@@ -141,7 +141,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_Auth_RegisterMember(ResponseData response)
+        private void OnResponse_Auth_RegisterMember(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Blue, "Member registration completed.");
@@ -182,7 +182,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_Auth_LoginMember(ResponseData response)
+        private void OnResponse_Auth_LoginMember(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.ChangeView(FormMain.View_Service_Profile);

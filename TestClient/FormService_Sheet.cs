@@ -39,7 +39,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_RefreshSheet(ResponseData response)
+        private void OnResponse_RefreshSheet(Response response)
         {
             _lvSheets.Items.Clear();
             _lvData.Columns.Clear();

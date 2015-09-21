@@ -15,39 +15,30 @@ namespace Server.Services
 {
     public partial class CastChannel
     {
-        public static readonly CastChannel Root = new CastChannel(null, "root", true);
-
-
         private readonly RWLock _lock = new RWLock();
         public ReaderLock ReaderLock { get { return _lock.ReaderLock; } }
         public WriterLock WriterLock { get { return _lock.WriterLock; } }
 
 
-        public readonly CastChannel Parent;
-        public readonly List<CastChannel> ChildChannels = new List<CastChannel>();
-        public readonly List<User> Users = new List<User>();
+        public static List<CastChannel> Channels { get; } = new List<CastChannel>();
+        public List<User> Users { get; } = new List<User>();
 
-        public readonly Int32 ChannelNo;
-        public readonly String Name;
-        public readonly Boolean IsStatic;
-
-        private Boolean _isRemoved = false;
+        public Int32 ChannelNo { get; }
+        public String Name { get; }
 
 
 
 
 
-        private CastChannel(CastChannel parent, String name, Boolean isStatic)
+        private CastChannel(String name)
         {
-            Parent = parent;
             Name = name;
-            IsStatic = isStatic;
 
 
-            using (ReaderLock)
+            lock (Channels)
             {
                 ChannelNo = 1;
-                foreach (CastChannel channel in ChildChannels.OrderBy(v => v.ChannelNo).ToList())
+                foreach (CastChannel channel in Channels.OrderBy(v => v.ChannelNo).ToList())
                 {
                     if (channel.ChannelNo != ChannelNo)
                         break;
@@ -58,48 +49,43 @@ namespace Server.Services
         }
 
 
-        public CastChannel GetChannel(Int32 channelNo)
+        public static CastChannel GetChannel(Int32 channelNo)
         {
-            using (ReaderLock)
+            lock (Channels)
             {
-                CastChannel channel = ChildChannels.Find(v => v.ChannelNo == channelNo);
+                CastChannel channel = Channels.Find(v => v.ChannelNo == channelNo);
                 if (channel == null)
-                    throw new AegisException(ResultCode.CastChannel_InvalidChannelNo);
+                    throw new AegisException(ResultCode.IMC_InvalidChannelNo);
 
                 return channel;
             }
         }
 
 
-        public CastChannel NewChannel(String name, Boolean isStatic)
+        public static CastChannel NewChannel(String name)
         {
-            using (WriterLock)
+            lock (Channels)
             {
-                if (ChildChannels.Where(v => v.Name == name).Count() > 0)
-                    throw new AegisException(ResultCode.CastChannel_ExistsName);
+                if (Channels.Where(v => v.Name == name).Count() > 0)
+                    throw new AegisException(ResultCode.IMC_ExistsChannelName);
 
-                CastChannel channel = new CastChannel(this, name, isStatic);
-                ChildChannels.Add(channel);
+                CastChannel channel = new CastChannel(name);
+                Channels.Add(channel);
 
                 return channel;
             }
         }
 
 
-        private void RemoveChannel()
+        private static void RemoveChannel(CastChannel channel)
         {
-            using (WriterLock)
+            lock (Channels)
             {
-                if (IsStatic == true || Parent == null ||
-                    Users.Count() > 0 || ChildChannels.Count() > 0)
+                if (channel.Users.Count() > 0)
                     return;
 
-
-                _isRemoved = true;
-                Parent.ChildChannels.Remove(this);
+                Channels.Remove(channel);
             }
-
-            Parent.RemoveChannel();
         }
 
 
@@ -107,11 +93,14 @@ namespace Server.Services
         {
             using (WriterLock)
             {
-                if (_isRemoved == true)
-                    throw new AegisException(ResultCode.CastChannel_InvalidChannelNo);
+                lock (Channels)
+                {
+                    if (Channels.Contains(this) == false)
+                        throw new AegisException(ResultCode.IMC_InvalidChannelNo);
+                }
 
                 if (Users.Contains(user) == true)
-                    throw new AegisException(ResultCode.CastChannel_ExistsUser);
+                    throw new AegisException(ResultCode.IMC_ExistsUser);
 
                 Users.Add(user);
             }
@@ -123,7 +112,7 @@ namespace Server.Services
             using (WriterLock)
             {
                 Users.Remove(user);
-                RemoveChannel();
+                RemoveChannel(this);
             }
         }
 
@@ -134,7 +123,7 @@ namespace Server.Services
             {
                 User user = Users.Find(v => v.UserNo == userNo);
                 if (user == null)
-                    throw new AegisException(ResultCode.CastChannel_NotExistsUser);
+                    throw new AegisException(ResultCode.IMC_NotExistsUser);
 
                 return user;
             }

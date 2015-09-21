@@ -14,22 +14,23 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_IMC_ChannelList_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_ChannelList_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_ChannelList_Res, 4096);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_ChannelList_Res, 4096);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
-            using (CastChannel.Root.ReaderLock)
+            lock (CastChannel.Channels)
             {
                 Int32 count = 0, idxCount;
 
 
                 resPacket.PutInt32(ResultCode.Ok);
                 idxCount = resPacket.PutInt32(count);
-                foreach (var channel in CastChannel.Root.ChildChannels)
+                foreach (var channel in CastChannel.Channels)
                 {
-                    resPacket.WriteWithParams(channel.ChannelNo, channel.Name);
+                    resPacket.PutInt32(channel.ChannelNo);
+                    resPacket.PutStringAsUtf16(channel.Name);
                     ++count;
                 }
 
@@ -40,20 +41,20 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Create_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_Create_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_Create_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Create_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
             try
             {
                 if (_user.CastChannel != null)
-                    throw new AegisException(ResultCode.CastChannel_InChannel);
+                    throw new AegisException(ResultCode.IMC_InChannel);
 
 
                 String channelName = reqPacket.GetStringFromUtf16();
-                _user.CastChannel = CastChannel.Root.NewChannel(channelName, false);
+                _user.CastChannel = CastChannel.NewChannel(channelName);
                 _user.CastChannel.Enter(_user);
 
 
@@ -63,6 +64,7 @@ namespace Server.Session
             }
             catch (AegisException e)
             {
+                resPacket.Clear();
                 resPacket.PutInt32(e.ResultCodeNo);
             }
 
@@ -71,25 +73,25 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Enter_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_Enter_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_Enter_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Enter_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
             try
             {
                 if (_user.CastChannel != null)
-                    throw new AegisException(ResultCode.CastChannel_InChannel);
+                    throw new AegisException(ResultCode.IMC_InChannel);
 
 
                 Int32 channelNo = reqPacket.GetInt32();
-                _user.CastChannel = CastChannel.Root.GetChannel(channelNo);
+                _user.CastChannel = CastChannel.GetChannel(channelNo);
 
 
                 _user.CastChannel.Enter(_user);
                 {
-                    SecurityPacket ntfPacket = new SecurityPacket(Protocol.CS_IMC_EnteredUser_Ntf);
+                    SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_EnteredUser_Ntf);
                     ntfPacket.PutInt32(ResultCode.Ok);
                     ntfPacket.PutInt32(_user.UserNo);
                     ntfPacket.PutStringAsUtf16(_user.Profile.Nickname);
@@ -112,21 +114,21 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Leave_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_Leave_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_Leave_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Leave_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
             try
             {
                 if (_user.CastChannel == null)
-                    throw new AegisException(ResultCode.CastChannel_NotInChannel);
+                    throw new AegisException(ResultCode.IMC_NotInChannel);
 
 
                 _user.CastChannel.Leave(_user);
                 {
-                    SecurityPacket ntfPacket = new SecurityPacket(Protocol.CS_IMC_LeavedUser_Ntf);
+                    SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_LeavedUser_Ntf);
                     ntfPacket.PutInt32(ResultCode.Ok);
                     ntfPacket.PutInt32(_user.UserNo);
 
@@ -147,9 +149,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_UserList_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_UserList_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_UserList_Res, 4096);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_UserList_Res, 4096);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -184,22 +186,22 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_SendToAny_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_SendToAny_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_SendToAny_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_SendToAny_Res);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
             if (_user.CastChannel == null)
             {
-                resPacket.PutInt32(ResultCode.CastChannel_NotInChannel);
+                resPacket.PutInt32(ResultCode.IMC_NotInChannel);
                 SendPacket(resPacket);
                 return;
             }
 
 
             {
-                SecurityPacket ntfPacket = new SecurityPacket(Protocol.CS_IMC_Message_Ntf, 4096);
+                SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_Message_Ntf, 4096);
                 ntfPacket.PutInt32(ResultCode.Ok);
                 ntfPacket.PutInt32(_user.UserNo);
                 ntfPacket.Write(reqPacket.Buffer, reqPacket.ReadBytes, reqPacket.ReadableSize);
@@ -213,39 +215,46 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_SendToOne_Req(SecurityPacket reqPacket)
+        private void OnCS_IMC_SendToOne_Req(SecurePacket reqPacket)
         {
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_IMC_SendToOne_Res);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_SendToOne_Res);
             String targetNickname = reqPacket.GetStringFromUtf16().ToLower();
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
             if (_user.CastChannel == null)
             {
-                resPacket.PutInt32(ResultCode.CastChannel_NotInChannel);
+                resPacket.PutInt32(ResultCode.IMC_NotInChannel);
                 SendPacket(resPacket);
                 return;
             }
 
 
+            User targetUser;
+            using (_user.CastChannel.ReaderLock)
             {
-                User targetUser;
-                SecurityPacket ntfPacket = new SecurityPacket(Protocol.CS_IMC_Message_Ntf, 4096);
+                targetUser = _user.CastChannel
+                                    .Users
+                                    .Find(v => v.Profile.Nickname.ToLower() == targetNickname);
+            }
+
+            if (targetUser == null)
+            {
+                resPacket.PutInt32(ResultCode.IMC_InvalidNickname);
+                SendPacket(resPacket);
+            }
+            else
+            {
+                SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_Message_Ntf, (UInt16)(reqPacket.ReadableSize + 16));
                 ntfPacket.PutInt32(ResultCode.Ok);
                 ntfPacket.PutInt32(_user.UserNo);
                 ntfPacket.Write(reqPacket.Buffer, reqPacket.ReadBytes, reqPacket.ReadableSize);
+                targetUser.SendPacket(ntfPacket);
 
 
-                using (_user.CastChannel.ReaderLock)
-                {
-                    targetUser = _user.CastChannel.Users.Find(v => v.Profile.Nickname.ToLower() == targetNickname);
-                }
-                targetUser?.SendPacket(ntfPacket);
+                resPacket.PutInt32(ResultCode.Ok);
+                SendPacket(resPacket);
             }
-
-
-            resPacket.PutInt32(ResultCode.Ok);
-            SendPacket(resPacket);
         }
     }
 }

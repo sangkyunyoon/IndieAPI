@@ -8,14 +8,14 @@ using Aegis.Client;
 
 namespace IndieAPI
 {
-    public class ResponseData
+    public class Response
     {
         public readonly int ResultCodeNo;
         public readonly string ResultString;
         public readonly StreamBuffer Packet;
 
 
-        internal ResponseData(SecurityPacket packet)
+        internal Response(SecurePacket packet)
         {
             packet.SkipHeader();
             Packet = packet;
@@ -25,14 +25,14 @@ namespace IndieAPI
         }
 
 
-        internal ResponseData(int resultCodeNo)
+        internal Response(int resultCodeNo)
         {
             ResultCodeNo = resultCodeNo;
         }
     }
 
 
-    public class Response_Profile : ResponseData
+    public class Response_Profile : Response
     {
         public readonly string Nickname;
         public readonly Int16 Level;
@@ -45,7 +45,7 @@ namespace IndieAPI
 
 
 
-        internal Response_Profile(SecurityPacket packet)
+        internal Response_Profile(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -63,13 +63,13 @@ namespace IndieAPI
     }
 
 
-    public class Response_Profile_Text : ResponseData
+    public class Response_Profile_Text : Response
     {
         public readonly string TextData;
 
 
 
-        internal Response_Profile_Text(SecurityPacket packet)
+        internal Response_Profile_Text(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -80,7 +80,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_ChannelList : ResponseData
+    public class Response_IMC_ChannelList : Response
     {
         public struct ChannelInfo
         {
@@ -91,7 +91,7 @@ namespace IndieAPI
 
 
 
-        internal Response_IMC_ChannelList(SecurityPacket packet)
+        internal Response_IMC_ChannelList(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -111,14 +111,14 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Create : ResponseData
+    public class Response_IMC_Create : Response
     {
         public readonly int ChannelNo;
         public readonly string ChannelName;
 
 
 
-        internal Response_IMC_Create(SecurityPacket packet)
+        internal Response_IMC_Create(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -130,7 +130,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_ChannelStatus : ResponseData
+    public class Response_IMC_ChannelStatus : Response
     {
         public readonly int ChannelNo;
         public readonly string ChannelName;
@@ -138,7 +138,7 @@ namespace IndieAPI
 
 
 
-        internal Response_IMC_ChannelStatus(SecurityPacket packet)
+        internal Response_IMC_ChannelStatus(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -151,14 +151,14 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Enter : ResponseData
+    public class Response_IMC_Enter : Response
     {
         public readonly int ChannelNo;
         public readonly string ChannelName;
 
 
 
-        internal Response_IMC_Enter(SecurityPacket packet)
+        internal Response_IMC_Enter(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -170,14 +170,14 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_EnteredUser : ResponseData
+    public class Response_IMC_EnteredUser : Response
     {
         public readonly int UserNo;
         public readonly string Nickname;
 
 
 
-        internal Response_IMC_EnteredUser(SecurityPacket packet)
+        internal Response_IMC_EnteredUser(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -189,13 +189,13 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_LeavedUser : ResponseData
+    public class Response_IMC_LeavedUser : Response
     {
         public readonly int UserNo;
 
 
 
-        internal Response_IMC_LeavedUser(SecurityPacket packet)
+        internal Response_IMC_LeavedUser(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -206,7 +206,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_UserList : ResponseData
+    public class Response_IMC_UserList : Response
     {
         public struct UserData
         {
@@ -217,7 +217,7 @@ namespace IndieAPI
 
 
 
-        internal Response_IMC_UserList(SecurityPacket packet)
+        internal Response_IMC_UserList(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)
@@ -237,14 +237,14 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Message : ResponseData
+    public class Response_IMC_Message : Response
     {
         public readonly int SenderUserNo;
         public readonly StreamBuffer Message;
 
 
 
-        internal Response_IMC_Message(SecurityPacket packet)
+        internal Response_IMC_Message(SecurePacket packet)
             : base(packet)
         {
             if (ResultCodeNo != ResultCode.Ok)

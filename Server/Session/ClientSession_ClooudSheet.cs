@@ -14,10 +14,10 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_CloudSheet_GetSheetList_Req(SecurityPacket reqPacket)
+        private void OnCS_CloudSheet_GetSheetList_Req(SecurePacket reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetSheetList_Res, 65535);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_CloudSheet_GetSheetList_Res, 65535);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 
@@ -57,12 +57,12 @@ namespace Server.Session
         }
 
 
-        private void OnCS_CloudSheet_GetRecords_Req(SecurityPacket reqPacket)
+        private void OnCS_CloudSheet_GetRecords_Req(SecurePacket reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
             String sheetName = reqPacket.GetStringFromUtf16();
             UInt32 startRowNo = reqPacket.GetUInt32();
-            SecurityPacket resPacket = new SecurityPacket(Protocol.CS_CloudSheet_GetRecords_Res, 65535);
+            SecurePacket resPacket = new SecurePacket(Protocol.CS_CloudSheet_GetRecords_Res, 65535);
             resPacket.SeqNo = reqPacket.SeqNo;
 
 

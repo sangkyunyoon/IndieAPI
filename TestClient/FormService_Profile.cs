@@ -58,7 +58,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_SetProfileData(ResponseData response)
+        private void OnResponse_SetProfileData(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Black, "Ready");
@@ -88,7 +88,7 @@ namespace TestClient
         }
 
 
-        private void OnResponse_SetTextData(ResponseData response)
+        private void OnResponse_SetTextData(Response response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
                 FormMain.SetMessage(Color.Black, "Ready");

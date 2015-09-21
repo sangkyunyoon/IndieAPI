@@ -69,11 +69,12 @@ namespace Server
         public const Int32 Ok = 0;
         public const Int32 UnknownError = 1;
 
-        public const Int32 AlreadyExistsUDID = 1001;
-        public const Int32 AlreadyExistsUserId = 1002;
-
-        public const Int32 InvalidUDID = 1003;
-        public const Int32 InvalidUserId = 1004;
+        public const Int32 InvalidPacketSeqNo = 1001;
+        public const Int32 InvalidUserNo = 1002;
+        public const Int32 AlreadyExistsUDID = 1011;
+        public const Int32 AlreadyExistsUserId = 1012;
+        public const Int32 InvalidUDID = 1013;
+        public const Int32 InvalidUserId = 1014;
 
 
         public const Int32 InvalidFileType = 1101;
@@ -88,11 +89,12 @@ namespace Server
         public const Int32 CloudSheet_TooManyRecords = 1206;
         public const Int32 CloudSheet_TooBigFileSize = 1207;
 
-        public const Int32 CastChannel_InvalidChannelNo = 1301;
-        public const Int32 CastChannel_ExistsName = 1302;
-        public const Int32 CastChannel_ExistsUser = 1303;
-        public const Int32 CastChannel_NotExistsUser = 1304;
-        public const Int32 CastChannel_InChannel = 1305;
-        public const Int32 CastChannel_NotInChannel = 1306;
+        public const Int32 IMC_InvalidChannelNo = 1301;
+        public const Int32 IMC_ExistsChannelName = 1302;
+        public const Int32 IMC_ExistsUser = 1303;
+        public const Int32 IMC_InvalidNickname = 1304;
+        public const Int32 IMC_NotExistsUser = 1305;
+        public const Int32 IMC_InChannel = 1306;
+        public const Int32 IMC_NotInChannel = 1307;
     }
 }

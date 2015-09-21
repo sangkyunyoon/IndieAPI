@@ -8,10 +8,10 @@ using Aegis.Client;
 
 namespace IndieAPI
 {
-    public partial class Requester
+    public partial class Request
     {
         private AegisClient _aegisClient = new AegisClient();
-        private Queue<SecurityPacket> _queueReceivedPacket = new Queue<SecurityPacket>();
+        private Queue<SecurePacket> _queueReceivedPacket = new Queue<SecurePacket>();
         private CallbackQueue _callbackQueue = new CallbackQueue();
         private NetworkStatusChanged _handlerNetworkStatus;
 
@@ -111,20 +111,20 @@ namespace IndieAPI
 
         private void OnReceive(StreamBuffer buffer)
         {
-            SecurityPacket packet = new SecurityPacket(buffer);
+            SecurePacket packet = new SecurePacket(buffer);
             packet.Decrypt(_aesIV, _aesKey);
 
 
-            if (packet.PID == Protocol.CS_Hello_Ntf)
+            if (packet.PacketId == Protocol.CS_Hello_Ntf)
                 _aegisClient.EnableSend = true;
 
-            if (packet.PID == Protocol.CS_ForceClosing_Ntf)
+            if (packet.PacketId == Protocol.CS_ForceClosing_Ntf)
                 OnNetworkStatusChanged(NetworkStatus.SessionForceClosed);
 
             else
             {
-                if (packet.PID == Protocol.CS_Auth_LoginGuest_Res ||
-                    packet.PID == Protocol.CS_Auth_LoginMember_Res)
+                if (packet.PacketId == Protocol.CS_Auth_LoginGuest_Res ||
+                    packet.PacketId == Protocol.CS_Auth_LoginMember_Res)
                 {
                     packet.SkipHeader();
 
@@ -138,11 +138,11 @@ namespace IndieAPI
         }
 
 
-        private void OnNoMatchesPacket(SecurityPacket packet)
+        private void OnNoMatchesPacket(SecurePacket packet)
         {
             packet.SkipHeader();
 
-            switch (packet.PID)
+            switch (packet.PacketId)
             {
                 case Protocol.CS_IMC_EnteredUser_Ntf:
                     if (IMC_EnteredUser != null)
@@ -164,7 +164,7 @@ namespace IndieAPI
         }
 
 
-        private void SendPacket(SecurityPacket packet, Action<SecurityPacket> responseAction)
+        private void SendPacket(SecurePacket packet, Action<SecurePacket> responseAction)
         {
             lock (_aegisClient)
             {

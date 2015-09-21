@@ -8,8 +8,8 @@ using Aegis.Client;
 
 namespace IndieAPI
 {
-    public delegate void APICallbackHandler<T>(T response) where T : ResponseData;
-    public delegate void NoMatchesPacketHandler(SecurityPacket packet);
+    public delegate void APICallbackHandler<T>(T response) where T : Response;
+    public delegate void NoMatchesPacketHandler(SecurePacket packet);
 
 
 
@@ -17,8 +17,8 @@ namespace IndieAPI
 
     internal class CallbackQueue
     {
-        private Dictionary<Int32, Action<SecurityPacket>> _callbacks = new Dictionary<Int32, Action<SecurityPacket>>();
-        private Queue<SecurityPacket> _receivedPackets = new Queue<SecurityPacket>();
+        private Dictionary<Int32, Action<SecurePacket>> _callbacks = new Dictionary<Int32, Action<SecurePacket>>();
+        private Queue<SecurePacket> _receivedPackets = new Queue<SecurePacket>();
         public NoMatchesPacketHandler NoMatchesPacket;
 
 
@@ -40,7 +40,7 @@ namespace IndieAPI
         }
 
 
-        public void AddCallback(Int32 key, Action<SecurityPacket> callback)
+        public void AddCallback(Int32 key, Action<SecurePacket> callback)
         {
             lock (this)
             {
@@ -52,7 +52,7 @@ namespace IndieAPI
         }
 
 
-        public void AddPacket(SecurityPacket packet)
+        public void AddPacket(SecurePacket packet)
         {
             lock (this)
             {
@@ -67,9 +67,9 @@ namespace IndieAPI
             {
                 while (_receivedPackets.Count() > 0)
                 {
-                    SecurityPacket packet = _receivedPackets.Dequeue();
+                    SecurePacket packet = _receivedPackets.Dequeue();
                     Int32 key = packet.SeqNo;
-                    Action<SecurityPacket> callback;
+                    Action<SecurePacket> callback;
 
 
                     if (_callbacks.TryGetValue(key, out callback) == true)
