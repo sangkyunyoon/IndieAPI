@@ -27,7 +27,7 @@ namespace TestClient
 
 
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetData'...");
-            FormMain.API.Profile_GetData(OnResponse_Profile);
+            IDAPI.Request.Profile_GetData(OnResponse_Profile);
         }
 
 
@@ -50,7 +50,7 @@ namespace TestClient
         private void OnClick_UpdateProfile(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetData'...");
-            FormMain.API.Profile_SetData(
+            IDAPI.Request.Profile_SetData(
                 _tbNickname.Text,
                 Int16.Parse(_tbLevel.Text),
                 Int16.Parse(_tbExp.Text),
@@ -70,7 +70,7 @@ namespace TestClient
         private void OnClick_GetTextData(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetTextData'...");
-            FormMain.API.Profile_GetTextData(OnResponse_GetTextData);
+            IDAPI.Request.Profile_GetTextData(OnResponse_GetTextData);
         }
 
 
@@ -84,7 +84,7 @@ namespace TestClient
         private void OnClick_SetTextData(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetTextData'...");
-            FormMain.API.Profile_SetTextData(_tbTextData.Text, OnResponse_SetTextData);
+            IDAPI.Request.Profile_SetTextData(_tbTextData.Text, OnResponse_SetTextData);
         }
 
 

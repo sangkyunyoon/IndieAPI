@@ -35,7 +35,7 @@ namespace TestClient
 
         private void OnClick_RefreshSheet(object sender, EventArgs e)
         {
-            FormMain.API.Storage_Sheet_Refresh(_tbFilename.Text, OnResponse_RefreshSheet);
+            IDAPI.Request.Storage_Sheet_Refresh(_tbFilename.Text, OnResponse_RefreshSheet);
         }
 
 
@@ -45,7 +45,7 @@ namespace TestClient
             _lvData.Columns.Clear();
             _lvData.Items.Clear();
 
-            foreach (var sheet in FormMain.API.Workbook.Sheets)
+            foreach (var sheet in IDAPI.Request.Workbook.Sheets)
             {
                 ListViewItem lvi = new ListViewItem();
                 lvi.Text = sheet.Name;
@@ -62,7 +62,7 @@ namespace TestClient
                 return;
 
             ListViewItem lviSheet = _lvSheets.SelectedItems[0];
-            var sheet = FormMain.API.Workbook.GetSheet(lviSheet.Text);
+            var sheet = IDAPI.Request.Workbook.GetSheet(lviSheet.Text);
 
 
             _lvData.Columns.Clear();

@@ -20,16 +20,16 @@ namespace TestClient
         {
             InitializeComponent();
 
-            FormMain.API.IMC_EnteredUser += OnEnteredUser;
-            FormMain.API.IMC_LeavedUser += OnLeavedUser;
-            FormMain.API.IMC_Message += OnMessage;
+            IDAPI.Request.IMC_EnteredUser += OnEnteredUser;
+            IDAPI.Request.IMC_LeavedUser += OnLeavedUser;
+            IDAPI.Request.IMC_Message += OnMessage;
         }
 
 
         public void OnInitView()
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_ChannelList'...");
-            FormMain.API.IMC_ChannelList(OnResponse_IMC_ChannelList);
+            IDAPI.Request.IMC_ChannelList(OnResponse_IMC_ChannelList);
         }
 
 
@@ -54,7 +54,7 @@ namespace TestClient
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Create'...");
 
-            FormMain.API.IMC_Create(_tbCreateChannelName.Text, (response) =>
+            IDAPI.Request.IMC_Create(_tbCreateChannelName.Text, (response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
                     FormMain.SetMessage(Color.Red, response.ResultString);
@@ -63,7 +63,7 @@ namespace TestClient
                     _lbRoomTitle.Text = String.Format("{0} - {1}", response.ChannelNo, response.ChannelName);
 
                     FormMain.SetMessage(Color.Blue, "Requesting 'IMC_UserList'...");
-                    FormMain.API.IMC_UserList(OnResponse_IMC_UserList);
+                    IDAPI.Request.IMC_UserList(OnResponse_IMC_UserList);
                 }
             });
         }
@@ -72,7 +72,7 @@ namespace TestClient
         private void OnClick_RefreshChannel(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_ChannelList'...");
-            FormMain.API.IMC_ChannelList(OnResponse_IMC_ChannelList);
+            IDAPI.Request.IMC_ChannelList(OnResponse_IMC_ChannelList);
         }
 
 
@@ -85,7 +85,7 @@ namespace TestClient
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Enter'...");
 
             Int32 channelNo = Int32.Parse(_lvChannel.SelectedItems[0].Text);
-            FormMain.API.IMC_Enter(channelNo, (response) =>
+            IDAPI.Request.IMC_Enter(channelNo, (response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
                 {
@@ -96,7 +96,7 @@ namespace TestClient
 
 
                 FormMain.SetMessage(Color.Blue, "Requesting 'IMC_UserList'...");
-                FormMain.API.IMC_UserList(OnResponse_IMC_UserList);
+                IDAPI.Request.IMC_UserList(OnResponse_IMC_UserList);
             });
         }
 
@@ -105,7 +105,7 @@ namespace TestClient
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Leave'...");
 
-            FormMain.API.IMC_Leave((response) =>
+            IDAPI.Request.IMC_Leave((response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
                 {
@@ -128,9 +128,10 @@ namespace TestClient
             message.PutStringAsUtf16(_tbChat.Text);
 
 
+            //  Send a message to all users (Broadcasting)
             if (_lvUser.SelectedItems.Count == 0)
             {
-                FormMain.API.IMC_SendMessage(0, message, (response) =>
+                IDAPI.Request.IMC_SendMessage(0, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
                         FormMain.SetMessage(Color.Red, response.ResultString);
@@ -138,10 +139,11 @@ namespace TestClient
                         FormMain.SetMessage(Color.Black, "Ready");
                 });
             }
+            //  Send a message to one user (Unicasting)
             else
             {
                 Int32 targetUserNo = Int32.Parse(_lvUser.SelectedItems[0].Text);
-                FormMain.API.IMC_SendMessage(targetUserNo, message, (response) =>
+                IDAPI.Request.IMC_SendMessage(targetUserNo, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
                         FormMain.SetMessage(Color.Red, response.ResultString);

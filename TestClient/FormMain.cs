@@ -21,7 +21,6 @@ namespace TestClient
         public static Int32 View_Count = 4;
 
 
-        public static IndieAPI.Request API { get; } = new IndieAPI.Request();
         public static FormMain Instance { get; private set; }
         private Form _curForm;
         private Form[] _forms;
@@ -58,13 +57,6 @@ namespace TestClient
 
 
             ChangeView(View_Login);
-
-
-
-            Timer timer = new Timer();
-            timer.Tick += delegate (object sender, EventArgs e) { API.Update(); };
-            timer.Interval = 10;
-            timer.Start();
         }
 
 
@@ -111,13 +103,13 @@ namespace TestClient
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
-            API.Release();
+            IDAPI.Release();
         }
 
 
         private void OnClick_Disconnect(object sender, EventArgs e)
         {
-            API.Disconnect();
+            IDAPI.Request.Disconnect();
         }
     }
 }

@@ -35,7 +35,11 @@
   <ItemGroup>
     <Reference Include="Aegis.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AegisNetwork\Aegis.Client.dll</HintPath>
+      <HintPath>packages\Aegis.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="IndieAPI, Version=0.1.8.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\IndieAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,6 +84,7 @@
     <Compile Include="FormService_Sheet.Designer.cs">
       <DependentUpon>FormService_Sheet.cs</DependentUpon>
     </Compile>
+    <Compile Include="IDAPI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringConverter.cs" />
@@ -119,12 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IndieAPI\IndieAPI.csproj">
-      <Project>{e88bfbca-547c-477f-a880-84088cdd7117}</Project>
-      <Name>IndieAPI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

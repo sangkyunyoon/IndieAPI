@@ -29,37 +29,11 @@ namespace TestClient
             _tbMember_UDID.Text = "Device_1";
 
 
-            FormMain.API.Initialize(
-                _tbServerIp.Text, _tbServerPort.Text.ToInt32(),
-                "AEGIS For Indie!", "AEGIS Indie APIs",
-                OnNetworkStatusChanged);
+            IDAPI.Initialize(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
         }
 
 
-        private void OnNetworkStatusChanged(NetworkStatus status)
-        {
-            switch (status)
-            {
-                case NetworkStatus.Connected:
-                    FormMain.SetMessage(Color.Black, "Connected to server.");
-                    break;
-
-                case NetworkStatus.ConnectionFailed:
-                    FormMain.SetMessage(Color.Red, "Connection failed.");
-                    break;
-
-                case NetworkStatus.Disconnected:
-                    FormMain.SetMessage(Color.Black, "Disconnected from server.");
-                    break;
-
-                case NetworkStatus.SessionForceClosed:
-                    FormMain.SetMessage(Color.Red, "This session closed by force.");
-                    break;
-            }
-        }
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         //  Guest Register
         private void OnClick_GuestRegister(object sender, EventArgs e)
         {
@@ -71,7 +45,7 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_RegisterGuest(_tbGuest_UDID.Text, OnResponse_Auth_RegisterGuest);
+            IDAPI.Request.Auth_RegisterGuest(_tbGuest_UDID.Text, OnResponse_Auth_RegisterGuest);
         }
 
 
@@ -84,7 +58,7 @@ namespace TestClient
         }
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         //  Guest Login
         private void OnClick_GuestLogin(object sender, EventArgs e)
         {
@@ -96,7 +70,7 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_LoginGuest(_tbGuest_UDID.Text, OnResponse_Auth_LoginGuest);
+            IDAPI.Request.Auth_LoginGuest(_tbGuest_UDID.Text, OnResponse_Auth_LoginGuest);
         }
 
 
@@ -109,7 +83,7 @@ namespace TestClient
         }
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         //  Member Register
         private void OnClick_MemberRegister(object sender, EventArgs e)
         {
@@ -133,7 +107,7 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_RegisterMember(
+            IDAPI.Request.Auth_RegisterMember(
                 _tbMember_UDID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
@@ -150,7 +124,7 @@ namespace TestClient
         }
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
         //  Member Login
         private void OnClick_MemberLogin(object sender, EventArgs e)
         {
@@ -174,7 +148,7 @@ namespace TestClient
             }
 
 
-            FormMain.API.Auth_LoginMember(
+            IDAPI.Request.Auth_LoginMember(
                 _tbMember_UDID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
