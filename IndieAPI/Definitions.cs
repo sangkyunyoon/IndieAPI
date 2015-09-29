@@ -87,9 +87,9 @@ namespace IndieAPI
 
         public const Int32 InvalidPacketSeqNo = 1001;
         public const Int32 InvalidUserNo = 1002;
-        public const Int32 AlreadyExistsUDID = 1011;
+        public const Int32 AlreadyExistsUUID = 1011;
         public const Int32 AlreadyExistsUserId = 1012;
-        public const Int32 InvalidUDID = 1013;
+        public const Int32 InvalidUUID = 1013;
         public const Int32 InvalidUserId = 1014;
 
 
@@ -124,9 +124,9 @@ namespace IndieAPI
 
                 case InvalidPacketSeqNo: return "Invalid Packet SequenceNo.";
                 case InvalidUserNo: return "Invalid UserNo.";
-                case AlreadyExistsUDID: return "Already exists UDID.";
+                case AlreadyExistsUUID: return "Already exists UUID.";
                 case AlreadyExistsUserId: return "Already exists UserId.";
-                case InvalidUDID: return "Invalid UDID.";
+                case InvalidUUID: return "Invalid UUID.";
                 case InvalidUserId: return "Invalid UserId.";
 
                 case InvalidFileType: return "The file is not xlsx file.";

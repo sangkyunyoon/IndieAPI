@@ -83,6 +83,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
+    <Compile Include="Services\CacheBox_Method.cs" />
+    <Compile Include="Services\CacheBox_Item.cs" />
+    <Compile Include="Services\CacheBox.cs" />
     <Compile Include="Services\CastChannel.cs" />
     <Compile Include="Services\CloudSheet\CacheItem.cs" />
     <Compile Include="Services\CloudSheet\Workbooks.cs" />

@@ -33,7 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this._tbServerPort = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this._tbGuest_UDID = new System.Windows.Forms.TextBox();
+            this._tbGuest_UUID = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -43,7 +43,7 @@
             this._tbMember_UserId = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this._tbMember_UDID = new System.Windows.Forms.TextBox();
+            this._tbMember_UUID = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -90,22 +90,22 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 20);
             this.label2.TabIndex = 0;
-            this.label2.Text = "UDID";
+            this.label2.Text = "UUID";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // _tbGuest_UDID
+            // _tbGuest_UUID
             // 
-            this._tbGuest_UDID.Location = new System.Drawing.Point(184, 76);
-            this._tbGuest_UDID.Name = "_tbGuest_UDID";
-            this._tbGuest_UDID.Size = new System.Drawing.Size(100, 20);
-            this._tbGuest_UDID.TabIndex = 1;
+            this._tbGuest_UUID.Location = new System.Drawing.Point(184, 76);
+            this._tbGuest_UUID.Name = "_tbGuest_UUID";
+            this._tbGuest_UUID.Size = new System.Drawing.Size(100, 20);
+            this._tbGuest_UUID.TabIndex = 1;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this._tbGuest_UDID);
+            this.groupBox1.Controls.Add(this._tbGuest_UUID);
             this.groupBox1.Location = new System.Drawing.Point(18, 135);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(368, 227);
@@ -131,7 +131,7 @@
             this.groupBox2.Controls.Add(this._tbMember_UserId);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this._tbMember_UDID);
+            this.groupBox2.Controls.Add(this._tbMember_UUID);
             this.groupBox2.Controls.Add(this.button4);
             this.groupBox2.Location = new System.Drawing.Point(392, 135);
             this.groupBox2.Name = "groupBox2";
@@ -191,15 +191,15 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 20);
             this.label3.TabIndex = 0;
-            this.label3.Text = "UDID";
+            this.label3.Text = "UUID";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // _tbMember_UDID
+            // _tbMember_UUID
             // 
-            this._tbMember_UDID.Location = new System.Drawing.Point(187, 50);
-            this._tbMember_UDID.Name = "_tbMember_UDID";
-            this._tbMember_UDID.Size = new System.Drawing.Size(100, 20);
-            this._tbMember_UDID.TabIndex = 1;
+            this._tbMember_UUID.Location = new System.Drawing.Point(187, 50);
+            this._tbMember_UUID.Name = "_tbMember_UUID";
+            this._tbMember_UUID.Size = new System.Drawing.Size(100, 20);
+            this._tbMember_UUID.TabIndex = 1;
             // 
             // button4
             // 
@@ -239,13 +239,13 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox _tbServerPort;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox _tbGuest_UDID;
+        private System.Windows.Forms.TextBox _tbGuest_UUID;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox _tbMember_UDID;
+        private System.Windows.Forms.TextBox _tbMember_UUID;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox _tbMember_UserPwd;

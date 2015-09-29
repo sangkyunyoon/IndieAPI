@@ -13,20 +13,20 @@ namespace IndieAPI
     {
         ////////////////////////////////////////////////////////////////////////////////
         //  Authentication
-        public void Auth_RegisterGuest(string udid, APICallbackHandler<Response> callback)
+        public void Auth_RegisterGuest(string uuid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterGuest_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutStringAsUtf16(uuid);
 
             SendPacket(reqPacket,
                        (resPacket) => { callback(new Response(resPacket)); });
         }
 
 
-        public void Auth_RegisterMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public void Auth_RegisterMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterMember_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
@@ -35,20 +35,20 @@ namespace IndieAPI
         }
 
 
-        public void Auth_LoginGuest(string udid, APICallbackHandler<Response> callback)
+        public void Auth_LoginGuest(string uuid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginGuest_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutStringAsUtf16(uuid);
 
             SendPacket(reqPacket,
                        (resPacket) => { callback(new Response(resPacket)); });
         }
 
 
-        public void Auth_LoginMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public void Auth_LoginMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginMember_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 

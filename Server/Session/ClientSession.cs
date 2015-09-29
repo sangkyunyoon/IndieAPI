@@ -140,7 +140,6 @@ namespace Server.Session
         {
             SecurePacket packet = (SecurePacket)buffer;
             packet.Encrypt(Global.AES_IV, Global.AES_Key);
-
             base.SendPacket(buffer, onSent);
         }
     }
