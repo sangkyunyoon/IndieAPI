@@ -16,18 +16,18 @@ namespace Server.Services
             public String Key { get; }
             public String Value { get; set; }
 
-            public DateTime? ExpireTime { get; set; }
+            public Double ExpireTime { get; set; }
 
 
 
 
 
-            public CacheItem(String key, String value, DateTime? expire)
+            public CacheItem(String key, String value, Double expire)
             {
-                if (key.Length > 32)
-                    throw new AegisException(ResultCode.Cache_TooLongKey);
-                if (value.Length > 1024 * 1024)
-                    throw new AegisException(ResultCode.Cache_TooLongValue);
+                if (key.Length > Global.CacheBox_MaxKeyLength)
+                    throw new AegisException(ResultCode.CacheBox_TooLongKey);
+                if (value.Length > Global.CacheBox_MaxValueLength)
+                    throw new AegisException(ResultCode.CacheBox_TooLongValue);
 
 
                 Key = key;

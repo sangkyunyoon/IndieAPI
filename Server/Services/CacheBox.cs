@@ -14,6 +14,7 @@ namespace Server.Services
     public partial class CacheBox
     {
         public static CacheBox Instance { get { return Singleton<CacheBox>.Instance; } }
+        public static Int32 Count { get { return Instance._cached.Count(); } }
         private RWLock _lock = new RWLock();
         private CancellationTokenSource _cts;
         private Dictionary<String, CacheItem> _cached = new Dictionary<String, CacheItem>();
@@ -30,7 +31,7 @@ namespace Server.Services
         public void Initialize()
         {
             _cts = new CancellationTokenSource();
-            AegisTask.RunPeriodically(1000, _cts.Token, CheckExpiredItem);
+            AegisTask.RunPeriodically(1000, _cts.Token, CheckExpiredItem).Name = "CacheBox";
         }
 
 
@@ -43,14 +44,14 @@ namespace Server.Services
         private Boolean CheckExpiredItem()
         {
             List<CacheItem> expiredItems;
-            DateTime now = DateTime.Now;
+            Double now = DateTime.Now.ToOADate();
 
 
             using (_lock.ReaderLock)
             {
-                expiredItems = _cached.Values.Where(v => v.ExpireTime != null && v.ExpireTime >= now)
-                                             .Take(1000)
-                                             .ToList();
+                expiredItems = _cached.Values
+                                      .Where(v => v.ExpireTime != 0 && v.ExpireTime >= now)
+                                      .ToList();
             }
 
             using (_lock.WriterLock)

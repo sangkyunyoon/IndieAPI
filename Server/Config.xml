@@ -9,8 +9,9 @@
                   listenPortNo="10100" />
 
   <CustomData>
-    <GameDB ipaddress="127.0.0.1" port="3306" userid="root" userpwd="1111" dbname="indie_gamedb" />
+    <GameDB ipAddress="127.0.0.1" port="3306" userId="root" userPwd="1111" dbName="indie_gamedb" />
     <AES IV="AEGIS For Indie!" Key="AEGIS Indie APIs" />
+    <UserManager ccuMaxTime="300" maxAliveTime="1800" />
     <CloudSheet storagePath=".\"
                 maxTableCount="10"
                 maxColumnCount="20"
@@ -18,5 +19,6 @@
                 maxFileSize="5242880"
                 sessionTimeout="30"
                 dataCacheTime="30" />
+    <CacheBox maxKeyLength="32" maxValueLength="1048576" />
   </CustomData>
 </Aegis>

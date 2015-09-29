@@ -30,17 +30,21 @@
         {
             this._lbTaskCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this._lbActiveSession = new System.Windows.Forms.Label();
+            this._lbCCU = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this._tbLog = new System.Windows.Forms.TextBox();
             this._btnStart = new System.Windows.Forms.Button();
             this._btnStop = new System.Windows.Forms.Button();
+            this._lbCachedUserCount = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this._lbCacheBoxItemCount = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // _lbTaskCount
             // 
             this._lbTaskCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._lbTaskCount.Location = new System.Drawing.Point(339, 89);
+            this._lbTaskCount.Location = new System.Drawing.Point(340, 122);
             this._lbTaskCount.Name = "_lbTaskCount";
             this._lbTaskCount.Size = new System.Drawing.Size(106, 23);
             this._lbTaskCount.TabIndex = 84;
@@ -49,36 +53,36 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(236, 89);
+            this.label3.Location = new System.Drawing.Point(237, 122);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(99, 23);
             this.label3.TabIndex = 83;
             this.label3.Text = "Task Count";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // _lbActiveSession
+            // _lbCCU
             // 
-            this._lbActiveSession.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._lbActiveSession.Location = new System.Drawing.Point(116, 89);
-            this._lbActiveSession.Name = "_lbActiveSession";
-            this._lbActiveSession.Size = new System.Drawing.Size(106, 23);
-            this._lbActiveSession.TabIndex = 82;
-            this._lbActiveSession.Text = "0";
-            this._lbActiveSession.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._lbCCU.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this._lbCCU.Location = new System.Drawing.Point(340, 89);
+            this._lbCCU.Name = "_lbCCU";
+            this._lbCCU.Size = new System.Drawing.Size(106, 23);
+            this._lbCCU.TabIndex = 82;
+            this._lbCCU.Text = "0";
+            this._lbCCU.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(12, 89);
+            this.label6.Location = new System.Drawing.Point(236, 89);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(99, 23);
             this.label6.TabIndex = 81;
-            this.label6.Text = "Active Session";
+            this.label6.Text = "CCU";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // _tbLog
             // 
             this._tbLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._tbLog.Location = new System.Drawing.Point(14, 129);
+            this._tbLog.Location = new System.Drawing.Point(15, 227);
             this._tbLog.MaxLength = 1048576;
             this._tbLog.Multiline = true;
             this._tbLog.Name = "_tbLog";
@@ -107,14 +111,56 @@
             this._btnStop.UseVisualStyleBackColor = true;
             this._btnStop.Click += new System.EventHandler(this.OnClick_Stop);
             // 
+            // _lbCachedUserCount
+            // 
+            this._lbCachedUserCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this._lbCachedUserCount.Location = new System.Drawing.Point(116, 89);
+            this._lbCachedUserCount.Name = "_lbCachedUserCount";
+            this._lbCachedUserCount.Size = new System.Drawing.Size(106, 23);
+            this._lbCachedUserCount.TabIndex = 86;
+            this._lbCachedUserCount.Text = "0";
+            this._lbCachedUserCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(12, 89);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(99, 23);
+            this.label2.TabIndex = 85;
+            this.label2.Text = "Cached Users";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // _lbCacheBoxItemCount
+            // 
+            this._lbCacheBoxItemCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this._lbCacheBoxItemCount.Location = new System.Drawing.Point(116, 122);
+            this._lbCacheBoxItemCount.Name = "_lbCacheBoxItemCount";
+            this._lbCacheBoxItemCount.Size = new System.Drawing.Size(106, 23);
+            this._lbCacheBoxItemCount.TabIndex = 88;
+            this._lbCacheBoxItemCount.Text = "0";
+            this._lbCacheBoxItemCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(12, 122);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(99, 23);
+            this.label4.TabIndex = 87;
+            this.label4.Text = "CacheBox";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(466, 369);
+            this.ClientSize = new System.Drawing.Size(621, 473);
+            this.Controls.Add(this._lbCacheBoxItemCount);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this._lbCachedUserCount);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this._lbTaskCount);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this._lbActiveSession);
+            this.Controls.Add(this._lbCCU);
             this.Controls.Add(this.label6);
             this.Controls.Add(this._tbLog);
             this.Controls.Add(this._btnStart);
@@ -134,11 +180,15 @@
 
         private System.Windows.Forms.Label _lbTaskCount;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label _lbActiveSession;
+        private System.Windows.Forms.Label _lbCCU;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox _tbLog;
         private System.Windows.Forms.Button _btnStart;
         private System.Windows.Forms.Button _btnStop;
+        private System.Windows.Forms.Label _lbCachedUserCount;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label _lbCacheBoxItemCount;
+        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -61,8 +61,12 @@ namespace Server
 
 
         //  CacheBox
-        public const UInt16 CS_Cache_Set_Req = 0x2401;
-        public const UInt16 CS_Cache_Set_Res = 0x2402;
+        public const UInt16 CS_Cache_SetValue_Req = 0x2401;
+        public const UInt16 CS_Cache_SetValue_Res = 0x2402;
+        public const UInt16 CS_Cache_SetExpireTime_Req = 0x2403;
+        public const UInt16 CS_Cache_SetExpireTime_Res = 0x2404;
+        public const UInt16 CS_Cache_GetValue_Req = 0x2405;
+        public const UInt16 CS_Cache_GetValue_Res = 0x2406;
     }
 
 
@@ -98,8 +102,8 @@ namespace Server
         public const Int32 IMC_InChannel = 1305;
         public const Int32 IMC_NotInChannel = 1306;
 
-        public const Int32 Cache_TooLongKey = 1401;
-        public const Int32 Cache_TooLongValue = 1402;
-        public const Int32 Cache_InvalidKey = 1403;
+        public const Int32 CacheBox_TooLongKey = 1401;
+        public const Int32 CacheBox_TooLongValue = 1402;
+        public const Int32 CacheBox_InvalidKey = 1403;
     }
 }

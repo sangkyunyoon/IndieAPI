@@ -11,7 +11,7 @@ namespace Server.Services
 {
     public partial class CacheBox
     {
-        public void Set(String key, String value, DateTime? expire = null)
+        public void Set(String key, String value, Double expire)
         {
             using (_lock.WriterLock)
             {
@@ -30,13 +30,13 @@ namespace Server.Services
         }
 
 
-        public void SetExpireTime(String key, DateTime expire)
+        public void SetExpireTime(String key, Double expire)
         {
             using (_lock.ReaderLock)
             {
                 CacheItem item;
                 if (_cached.TryGetValue(key, out item) == false)
-                    throw new AegisException(ResultCode.Cache_InvalidKey);
+                    throw new AegisException(ResultCode.CacheBox_InvalidKey);
 
 
                 item.ExpireTime = expire;
@@ -49,9 +49,10 @@ namespace Server.Services
             using (_lock.ReaderLock)
             {
                 CacheItem item;
+                Double now = DateTime.Now.ToOADate();
                 if (_cached.TryGetValue(key, out item) == false ||
-                    (item.ExpireTime != null && item.ExpireTime >= DateTime.Now))
-                    throw new AegisException(ResultCode.Cache_InvalidKey);
+                    (item.ExpireTime != 0 && item.ExpireTime >= now))
+                    throw new AegisException(ResultCode.CacheBox_InvalidKey);
 
                 return item.Value;
             }

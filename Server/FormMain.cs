@@ -41,7 +41,7 @@ namespace Server
             ServerMain.Instance.StartServer(_tbLog);
 
             _cts = new CancellationTokenSource();
-            (new Thread(Run)).Start();
+            Aegis.Threading.AegisTask.RunPeriodically(1000, _cts.Token, Run).Name = "Statistics";
         }
 
 
@@ -69,36 +69,28 @@ namespace Server
         }
 
 
-        private async void Run()
+        private Boolean Run()
         {
-            while (_btnStart.Enabled == false)
+            try
             {
-                await Task.Run(() =>
-                {
-                    try
-                    {
-                        if (InvokeRequired)
-                            Invoke((MethodInvoker)delegate { UpdateStatistics(); });
-                        else
-                            UpdateStatistics();
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }, _cts.Token);
-
-
-                await Task.Delay(100);
+                if (InvokeRequired)
+                    Invoke((MethodInvoker)delegate { UpdateStatistics(); });
+                else
+                    UpdateStatistics();
             }
+            catch (Exception)
+            {
+            }
+
+            return true;
         }
 
 
         private void UpdateStatistics()
         {
-            Int32 sessionCount = ServerMain.Instance.GetActiveSessionCount();
-
-
-            _lbActiveSession.Text = String.Format("{0:N0}", sessionCount);
+            _lbCachedUserCount.Text = Services.UserData.UserManager.Count.ToString();
+            _lbCCU.Text = Services.UserData.UserManager.CCU.ToString();
+            _lbCacheBoxItemCount.Text = Services.CacheBox.Count.ToString();
             _lbTaskCount.Text = Aegis.Threading.AegisTask.TaskCount.ToString();
         }
     }

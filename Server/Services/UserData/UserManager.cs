@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Threading;
@@ -13,13 +14,34 @@ namespace Server.Services.UserData
     public class UserManager
     {
         public static UserManager Instance { get { return Singleton<UserManager>.Instance; } }
-        private Dictionary<Int32, User> _users = new Dictionary<Int32, User>();
+        public static Int32 Count { get { return Instance._users.Count(); } }
+        public static Int32 CCU { get { return Instance._ccu; } }
         private RWLock _lock = new RWLock();
+        private Dictionary<Int32, User> _users = new Dictionary<Int32, User>();
+        private CancellationTokenSource _cts;
+        private Int32 _ccu;
+
+
 
 
 
         private UserManager()
         {
+        }
+
+
+        public void Initialize()
+        {
+            _ccu = 0;
+            _cts = new CancellationTokenSource();
+            AegisTask.RunPeriodically(1000, _cts.Token, Run).Name = "UserManager";
+        }
+
+
+        public void Release()
+        {
+            _cts.Cancel();
+            _ccu = 0;
         }
 
 
@@ -63,6 +85,37 @@ namespace Server.Services.UserData
             {
                 _users.Remove(user.UserNo);
             }
+        }
+
+
+        private Boolean Run()
+        {
+            //  Calculate CCU
+            using (_lock.ReaderLock)
+            {
+                _ccu = _users.Values
+                             .Where(v => v.LastAliveTick.ElapsedMilliseconds / 1000 < Global.UserManager_CCUMaxTime)
+                             .Count();
+            }
+
+
+            //  Check Expired User
+            List<User> expiredUsers;
+            using (_lock.ReaderLock)
+            {
+                expiredUsers = _users.Values
+                                     .Where(v => v.LastAliveTick.ElapsedMilliseconds / 1000 >= Global.UserManager_MaxAliveTime)
+                                     .ToList();
+            }
+
+            using (_lock.WriterLock)
+            {
+                foreach (User user in expiredUsers)
+                    _users.Remove(user.UserNo);
+            }
+
+
+            return true;
         }
     }
 }

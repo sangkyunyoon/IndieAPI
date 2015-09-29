@@ -102,6 +102,7 @@ namespace Server.Session
 
                     _user.LastSeqNo = packet.SeqNo;
                     _user.Session = this;
+                    _user.LastAliveTick.Restart();
                 }
 
 

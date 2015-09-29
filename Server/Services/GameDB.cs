@@ -40,12 +40,12 @@ namespace Server.Services
 
 
             _mysql = new MySqlDatabase(
-                Starter.CustomData.GetValue("GameDB/ipaddress"),
+                Starter.CustomData.GetValue("GameDB/ipAddress"),
                 Starter.CustomData.GetValue("GameDB/port").ToInt32(),
                 "",
-                Starter.CustomData.GetValue("GameDB/dbname"),
-                Starter.CustomData.GetValue("GameDB/userid"),
-                Starter.CustomData.GetValue("GameDB/userpwd"));
+                Starter.CustomData.GetValue("GameDB/dbName"),
+                Starter.CustomData.GetValue("GameDB/userId"),
+                Starter.CustomData.GetValue("GameDB/userPwd"));
             _mysql.SetWorketQueue(4);
         }
 
