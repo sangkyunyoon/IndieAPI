@@ -80,12 +80,12 @@ namespace IndieAPI
 
 
         //  CacheBox
-        public const UInt16 CS_Cache_SetValue_Req = 0x2401;
-        public const UInt16 CS_Cache_SetValue_Res = 0x2402;
-        public const UInt16 CS_Cache_SetExpireTime_Req = 0x2403;
-        public const UInt16 CS_Cache_SetExpireTime_Res = 0x2404;
-        public const UInt16 CS_Cache_GetValue_Req = 0x2405;
-        public const UInt16 CS_Cache_GetValue_Res = 0x2406;
+        public const UInt16 CS_CacheBox_SetValue_Req = 0x2401;
+        public const UInt16 CS_CacheBox_SetValue_Res = 0x2402;
+        public const UInt16 CS_CacheBox_SetExpireTime_Req = 0x2403;
+        public const UInt16 CS_CacheBox_SetExpireTime_Res = 0x2404;
+        public const UInt16 CS_CacheBox_GetValue_Req = 0x2405;
+        public const UInt16 CS_CacheBox_GetValue_Res = 0x2406;
     }
 
 

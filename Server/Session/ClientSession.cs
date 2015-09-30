@@ -126,9 +126,9 @@ namespace Server.Session
                             case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(reqPacket); break;
                             case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(reqPacket); break;
 
-                            case Protocol.CS_Cache_SetValue_Req: OnCS_Cache_SetValue_Req(reqPacket); break;
-                            case Protocol.CS_Cache_SetExpireTime_Req: OnCS_Cache_SetExpireTime_Req(reqPacket); break;
-                            case Protocol.CS_Cache_GetValue_Req: OnCS_Cache_GetValue_Req(reqPacket); break;
+                            case Protocol.CS_CacheBox_SetValue_Req: OnCS_CacheBox_SetValue_Req(reqPacket); break;
+                            case Protocol.CS_CacheBox_SetExpireTime_Req: OnCS_CacheBox_SetExpireTime_Req(reqPacket); break;
+                            case Protocol.CS_CacheBox_GetValue_Req: OnCS_CacheBox_GetValue_Req(reqPacket); break;
                         }
                     }
                     catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)

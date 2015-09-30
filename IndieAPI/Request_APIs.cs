@@ -358,7 +358,7 @@ namespace IndieAPI
         //  CacheBox
         public void CacheBox_SetValue(String key, String value, Int32 durationMinutes, APICallbackHandler<Response> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Cache_SetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutStringAsUtf16(value);
@@ -372,7 +372,7 @@ namespace IndieAPI
 
         public void CacheBox_SetValue(String key, String value, DateTime expireTime, APICallbackHandler<Response> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Cache_SetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutStringAsUtf16(value);
@@ -386,7 +386,7 @@ namespace IndieAPI
 
         public void CacheBox_SetExpireTime(String key, Int32 durationMinutes, APICallbackHandler<Response> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Cache_SetExpireTime_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutInt32(durationMinutes);
@@ -399,7 +399,7 @@ namespace IndieAPI
 
         public void CacheBox_SetExpireTime(String key, DateTime expireTime, APICallbackHandler<Response> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Cache_SetExpireTime_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutInt32(-1);
@@ -412,7 +412,7 @@ namespace IndieAPI
 
         public void CacheBox_GetValue(String key, APICallbackHandler<Response_CacheBox_Value> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Cache_GetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_GetValue_Req);
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
 

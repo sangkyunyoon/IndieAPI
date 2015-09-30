@@ -13,7 +13,7 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_Cache_SetValue_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_SetValue_Req(PacketRequest reqPacket)
         {
             PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
@@ -43,7 +43,7 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Cache_SetExpireTime_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_SetExpireTime_Req(PacketRequest reqPacket)
         {
             PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
@@ -72,7 +72,7 @@ namespace Server.Session
         }
 
 
-        private void OnCS_Cache_GetValue_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_GetValue_Req(PacketRequest reqPacket)
         {
             PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
             String key = reqPacket.GetStringFromUtf16();
