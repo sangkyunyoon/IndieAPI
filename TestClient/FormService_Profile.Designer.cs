@@ -51,6 +51,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this._tbLastLoginDate = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -287,11 +288,22 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.OnClick_Chatting);
             // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(282, 432);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(128, 54);
+            this.button6.TabIndex = 17;
+            this.button6.Text = "CacheBox";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.OnClick_CacheBox);
+            // 
             // FormService_Profile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
@@ -330,5 +342,6 @@
         private System.Windows.Forms.TextBox _tbDailyCount;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }

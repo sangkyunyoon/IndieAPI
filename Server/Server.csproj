@@ -101,6 +101,7 @@
     <Compile Include="Services\UserData\UserProfile.cs" />
     <Compile Include="Session\ClientSession.cs" />
     <Compile Include="Session\ClientSession_Auth.cs" />
+    <Compile Include="Session\ClientSession_CacheBox.cs" />
     <Compile Include="Session\ClientSession_IMC.cs" />
     <Compile Include="Session\ClientSession_Profile.cs" />
     <Compile Include="Session\ClientSession_ClooudSheet.cs" />

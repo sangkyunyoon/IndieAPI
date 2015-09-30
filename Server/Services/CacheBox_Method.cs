@@ -44,7 +44,7 @@ namespace Server.Services
         }
 
 
-        public String Get(String key)
+        public void Get(String key, out String value, out Int32 durationMinutes)
         {
             using (_lock.ReaderLock)
             {
@@ -54,7 +54,9 @@ namespace Server.Services
                     (item.ExpireTime != 0 && item.ExpireTime >= now))
                     throw new AegisException(ResultCode.CacheBox_InvalidKey);
 
-                return item.Value;
+
+                value = item.Value;
+                durationMinutes = (DateTime.Now - DateTime.FromOADate(item.ExpireTime)).Minutes;
             }
         }
 

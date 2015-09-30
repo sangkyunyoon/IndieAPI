@@ -44,13 +44,13 @@ namespace Server.Services
         private Boolean CheckExpiredItem()
         {
             List<CacheItem> expiredItems;
-            Double now = DateTime.Now.ToOADate();
+            DateTime now = DateTime.Now;
 
 
             using (_lock.ReaderLock)
             {
                 expiredItems = _cached.Values
-                                      .Where(v => v.ExpireTime != 0 && v.ExpireTime >= now)
+                                      .Where(v => v.ExpireTime != 0 && now > DateTime.FromOADate(v.ExpireTime))
                                       .ToList();
             }
 

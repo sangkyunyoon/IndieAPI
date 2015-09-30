@@ -45,7 +45,7 @@ namespace Server
                 MaxTableCount = Starter.CustomData.GetValue("CloudSheet/maxTableCount", "4").ToInt32();
                 MaxColumnCount = Starter.CustomData.GetValue("CloudSheet/maxColumnCount", "20").ToInt32();
                 MaxRecordCount = Starter.CustomData.GetValue("CloudSheet/maxRecordCount", "30000").ToInt32();
-                MaxFileSize = Starter.CustomData.GetValue("CloudSheet/maxFileSize", "10485760").ToInt32();
+                MaxFileSize = Starter.CustomData.GetValue("CloudSheet/maxFileSize", "65000").ToInt32();
                 SessionTimeout = Starter.CustomData.GetValue("CloudSheet/sessionTimeout", "30").ToInt32();
                 DataCacheTime = Starter.CustomData.GetValue("CloudSheet/dataCacheTime", "30").ToInt32();
 
