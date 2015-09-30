@@ -25,14 +25,11 @@ namespace Server.Services
 
         public static String GeneratePasswordHash(String source)
         {
-            String saltKey = "Indie+API@Salt#";
-            Int32 count;
+            Int32 count, i;
 
-
-            source += saltKey;
-            count = source.Length % 5;
-
-            for (int i = 0; i < count; ++i)
+            source = String.Format("Indie+API@{0}#salt_", source);
+            count = source.Length % 5 + 1;
+            for (i = 0; i < count; ++i)
                 source = MD5Hash(source);
 
             return source;
@@ -53,12 +50,12 @@ namespace Server.Services
         }
 
 
-        public void RegisterGuest(String udid, Action<Int32> onComplete)
+        public void RegisterGuest(String uuid, Action<Int32> onComplete)
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
-                cmd.CommandText.Append("call sp_auth_register_guest(@udid);");
-                cmd.BindParameter("@udid", udid);
+                cmd.CommandText.Append("call sp_auth_register_guest(@uuid);");
+                cmd.BindParameter("@uuid", uuid);
                 cmd.PostQuery((reader) =>
                 {
                     reader.Read();
@@ -67,20 +64,20 @@ namespace Server.Services
                         onComplete(ResultCode.Ok);
 
                     else if (ret == 1)
-                        onComplete(ResultCode.AlreadyExistsUDID);
+                        onComplete(ResultCode.AlreadyExistsUUID);
                 });
             }
         }
 
 
-        public void RegisterMember(String udid, String userId, String userPwd, Action<Int32> onComplete)
+        public void RegisterMember(String uuid, String userId, String userPwd, Action<Int32> onComplete)
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
                 String passwordHash = GeneratePasswordHash(userPwd);
 
-                cmd.CommandText.Append("call sp_auth_register_member(@udid, @userid, @pwd);");
-                cmd.BindParameter("@udid", udid);
+                cmd.CommandText.Append("call sp_auth_register_member(@uuid, @userid, @pwd);");
+                cmd.BindParameter("@uuid", uuid);
                 cmd.BindParameter("@userId", userId);
                 cmd.BindParameter("@pwd", passwordHash);
                 cmd.PostQuery((reader) =>
@@ -91,7 +88,7 @@ namespace Server.Services
                         onComplete(ResultCode.Ok);
 
                     else if (ret == 1)
-                        onComplete(ResultCode.AlreadyExistsUDID);
+                        onComplete(ResultCode.AlreadyExistsUUID);
 
                     else if (ret == 2)
                         onComplete(ResultCode.AlreadyExistsUserId);
@@ -100,12 +97,12 @@ namespace Server.Services
         }
 
 
-        public void LoginGuest(String udid, Action<Int32, Int32> onComplete)
+        public void LoginGuest(String uuid, Action<Int32, Int32> onComplete)
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
-                cmd.CommandText.Append("select userno from t_accounts where udid=@udid and isguest=1;");
-                cmd.BindParameter("@udid", udid);
+                cmd.CommandText.Append("select userno from t_accounts where uuid=@uuid and isguest=1;");
+                cmd.BindParameter("@uuid", uuid);
                 cmd.PostQuery((reader) =>
                 {
                     if (reader.Read() == true)
@@ -114,20 +111,20 @@ namespace Server.Services
                         onComplete(ResultCode.Ok, userNo);
                     }
                     else
-                        onComplete(ResultCode.InvalidUDID, 0);
+                        onComplete(ResultCode.InvalidUUID, 0);
                 });
             }
         }
 
 
-        public void LoginMember(String udid, String userId, String userPwd, Action<Int32, Int32> onComplete)
+        public void LoginMember(String uuid, String userId, String userPwd, Action<Int32, Int32> onComplete)
         {
             using (DBCommand cmd = GameDB.NewCommand())
             {
                 String passwordHash = GeneratePasswordHash(userPwd);
 
 
-                cmd.CommandText.Append("select userno, udid from t_accounts where userid=@userid and userpwd=@userpwd and isguest=0;");
+                cmd.CommandText.Append("select userno, uuid from t_accounts where userid=@userid and userpwd=@userpwd and isguest=0;");
                 cmd.BindParameter("@userid", userId);
                 cmd.BindParameter("@userpwd", passwordHash);
                 cmd.PostQuery((reader) =>
@@ -135,11 +132,11 @@ namespace Server.Services
                     if (reader.Read() == true)
                     {
                         Int32 dbUserNo = reader.GetInt32(0);
-                        String dbUdid = reader.GetString(1);
+                        String dbUUID = reader.GetString(1);
 
 
-                        if (dbUdid != udid)
-                            onComplete(ResultCode.InvalidUDID, 0);
+                        if (dbUUID != uuid)
+                            onComplete(ResultCode.InvalidUUID, 0);
                         else
                             onComplete(ResultCode.Ok, dbUserNo);
                     }

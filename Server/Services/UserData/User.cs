@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Threading;
@@ -14,6 +15,7 @@ namespace Server.Services.UserData
     public class User
     {
         public Int32 LastSeqNo { get; set; }
+        public Stopwatch LastAliveTick { get; set; }
         public Session.ClientSession Session { get; set; }
 
         public Int32 UserNo { get; }
@@ -33,6 +35,8 @@ namespace Server.Services.UserData
             Profile = new UserProfile(this);
             LoginCounter = new LoginCounter(this);
             TextBox = new TextBox(this);
+
+            LastAliveTick = Stopwatch.StartNew();
         }
 
 

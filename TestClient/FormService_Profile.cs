@@ -107,5 +107,11 @@ namespace TestClient
         {
             FormMain.ChangeView(FormMain.View_Chat);
         }
+
+
+        private void OnClick_CacheBox(object sender, EventArgs e)
+        {
+            FormMain.ChangeView(FormMain.View_CacheBox);
+        }
     }
 }

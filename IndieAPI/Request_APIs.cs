@@ -13,20 +13,22 @@ namespace IndieAPI
     {
         ////////////////////////////////////////////////////////////////////////////////
         //  Authentication
-        public void Auth_RegisterGuest(string udid, APICallbackHandler<Response> callback)
+        public void Auth_RegisterGuest(string uuid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterGuest_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutInt32(0);
+            reqPacket.PutStringAsUtf16(uuid);
 
             SendPacket(reqPacket,
                        (resPacket) => { callback(new Response(resPacket)); });
         }
 
 
-        public void Auth_RegisterMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public void Auth_RegisterMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterMember_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutInt32(0);
+            reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
@@ -35,20 +37,22 @@ namespace IndieAPI
         }
 
 
-        public void Auth_LoginGuest(string udid, APICallbackHandler<Response> callback)
+        public void Auth_LoginGuest(string uuid, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginGuest_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutInt32(0);
+            reqPacket.PutStringAsUtf16(uuid);
 
             SendPacket(reqPacket,
                        (resPacket) => { callback(new Response(resPacket)); });
         }
 
 
-        public void Auth_LoginMember(string udid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public void Auth_LoginMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
         {
             SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginMember_Req);
-            reqPacket.PutStringAsUtf16(udid);
+            reqPacket.PutInt32(0);
+            reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
@@ -347,6 +351,73 @@ namespace IndieAPI
 
             SendPacket(reqPacket,
                        (resPacket) => { callback(new Response(resPacket)); });
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //  CacheBox
+        public void CacheBox_SetValue(String key, String value, Int32 durationMinutes, APICallbackHandler<Response> callback)
+        {
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(key);
+            reqPacket.PutStringAsUtf16(value);
+            reqPacket.PutInt32(durationMinutes);
+            reqPacket.PutDouble(-1);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response(resPacket)); });
+        }
+
+
+        public void CacheBox_SetValue(String key, String value, DateTime expireTime, APICallbackHandler<Response> callback)
+        {
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(key);
+            reqPacket.PutStringAsUtf16(value);
+            reqPacket.PutInt32(-1);
+            reqPacket.PutDouble(expireTime.ToUniversalTime().ToOADate());
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response(resPacket)); });
+        }
+
+
+        public void CacheBox_SetExpireTime(String key, Int32 durationMinutes, APICallbackHandler<Response> callback)
+        {
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(key);
+            reqPacket.PutInt32(durationMinutes);
+            reqPacket.PutDouble(-1);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response(resPacket)); });
+        }
+
+
+        public void CacheBox_SetExpireTime(String key, DateTime expireTime, APICallbackHandler<Response> callback)
+        {
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(key);
+            reqPacket.PutInt32(-1);
+            reqPacket.PutDouble(expireTime.ToUniversalTime().ToOADate());
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response(resPacket)); });
+        }
+
+
+        public void CacheBox_GetValue(String key, APICallbackHandler<Response_CacheBox_Value> callback)
+        {
+            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_GetValue_Req);
+            reqPacket.PutInt32(_userNo);
+            reqPacket.PutStringAsUtf16(key);
+
+            SendPacket(reqPacket,
+                       (resPacket) => { callback(new Response_CacheBox_Value(resPacket)); });
         }
     }
 }

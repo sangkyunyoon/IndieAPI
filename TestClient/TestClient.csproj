@@ -66,6 +66,12 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormService_CacheBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormService_CacheBox.Designer.cs">
+      <DependentUpon>FormService_CacheBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormService_Chat.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormService_CacheBox.resx">
+      <DependentUpon>FormService_CacheBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormService_Chat.resx">
       <DependentUpon>FormService_Chat.cs</DependentUpon>
@@ -126,6 +135,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if $(ConfigurationName) == Debug (
+copy $(ProjectDir)..\IndieAPI\bin\Debug\Aegis.Client.dll $(ProjectDir)packages\Aegis.Client.dll
+copy $(ProjectDir)..\IndieAPI\bin\Debug\IndieAPI.dll $(ProjectDir)packages\IndieAPI.dll
+)
+if $(ConfigurationName) == Release (
+copy $(ProjectDir)..\IndieAPI\bin\Release\Aegis.Client.dll $(ProjectDir)packages\Aegis.Client.dll
+copy $(ProjectDir)..\IndieAPI\bin\Release\IndieAPI.dll $(ProjectDir)packages\IndieAPI.dll
+)
+</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

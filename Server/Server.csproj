@@ -83,6 +83,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
+    <Compile Include="Services\CacheBox_Method.cs" />
+    <Compile Include="Services\CacheBox_Item.cs" />
+    <Compile Include="Services\CacheBox.cs" />
     <Compile Include="Services\CastChannel.cs" />
     <Compile Include="Services\CloudSheet\CacheItem.cs" />
     <Compile Include="Services\CloudSheet\Workbooks.cs" />
@@ -98,6 +101,7 @@
     <Compile Include="Services\UserData\UserProfile.cs" />
     <Compile Include="Session\ClientSession.cs" />
     <Compile Include="Session\ClientSession_Auth.cs" />
+    <Compile Include="Session\ClientSession_CacheBox.cs" />
     <Compile Include="Session\ClientSession_IMC.cs" />
     <Compile Include="Session\ClientSession_Profile.cs" />
     <Compile Include="Session\ClientSession_ClooudSheet.cs" />
@@ -107,6 +111,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerMain.cs" />
     <Compile Include="Services\Membership.cs" />
+    <Compile Include="Session\PacketRequest.cs" />
+    <Compile Include="Session\PacketResponse.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

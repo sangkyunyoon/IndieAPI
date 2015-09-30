@@ -14,10 +14,9 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_IMC_ChannelList_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_ChannelList_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_ChannelList_Res, 4096);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok, 4096);
 
 
             lock (CastChannel.Channels)
@@ -25,7 +24,6 @@ namespace Server.Session
                 Int32 count = 0, idxCount;
 
 
-                resPacket.PutInt32(ResultCode.Ok);
                 idxCount = resPacket.PutInt32(count);
                 foreach (var channel in CastChannel.Channels)
                 {
@@ -41,10 +39,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Create_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_Create_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Create_Res);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket);
 
 
             try
@@ -58,14 +55,14 @@ namespace Server.Session
                 _user.CastChannel.Enter(_user);
 
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
                 resPacket.PutInt32(_user.CastChannel.ChannelNo);
                 resPacket.PutStringAsUtf16(_user.CastChannel.Name);
             }
             catch (AegisException e)
             {
                 resPacket.Clear();
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
 
@@ -73,10 +70,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Enter_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_Enter_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Enter_Res);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket);
 
 
             try
@@ -100,13 +96,13 @@ namespace Server.Session
                 }
 
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
                 resPacket.PutInt32(_user.CastChannel.ChannelNo);
                 resPacket.PutStringAsUtf16(_user.CastChannel.Name);
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
 
@@ -114,10 +110,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_Leave_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_Leave_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_Leave_Res);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket);
 
 
             try
@@ -137,11 +132,11 @@ namespace Server.Session
 
 
                 _user.CastChannel = null;
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
 
@@ -149,10 +144,9 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_UserList_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_UserList_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_UserList_Res, 4096);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket, 4096);
 
 
             try
@@ -160,7 +154,7 @@ namespace Server.Session
                 Int32 count = 0, idxCount;
 
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
                 idxCount = resPacket.PutInt32(count);
 
                 using (_user.CastChannel.ReaderLock)
@@ -173,12 +167,11 @@ namespace Server.Session
                     }
                 }
 
-
                 resPacket.OverwriteInt32(idxCount, count);
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
 
@@ -186,16 +179,15 @@ namespace Server.Session
         }
 
 
-        private void OnCS_IMC_SendMessage_Req(SecurePacket reqPacket)
+        private void OnCS_IMC_SendMessage_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_IMC_SendMessage_Res);
+            PacketResponse resPacket = new PacketResponse(reqPacket);
             Int32 targetUserNo = reqPacket.GetInt32();
-            resPacket.SeqNo = reqPacket.SeqNo;
 
 
             if (_user.CastChannel == null)
             {
-                resPacket.PutInt32(ResultCode.IMC_NotInChannel);
+                resPacket.ResultCodeNo = ResultCode.IMC_NotInChannel;
                 SendPacket(resPacket);
                 return;
             }
@@ -218,11 +210,11 @@ namespace Server.Session
                     _user.CastChannel.Broadcast(ntfPacket);
 
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
 

@@ -77,6 +77,15 @@ namespace IndieAPI
         public const UInt16 CS_IMC_SendMessage_Req = 0x230D;
         public const UInt16 CS_IMC_SendMessage_Res = 0x230E;
         public const UInt16 CS_IMC_Message_Ntf = 0x230F;
+
+
+        //  CacheBox
+        public const UInt16 CS_CacheBox_SetValue_Req = 0x2401;
+        public const UInt16 CS_CacheBox_SetValue_Res = 0x2402;
+        public const UInt16 CS_CacheBox_SetExpireTime_Req = 0x2403;
+        public const UInt16 CS_CacheBox_SetExpireTime_Res = 0x2404;
+        public const UInt16 CS_CacheBox_GetValue_Req = 0x2405;
+        public const UInt16 CS_CacheBox_GetValue_Res = 0x2406;
     }
 
 
@@ -87,9 +96,9 @@ namespace IndieAPI
 
         public const Int32 InvalidPacketSeqNo = 1001;
         public const Int32 InvalidUserNo = 1002;
-        public const Int32 AlreadyExistsUDID = 1011;
+        public const Int32 AlreadyExistsUUID = 1011;
         public const Int32 AlreadyExistsUserId = 1012;
-        public const Int32 InvalidUDID = 1013;
+        public const Int32 InvalidUUID = 1013;
         public const Int32 InvalidUserId = 1014;
 
 
@@ -112,6 +121,10 @@ namespace IndieAPI
         public const Int32 IMC_InChannel = 1305;
         public const Int32 IMC_NotInChannel = 1306;
 
+        public const Int32 CacheBox_TooLongKey = 1401;
+        public const Int32 CacheBox_TooLongValue = 1402;
+        public const Int32 CacheBox_InvalidKey = 1403;
+
 
 
 
@@ -124,9 +137,9 @@ namespace IndieAPI
 
                 case InvalidPacketSeqNo: return "Invalid Packet SequenceNo.";
                 case InvalidUserNo: return "Invalid UserNo.";
-                case AlreadyExistsUDID: return "Already exists UDID.";
+                case AlreadyExistsUUID: return "Already exists UUID.";
                 case AlreadyExistsUserId: return "Already exists UserId.";
-                case InvalidUDID: return "Invalid UDID.";
+                case InvalidUUID: return "Invalid UUID.";
                 case InvalidUserId: return "Invalid UserId.";
 
                 case InvalidFileType: return "The file is not xlsx file.";
@@ -147,6 +160,10 @@ namespace IndieAPI
                 case IMC_NotExistsUser: return "Not exists user.";
                 case IMC_InChannel: return "Cannot process because you're in channel.";
                 case IMC_NotInChannel: return "Cannot process because you're not in channel.";
+
+                case CacheBox_TooLongKey: return "Key is too long.";
+                case CacheBox_TooLongValue: return "Value is too long.";
+                case CacheBox_InvalidKey: return "Invalid Key.";
             }
 
             return String.Format($"Unknown ResultCode(0x:{resultCode:X})");

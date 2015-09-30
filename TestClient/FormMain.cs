@@ -14,16 +14,33 @@ namespace TestClient
 {
     public partial class FormMain : Form
     {
-        public static Int32 View_Login = 0;
-        public static Int32 View_Service_Profile = 1;
-        public static Int32 View_Service_Sheet = 2;
-        public static Int32 View_Chat = 3;
-        public static Int32 View_Count = 4;
+        private struct FormData
+        {
+            public Int32 ID;
+            public Form Form;
+            public FormData(Int32 id, Form form)
+            {
+                ID = id;
+                Form = form;
+            }
+        }
+        public const Int32 View_Login = 0;
+        public const Int32 View_Service_Profile = 1;
+        public const Int32 View_Service_Sheet = 2;
+        public const Int32 View_Chat = 3;
+        public const Int32 View_CacheBox = 4;
 
 
         public static FormMain Instance { get; private set; }
         private Form _curForm;
-        private Form[] _forms;
+        private FormData[] _forms =
+        {
+            new FormData(View_Login, new FormLogin()),
+            new FormData(View_Service_Profile, new FormService_Profile()),
+            new FormData(View_Service_Sheet, new FormService_Sheet()),
+            new FormData(View_Chat, new FormService_Chat()),
+            new FormData(View_CacheBox, new FormService_CacheBox()),
+        };
 
 
 
@@ -35,26 +52,14 @@ namespace TestClient
             Instance = this;
 
 
-            //  Forms setting
-            _forms = new Form[View_Count];
-            _forms[View_Login] = new FormLogin();
-            _forms[View_Service_Profile] = new FormService_Profile();
-            _forms[View_Service_Sheet] = new FormService_Sheet();
-            _forms[View_Chat] = new FormService_Chat();
-
-
-            foreach (Form item in _forms)
+            foreach (FormData item in _forms)
             {
-                if (item == null)
-                    continue;
-
-                item.Text = "";
-                item.TopLevel = false;
-                item.ControlBox = false;
-                item.FormBorderStyle = FormBorderStyle.None;
-                this.Controls.Add(item);
+                item.Form.Text = "";
+                item.Form.TopLevel = false;
+                item.Form.ControlBox = false;
+                item.Form.FormBorderStyle = FormBorderStyle.None;
+                this.Controls.Add(item.Form);
             }
-
 
             ChangeView(View_Login);
         }
@@ -89,7 +94,7 @@ namespace TestClient
                 }
 
 
-                Instance._curForm = Instance._forms[viewType];
+                Instance._curForm = Instance._forms[viewType].Form;
                 Instance._curForm.Parent = Instance._panelContent;
                 Instance._curForm.Show();
 

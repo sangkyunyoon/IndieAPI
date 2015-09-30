@@ -25,8 +25,8 @@ namespace TestClient
         {
             _tbServerIp.Text = "192.168.0.100";
             _tbServerPort.Text = "10100";
-            _tbGuest_UDID.Text = "Device_1";
-            _tbMember_UDID.Text = "Device_1";
+            _tbGuest_UUID.Text = "Device_1";
+            _tbMember_UUID.Text = "Device_1";
 
 
             IDAPI.Initialize(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
@@ -37,15 +37,15 @@ namespace TestClient
         //  Guest Register
         private void OnClick_GuestRegister(object sender, EventArgs e)
         {
-            if (_tbGuest_UDID.Text.Length == 0)
+            if (_tbGuest_UUID.Text.Length == 0)
             {
-                FormMain.SetMessage(Color.Red, "Input Guest UDID value.");
-                _tbGuest_UDID.Focus();
+                FormMain.SetMessage(Color.Red, "Input Guest UUID value.");
+                _tbGuest_UUID.Focus();
                 return;
             }
 
 
-            IDAPI.Request.Auth_RegisterGuest(_tbGuest_UDID.Text, OnResponse_Auth_RegisterGuest);
+            IDAPI.Request.Auth_RegisterGuest(_tbGuest_UUID.Text, OnResponse_Auth_RegisterGuest);
         }
 
 
@@ -62,15 +62,15 @@ namespace TestClient
         //  Guest Login
         private void OnClick_GuestLogin(object sender, EventArgs e)
         {
-            if (_tbGuest_UDID.Text.Length == 0)
+            if (_tbGuest_UUID.Text.Length == 0)
             {
-                FormMain.SetMessage(Color.Red, "Input Guest UDID value.");
-                _tbGuest_UDID.Focus();
+                FormMain.SetMessage(Color.Red, "Input Guest UUID value.");
+                _tbGuest_UUID.Focus();
                 return;
             }
 
 
-            IDAPI.Request.Auth_LoginGuest(_tbGuest_UDID.Text, OnResponse_Auth_LoginGuest);
+            IDAPI.Request.Auth_LoginGuest(_tbGuest_UUID.Text, OnResponse_Auth_LoginGuest);
         }
 
 
@@ -87,10 +87,10 @@ namespace TestClient
         //  Member Register
         private void OnClick_MemberRegister(object sender, EventArgs e)
         {
-            if (_tbMember_UDID.Text.Length == 0)
+            if (_tbMember_UUID.Text.Length == 0)
             {
-                FormMain.SetMessage(Color.Red, "Input Member UDID value.");
-                _tbMember_UDID.Focus();
+                FormMain.SetMessage(Color.Red, "Input Member UUID value.");
+                _tbMember_UUID.Focus();
                 return;
             }
             if (_tbMember_UserId.Text.Length == 0)
@@ -108,7 +108,7 @@ namespace TestClient
 
 
             IDAPI.Request.Auth_RegisterMember(
-                _tbMember_UDID.Text,
+                _tbMember_UUID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
                 OnResponse_Auth_RegisterMember);
@@ -128,10 +128,10 @@ namespace TestClient
         //  Member Login
         private void OnClick_MemberLogin(object sender, EventArgs e)
         {
-            if (_tbMember_UDID.Text.Length == 0)
+            if (_tbMember_UUID.Text.Length == 0)
             {
-                FormMain.SetMessage(Color.Red, "Input Member UDID value.");
-                _tbMember_UDID.Focus();
+                FormMain.SetMessage(Color.Red, "Input Member UUID value.");
+                _tbMember_UUID.Focus();
                 return;
             }
             if (_tbMember_UserId.Text.Length == 0)
@@ -149,7 +149,7 @@ namespace TestClient
 
 
             IDAPI.Request.Auth_LoginMember(
-                _tbMember_UDID.Text,
+                _tbMember_UUID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
                 OnResponse_Auth_LoginMember);

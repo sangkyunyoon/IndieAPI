@@ -233,4 +233,23 @@ namespace IndieAPI
             Message = new StreamBuffer(packet.Buffer, packet.ReadBytes, packet.ReadableSize);
         }
     }
+
+
+    public class Response_CacheBox_Value : Response
+    {
+        public readonly string Value;
+        public readonly int DurationMinutes;
+
+
+
+        internal Response_CacheBox_Value(SecurePacket packet)
+            : base(packet)
+        {
+            if (ResultCodeNo != ResultCode.Ok)
+                return;
+
+            Value = packet.GetStringFromUtf16();
+            DurationMinutes = packet.GetInt32();
+        }
+    }
 }

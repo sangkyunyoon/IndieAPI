@@ -36,8 +36,10 @@ namespace Server
 
                 Starter.Initialize("./Config.xml");
                 {
-                    Services.GameDB.Initialize();
                     Global.Refresh();
+                    Services.GameDB.Initialize();
+                    Services.CacheBox.Instance.Initialize();
+                    Services.UserData.UserManager.Instance.Initialize();
                     Services.CloudSheet.Workbooks.Initialize();
                 }
                 Starter.StartNetwork();
@@ -51,9 +53,11 @@ namespace Server
 
         public void StopServer()
         {
-            Services.CloudSheet.Workbooks.Release();
-            Services.GameDB.Release();
             Starter.Release();
+            Services.CloudSheet.Workbooks.Release();
+            Services.UserData.UserManager.Instance.Release();
+            Services.CacheBox.Instance.Release();
+            Services.GameDB.Release();
             Logger.Release();
         }
 
