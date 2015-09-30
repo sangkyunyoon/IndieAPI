@@ -43,7 +43,7 @@ namespace TestClient
 
         private void OnSelect_ExpireTime(object sender, EventArgs e)
         {
-            _tbDuration.Text = "0";
+            _tbDuration.Text = "-1";
         }
 
 
@@ -51,7 +51,7 @@ namespace TestClient
         {
             if (_cbImmortal.Checked == true)
             {
-                IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, 0, OnResponse_SetValue);
+                IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, -1, OnResponse_SetValue);
             }
             else
             {
@@ -111,9 +111,19 @@ namespace TestClient
                     }
 
 
-                    _tbValue.Text = response.Value;
-                    _tbDuration.Text = response.DurationMinutes.ToString();
-                    _dtExpireTime.Value = DateTime.Now.AddMinutes(response.DurationMinutes);
+                    if (response.DurationMinutes == -1)
+                    {
+                        _cbImmortal.Checked = true;
+                        _tbDuration.Text = "-1";
+                        _tbValue.Text = response.Value;
+                    }
+                    else
+                    {
+                        _cbImmortal.Checked = false;
+                        _tbValue.Text = response.Value;
+                        _dtExpireTime.Value = DateTime.Now.AddMinutes(response.DurationMinutes);
+                        _tbDuration.Text = response.DurationMinutes.ToString();
+                    }
                 });
         }
     }

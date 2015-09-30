@@ -14,18 +14,17 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_CloudSheet_GetSheetList_Req(SecurePacket reqPacket)
+        private void OnCS_CloudSheet_GetSheetList_Req(PacketRequest reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_CloudSheet_GetSheetList_Res, 65535);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
 
 
             try
             {
                 Workbook workbook = Workbooks.GetWorkbook(filename);
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
                 resPacket.PutInt32(workbook.Items.Count());
                 foreach (SheetData sheet in workbook.Items.Select(v => v.Value))
                 {
@@ -49,26 +48,24 @@ namespace Server.Session
 
 
                 resPacket.Clear();
-                resPacket.SeqNo = reqPacket.SeqNo;
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
             SendPacket(resPacket);
         }
 
 
-        private void OnCS_CloudSheet_GetRecords_Req(SecurePacket reqPacket)
+        private void OnCS_CloudSheet_GetRecords_Req(PacketRequest reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
             String sheetName = reqPacket.GetStringFromUtf16();
             UInt32 startRowNo = reqPacket.GetUInt32();
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_CloudSheet_GetRecords_Res, 65535);
-            resPacket.SeqNo = reqPacket.SeqNo;
+            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
 
 
             try
             {
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
 
                 Workbook workbook = Workbooks.GetWorkbook(filename);
                 SheetData sheet = workbook.GetSheetData(sheetName);
@@ -96,8 +93,8 @@ namespace Server.Session
                     }
 
 
-                    //  대략 이쯤...  패킷 크기를 초과하지 않도록 적당이 끊어준다.
-                    if (resPacket.WrittenBytes > 65535 - 1024)
+                    //  #! 대략 이쯤...  패킷 크기를 초과하지 않도록 적당이 끊어준다.
+                    if (resPacket.WrittenBytes > 50000)
                         break;
                 }
 
@@ -111,8 +108,7 @@ namespace Server.Session
 
 
                 resPacket.Clear();
-                resPacket.SeqNo = reqPacket.SeqNo;
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
             SendPacket(resPacket);

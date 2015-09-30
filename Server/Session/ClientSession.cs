@@ -64,20 +64,20 @@ namespace Server.Session
 
         private void OnReceived(NetworkSession session, StreamBuffer buffer)
         {
-            SecurePacket packet = new SecurePacket(buffer);
-            packet.Decrypt(Global.AES_IV, Global.AES_Key);
-            packet.SkipHeader();
+            PacketRequest reqPacket = new PacketRequest(buffer);
+            reqPacket.Decrypt(Global.AES_IV, Global.AES_Key);
+            reqPacket.SkipHeader();
 
 
             //  Authentication Packets
-            if ((packet.PacketId >> 8) == 0x20)
+            if ((reqPacket.PacketId >> 8) == 0x20)
             {
                 AegisTask.Run(() =>
                 {
-                    if (packet.PacketId == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(packet);
-                    else if (packet.PacketId == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(packet);
-                    else if (packet.PacketId == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(packet);
-                    else if (packet.PacketId == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(packet);
+                    if (reqPacket.PacketId == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(reqPacket);
+                    else if (reqPacket.PacketId == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(reqPacket);
+                    else if (reqPacket.PacketId == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(reqPacket);
+                    else if (reqPacket.PacketId == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(reqPacket);
                 });
             }
 
@@ -86,21 +86,20 @@ namespace Server.Session
             {
                 //  Validate User object
                 {
-                    Int32 userNo = packet.GetInt32();
-                    _user = UserManager.Instance.FindUser(userNo);
+                    _user = UserManager.Instance.FindUser(reqPacket.UserNo);
                     if (_user == null)
                     {
                         SendPacket(new SecurePacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
                         return;
                     }
-                    if (_user.LastSeqNo + 1 != packet.SeqNo)
+                    if (_user.LastSeqNo + 1 != reqPacket.SeqNo)
                     {
                         Logger.Write(LogType.Info, 2, "Invalid SequenceNo(UserNo={0}).", _user.UserNo);
                         SendPacket(new SecurePacket(Protocol.CS_ForceClosing_Ntf), (sentPacket) => { Close(); });
                         return;
                     }
 
-                    _user.LastSeqNo = packet.SeqNo;
+                    _user.LastSeqNo = reqPacket.SeqNo;
                     _user.Session = this;
                     _user.LastAliveTick.Restart();
                 }
@@ -110,31 +109,31 @@ namespace Server.Session
                 {
                     try
                     {
-                        switch (packet.PacketId)
+                        switch (reqPacket.PacketId)
                         {
-                            case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(packet); break;
-                            case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(packet); break;
-                            case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(packet); break;
-                            case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(packet); break;
+                            case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(reqPacket); break;
+                            case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(reqPacket); break;
+                            case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(reqPacket); break;
+                            case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(reqPacket); break;
 
-                            case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(packet); break;
-                            case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(packet); break;
+                            case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(reqPacket); break;
+                            case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(reqPacket); break;
 
-                            case Protocol.CS_IMC_ChannelList_Req: OnCS_IMC_ChannelList_Req(packet); break;
-                            case Protocol.CS_IMC_Create_Req: OnCS_IMC_Create_Req(packet); break;
-                            case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(packet); break;
-                            case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(packet); break;
-                            case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(packet); break;
-                            case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(packet); break;
+                            case Protocol.CS_IMC_ChannelList_Req: OnCS_IMC_ChannelList_Req(reqPacket); break;
+                            case Protocol.CS_IMC_Create_Req: OnCS_IMC_Create_Req(reqPacket); break;
+                            case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(reqPacket); break;
+                            case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(reqPacket); break;
+                            case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(reqPacket); break;
+                            case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(reqPacket); break;
 
-                            case Protocol.CS_Cache_SetValue_Req: OnCS_Cache_SetValue_Req(packet); break;
-                            case Protocol.CS_Cache_SetExpireTime_Req: OnCS_Cache_SetExpireTime_Req(packet); break;
-                            case Protocol.CS_Cache_GetValue_Req: OnCS_Cache_GetValue_Req(packet); break;
+                            case Protocol.CS_Cache_SetValue_Req: OnCS_Cache_SetValue_Req(reqPacket); break;
+                            case Protocol.CS_Cache_SetExpireTime_Req: OnCS_Cache_SetExpireTime_Req(reqPacket); break;
+                            case Protocol.CS_Cache_GetValue_Req: OnCS_Cache_GetValue_Req(reqPacket); break;
                         }
                     }
                     catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)
                     {
-                        Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", packet.PacketId);
+                        Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", reqPacket.PacketId);
                     }
                 });
             }

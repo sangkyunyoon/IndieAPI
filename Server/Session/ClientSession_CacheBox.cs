@@ -13,11 +13,9 @@ namespace Server.Session
 {
     public partial class ClientSession
     {
-        private void OnCS_Cache_SetValue_Req(SecurePacket reqPacket)
+        private void OnCS_Cache_SetValue_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_Cache_SetValue_Res);
-            resPacket.SeqNo = reqPacket.SeqNo;
-
+            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
             String value = reqPacket.GetStringFromUtf16();
             Int32 durationMinutes = reqPacket.GetInt32();
@@ -26,29 +24,28 @@ namespace Server.Session
 
             try
             {
-                if (durationMinutes > 0)
+                if (durationMinutes == -1 && expireTime == -1)
+                    expireTime = -1;
+                else if (durationMinutes >= 0)
                     expireTime = DateTime.Now.AddMinutes(durationMinutes).ToOADate();
                 else
                     expireTime = DateTime.FromOADate(expireTime).ToLocalTime().ToOADate();
 
 
                 CacheBox.Instance.Set(key, value, expireTime);
-                resPacket.PutInt32(ResultCode.Ok);
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
             SendPacket(resPacket);
         }
 
 
-        private void OnCS_Cache_SetExpireTime_Req(SecurePacket reqPacket)
+        private void OnCS_Cache_SetExpireTime_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_Cache_SetExpireTime_Res);
-            resPacket.SeqNo = reqPacket.SeqNo;
-
+            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
             Int32 durationMinutes = reqPacket.GetInt32();
             Double expireTime = reqPacket.GetDouble();
@@ -56,29 +53,28 @@ namespace Server.Session
 
             try
             {
-                if (durationMinutes > 0)
+                if (durationMinutes == -1 && expireTime == -1)
+                    expireTime = -1;
+                else if (durationMinutes >= 0)
                     expireTime = DateTime.Now.AddMinutes(durationMinutes).ToOADate();
                 else
                     expireTime = DateTime.FromOADate(expireTime).ToLocalTime().ToOADate();
 
 
                 CacheBox.Instance.SetExpireTime(key, expireTime);
-                resPacket.PutInt32(ResultCode.Ok);
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
             SendPacket(resPacket);
         }
 
 
-        private void OnCS_Cache_GetValue_Req(SecurePacket reqPacket)
+        private void OnCS_Cache_GetValue_Req(PacketRequest reqPacket)
         {
-            SecurePacket resPacket = new SecurePacket(Protocol.CS_Cache_GetValue_Res, 65535);
-            resPacket.SeqNo = reqPacket.SeqNo;
-
+            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
             String key = reqPacket.GetStringFromUtf16();
 
 
@@ -88,13 +84,13 @@ namespace Server.Session
                 Int32 durationMunites;
                 CacheBox.Instance.Get(key, out value, out durationMunites);
 
-                resPacket.PutInt32(ResultCode.Ok);
+                resPacket.ResultCodeNo = ResultCode.Ok;
                 resPacket.PutStringAsUtf16(value);
                 resPacket.PutInt32(durationMunites);
             }
             catch (AegisException e)
             {
-                resPacket.PutInt32(e.ResultCodeNo);
+                resPacket.ResultCodeNo = e.ResultCodeNo;
             }
 
             SendPacket(resPacket);

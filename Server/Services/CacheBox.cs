@@ -50,7 +50,7 @@ namespace Server.Services
             using (_lock.ReaderLock)
             {
                 expiredItems = _cached.Values
-                                      .Where(v => v.ExpireTime != 0 && now > DateTime.FromOADate(v.ExpireTime))
+                                      .Where(v => v.ExpireTime != -1 && now > DateTime.FromOADate(v.ExpireTime))
                                       .ToList();
             }
 

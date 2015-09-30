@@ -49,14 +49,18 @@ namespace Server.Services
             using (_lock.ReaderLock)
             {
                 CacheItem item;
-                Double now = DateTime.Now.ToOADate();
+                DateTime now = DateTime.Now;
+
                 if (_cached.TryGetValue(key, out item) == false ||
-                    (item.ExpireTime != 0 && item.ExpireTime >= now))
+                    (item.ExpireTime != -1 && now > DateTime.FromOADate(item.ExpireTime)))
                     throw new AegisException(ResultCode.CacheBox_InvalidKey);
 
 
                 value = item.Value;
-                durationMinutes = (DateTime.Now - DateTime.FromOADate(item.ExpireTime)).Minutes;
+                if (item.ExpireTime == -1)
+                    durationMinutes = -1;
+                else
+                    durationMinutes = (DateTime.FromOADate(item.ExpireTime) - DateTime.Now).Minutes;
             }
         }
 

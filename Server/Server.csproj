@@ -111,6 +111,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerMain.cs" />
     <Compile Include="Services\Membership.cs" />
+    <Compile Include="Session\PacketRequest.cs" />
+    <Compile Include="Session\PacketResponse.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
