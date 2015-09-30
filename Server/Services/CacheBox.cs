@@ -37,7 +37,11 @@ namespace Server.Services
 
         public void Release()
         {
-            _cts.Cancel();
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts = null;
+            }
         }
 
 

@@ -56,7 +56,7 @@ namespace TestClient
             else
             {
                 Int32 duration = Int32.Parse(_tbDuration.Text);
-                if (duration == 0)
+                if (duration == -1)
                     IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, _dtExpireTime.Value, OnResponse_SetValue);
                 else
                     IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, duration, OnResponse_SetValue);

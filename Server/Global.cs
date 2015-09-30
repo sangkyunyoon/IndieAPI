@@ -50,7 +50,7 @@ namespace Server
                 DataCacheTime = Starter.CustomData.GetValue("CloudSheet/dataCacheTime", "30").ToInt32();
 
                 CacheBox_MaxKeyLength = Starter.CustomData.GetValue("CacheBox/maxKeyLength", "32").ToInt32();
-                CacheBox_MaxValueLength = Starter.CustomData.GetValue("CacheBox/maxValueLength", "1048576").ToInt32();
+                CacheBox_MaxValueLength = Starter.CustomData.GetValue("CacheBox/maxValueLength", "32500").ToInt32();
             }
             catch (Exception e)
             {

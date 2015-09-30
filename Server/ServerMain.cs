@@ -44,9 +44,15 @@ namespace Server
                 }
                 Starter.StartNetwork();
             }
+            catch (AegisException e) when (e.ResultCodeNo == AegisResult.MySqlConnectionFailed)
+            {
+                Logger.Write(LogType.Err, 2, "Cannot connect to MySQL Database.");
+                Logger.Write(LogType.Err, 2, "Server cannot be initialized.");
+            }
             catch (Exception e)
             {
                 Logger.Write(LogType.Err, 2, e.ToString());
+                Logger.Write(LogType.Err, 2, "Server cannot be initialized.");
             }
         }
 
@@ -58,13 +64,9 @@ namespace Server
             Services.UserData.UserManager.Instance.Release();
             Services.CacheBox.Instance.Release();
             Services.GameDB.Release();
+
+            Logger.Write(LogType.Info, 2, "Server stopped.");
             Logger.Release();
-        }
-
-
-        public Int32 GetActiveSessionCount()
-        {
-            return NetworkChannel.FindChannel("NetworkClient")?.SessionManager.ActiveSessionCount ?? 0;
         }
     }
 }

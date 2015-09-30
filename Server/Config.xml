@@ -19,6 +19,6 @@
                 maxFileSize="5242880"
                 sessionTimeout="30"
                 dataCacheTime="30" />
-    <CacheBox maxKeyLength="32" maxValueLength="65000" />
+    <CacheBox maxKeyLength="32" maxValueLength="32500" />
   </CustomData>
 </Aegis>

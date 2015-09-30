@@ -40,7 +40,11 @@ namespace Server.Services.UserData
 
         public void Release()
         {
-            _cts.Cancel();
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts = null;
+            }
             _ccu = 0;
         }
 
