@@ -15,6 +15,7 @@ namespace Server.Session
     public partial class ClientSession : AsyncResultSession
     {
         private User _user;
+        private String _aesIV, _aesKey;
 
 
 
@@ -22,30 +23,52 @@ namespace Server.Session
 
         public ClientSession()
         {
-            NetworkEvent_Accepted += OnAcceptd;
+            NetworkEvent_Accepted += OnAccepted;
             NetworkEvent_Closed += OnClosed;
             NetworkEvent_Received += OnReceived;
-            PacketValidator += IsValidPacket;
+            PacketValidator += PacketRequest.IsValidPacket;
         }
 
 
-        private Boolean IsValidPacket(NetworkSession session, StreamBuffer buffer, out int packetSize)
+        private void OnAccepted(NetworkSession session)
         {
-            if (buffer.WrittenBytes < 8)
+            SecurePacket ntfPacket = new SecurePacket(Protocol.CS_Hello_Ntf);
+            Int32 seed = 0;
+
+
+            //  각 8비트마다 0이 나오지 않는 임의 숫자 생성
+            seed |= Randomizer.NextNumber(1, 255) << 24;
+            seed |= Randomizer.NextNumber(1, 255) << 16;
+            seed |= Randomizer.NextNumber(1, 255) << 8;
+            seed |= Randomizer.NextNumber(1, 255);
+
+
+            //  패킷 암호화 키 생성
             {
-                packetSize = 0;
-                return false;
+                String characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+                char[] ascii = new char[16];
+
+
+                for (Int32 i = 0; i < 16; ++i)
+                {
+                    Int32 val = seed & (0x6E << i);
+                    ascii[i] = characterSet[(val % characterSet.Length)];
+                }
+                _aesIV = new string(ascii);
+
+
+                for (Int32 i = 0; i < 16; ++i)
+                {
+                    Int32 val = seed & (0xF4 << i);
+                    ascii[i] = characterSet[(val % characterSet.Length)];
+                }
+                _aesKey = new string(ascii);
             }
 
-            //  최초 2바이트를 수신할 패킷의 크기로 처리
-            packetSize = buffer.GetUInt16();
-            return (packetSize > 0 && buffer.WrittenBytes >= packetSize);
-        }
 
-
-        private void OnAcceptd(NetworkSession session)
-        {
-            SendPacket(new SecurePacket(Protocol.CS_Hello_Ntf));
+            ntfPacket.PutInt32(seed);
+            ntfPacket.Encrypt(Global.AES_IV, Global.AES_Key);
+            base.SendPacket(ntfPacket);
         }
 
 
@@ -65,7 +88,7 @@ namespace Server.Session
         private void OnReceived(NetworkSession session, StreamBuffer buffer)
         {
             PacketRequest reqPacket = new PacketRequest(buffer);
-            reqPacket.Decrypt(Global.AES_IV, Global.AES_Key);
+            reqPacket.Decrypt(_aesIV, _aesKey);
             reqPacket.SkipHeader();
 
 
@@ -129,11 +152,15 @@ namespace Server.Session
                             case Protocol.CS_CacheBox_SetValue_Req: OnCS_CacheBox_SetValue_Req(reqPacket); break;
                             case Protocol.CS_CacheBox_SetExpireTime_Req: OnCS_CacheBox_SetExpireTime_Req(reqPacket); break;
                             case Protocol.CS_CacheBox_GetValue_Req: OnCS_CacheBox_GetValue_Req(reqPacket); break;
+
+                            default:
+                                Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", reqPacket.PacketId);
+                                break;
                         }
                     }
                     catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)
                     {
-                        Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", reqPacket.PacketId);
+                        Logger.Write(LogType.Err, 2, "Packet buffer underflow(PID=0x{0:X}).", reqPacket.PacketId);
                     }
                 });
             }
@@ -143,7 +170,7 @@ namespace Server.Session
         public override void SendPacket(StreamBuffer buffer, Action<StreamBuffer> onSent = null)
         {
             SecurePacket packet = (SecurePacket)buffer;
-            packet.Encrypt(Global.AES_IV, Global.AES_Key);
+            packet.Encrypt(_aesIV, _aesKey);
             base.SendPacket(buffer, onSent);
         }
     }

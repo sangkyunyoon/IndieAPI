@@ -11,11 +11,13 @@ namespace IndieAPI
     public partial class Request
     {
         private AegisClient _aegisClient = new AegisClient();
+        private Queue<SecurePacket> _queueSendPacket = new Queue<SecurePacket>();
         private Queue<SecurePacket> _queueReceivedPacket = new Queue<SecurePacket>();
         private CallbackQueue _callbackQueue = new CallbackQueue();
         private NetworkStatusChanged _handlerNetworkStatus;
 
         private Int32 _nextSeqNo, _userNo;
+        private String _initAESIV, _initAESKey;
         private String _aesIV, _aesKey;
 
         public Int32 ConnectionAliveTime
@@ -28,7 +30,7 @@ namespace IndieAPI
 
 
 
-        public void Initialize(String hostAddress, Int32 hostPortNo, String aesIV, String aesKey, NetworkStatusChanged handler)
+        public void Initialize(String hostAddress, Int32 hostPortNo, NetworkStatusChanged handler)
         {
             _aegisClient.NetworkEvent_Connected += OnConnect;
             _aegisClient.NetworkEvent_Disconnected += OnDisconnect;
@@ -40,8 +42,8 @@ namespace IndieAPI
             _aegisClient.HostPortNo = hostPortNo;
             _aegisClient.EnableSend = false;
 
-            _aesIV = aesIV;
-            _aesKey = aesKey;
+            _initAESIV = _aesIV = "AEGIS For Indie!";
+            _initAESKey = _aesKey = "AEGIS Indie APIs";
             _handlerNetworkStatus = handler;
 
             _callbackQueue.NoMatchesPacket = OnNoMatchesPacket;
@@ -49,7 +51,7 @@ namespace IndieAPI
             _nextSeqNo = 1;
             _userNo = 0;
 
-            //ConnectionAliveTime = 3000;
+            ConnectionAliveTime = 0;
         }
 
 
@@ -57,6 +59,7 @@ namespace IndieAPI
         {
             _aegisClient.Release();
             _callbackQueue.Clear();
+            _queueSendPacket.Clear();
         }
 
 
@@ -68,7 +71,29 @@ namespace IndieAPI
 
         public void Update()
         {
+            ProcessSendQueue();
             _callbackQueue.DoCallback();
+        }
+
+
+        private void ProcessSendQueue()
+        {
+            lock (_aegisClient)
+            {
+                if (_queueSendPacket.Count() == 0)
+                    return;
+
+                if (_aegisClient.ConnectionStatus == ConnectionStatus.Closed)
+                    _aegisClient.Connect();
+
+                if (_aegisClient.ConnectionStatus == ConnectionStatus.Connected &&
+                    _aegisClient.EnableSend == true)
+                {
+                    SecurePacket packet = _queueSendPacket.Dequeue();
+                    packet.Encrypt(_aesIV, _aesKey);
+                    _aegisClient.SendPacket(packet);
+                }
+            }
         }
 
 
@@ -104,6 +129,9 @@ namespace IndieAPI
 
         private void OnDisconnect()
         {
+            _aesIV = _initAESIV;
+            _aesKey = _initAESKey;
+
             OnNetworkStatusChanged(NetworkStatus.Disconnected);
             _aegisClient.EnableSend = false;
         }
@@ -113,10 +141,14 @@ namespace IndieAPI
         {
             SecurePacket packet = new SecurePacket(buffer);
             packet.Decrypt(_aesIV, _aesKey);
+            packet.SkipHeader();
 
 
             if (packet.PacketId == Protocol.CS_Hello_Ntf)
-                _aegisClient.EnableSend = true;
+            {
+                OnHello(packet);
+                return;
+            }
 
             if (packet.PacketId == Protocol.CS_ForceClosing_Ntf)
                 OnNetworkStatusChanged(NetworkStatus.SessionForceClosed);
@@ -126,8 +158,6 @@ namespace IndieAPI
                 if (packet.PacketId == Protocol.CS_Auth_LoginGuest_Res ||
                     packet.PacketId == Protocol.CS_Auth_LoginMember_Res)
                 {
-                    packet.SkipHeader();
-
                     Int32 result = packet.GetInt32();
                     if (result == ResultCode.Ok)
                         _userNo = packet.GetInt32();
@@ -138,10 +168,35 @@ namespace IndieAPI
         }
 
 
+        private void OnHello(SecurePacket packet)
+        {
+            Int32 seed = packet.GetInt32();
+            String characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+            char[] ascii = new char[16];
+
+
+            for (Int32 i = 0; i < 16; ++i)
+            {
+                Int32 val = seed & (0x6E << i);
+                ascii[i] = characterSet[(val % characterSet.Length)];
+            }
+            _aesIV = new string(ascii);
+
+
+            for (Int32 i = 0; i < 16; ++i)
+            {
+                Int32 val = seed & (0xF4 << i);
+                ascii[i] = characterSet[(val % characterSet.Length)];
+            }
+            _aesKey = new string(ascii);
+
+
+            _aegisClient.EnableSend = true;
+        }
+
+
         private void OnNoMatchesPacket(SecurePacket packet)
         {
-            packet.SkipHeader();
-
             switch (packet.PacketId)
             {
                 case Protocol.CS_IMC_EnteredUser_Ntf:
@@ -168,6 +223,16 @@ namespace IndieAPI
         {
             lock (_aegisClient)
             {
+                packet.SeqNo = _nextSeqNo++;
+                if (_nextSeqNo == Int32.MaxValue)
+                    _nextSeqNo = 0;
+
+                _queueSendPacket.Enqueue(packet);
+                _callbackQueue.AddCallback(packet.SeqNo, responseAction);
+            }
+            /*
+            lock (_aegisClient)
+            {
                 Int32 seqNo = _nextSeqNo++;
                 packet.SeqNo = seqNo;
                 packet.Encrypt(_aesIV, _aesKey);
@@ -178,6 +243,7 @@ namespace IndieAPI
                 if (_nextSeqNo == Int32.MaxValue)
                     _nextSeqNo = 0;
             }
+            */
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Server.Session
         }
 
 
-        public new static Boolean IsValidPacket(StreamBuffer buffer, out Int32 packetSize)
+        public static Boolean IsValidPacket(NetworkSession session, StreamBuffer buffer, out Int32 packetSize)
         {
             if (buffer.WrittenBytes < HeaderSize)
             {

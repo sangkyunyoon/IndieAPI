@@ -35,6 +35,7 @@ namespace TestClient
 
         private void OnClick_RefreshSheet(object sender, EventArgs e)
         {
+            FormMain.SetMessage(Color.Black, "Requesting 'Storage_Sheet_Refresh'...");
             IDAPI.Request.Storage_Sheet_Refresh(_tbFilename.Text, OnResponse_RefreshSheet);
         }
 
@@ -53,6 +54,8 @@ namespace TestClient
 
                 _lvSheets.Items.Add(lvi);
             }
+
+            FormMain.SetMessage(Color.Black, "Ready");
         }
 
 

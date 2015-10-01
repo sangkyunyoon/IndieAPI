@@ -72,10 +72,9 @@ namespace IndieAPI
                     Action<SecurePacket> callback;
 
 
+                        packet.SkipHeader();
                     if (_callbacks.TryGetValue(key, out callback) == true)
                     {
-                        packet.SkipHeader();
-
                         _callbacks.Remove(key);
                         callback(packet);
                     }

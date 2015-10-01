@@ -19,9 +19,7 @@ namespace TestClient
 
         public static void Initialize(String ipAddress, Int32 portNo)
         {
-            Request.Initialize(ipAddress, portNo,
-                               "AEGIS For Indie!", "AEGIS Indie APIs",
-                               OnNetworkStatusChanged);
+            Request.Initialize(ipAddress, portNo, OnNetworkStatusChanged);
 
             Timer timer = new Timer();
             timer.Tick += delegate (object sender, EventArgs e) { Request.Update(); };
