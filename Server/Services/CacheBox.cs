@@ -9,15 +9,16 @@ using Aegis.Threading;
 
 
 
-namespace Server.Services
+namespace IndieAPI.Server.Services
 {
     public partial class CacheBox
     {
         public static CacheBox Instance { get { return Singleton<CacheBox>.Instance; } }
         public static Int32 Count { get { return Instance._cached.Count(); } }
         private RWLock _lock = new RWLock();
-        private CancellationTokenSource _cts;
         private Dictionary<String, CacheItem> _cached = new Dictionary<String, CacheItem>();
+        private Thread _thread;
+
 
 
 
@@ -30,18 +31,14 @@ namespace Server.Services
 
         public void Initialize()
         {
-            _cts = new CancellationTokenSource();
-            AegisTask.RunPeriodically(1000, _cts.Token, CheckExpiredItem).Name = "CacheBox";
+            _thread = ThreadFactory.CallPeriodically(1000, CheckExpiredItem);
+            _thread.Name = "CacheBox";
         }
 
 
         public void Release()
         {
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                _cts = null;
-            }
+            ThreadFactory.Stop(_thread);
         }
 
 

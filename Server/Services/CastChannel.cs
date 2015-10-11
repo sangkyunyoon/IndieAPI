@@ -7,11 +7,11 @@ using System.Diagnostics;
 using Aegis;
 using Aegis.Threading;
 using Aegis.Network;
-using Server.Services.UserData;
+using IndieAPI.Server.UserManagement;
 
 
 
-namespace Server.Services
+namespace IndieAPI.Server.Services
 {
     public partial class CastChannel
     {

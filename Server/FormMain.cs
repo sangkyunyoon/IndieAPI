@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 
 
-namespace Server
+namespace IndieAPI.Server
 {
     public partial class FormMain : Form
     {
-        private CancellationTokenSource _cts;
+        private Thread _thread;
 
 
 
@@ -39,9 +39,8 @@ namespace Server
             _tbLog.Text = "";
 
             ServerMain.Instance.StartServer(_tbLog);
-
-            _cts = new CancellationTokenSource();
-            Aegis.Threading.AegisTask.RunPeriodically(1000, _cts.Token, Run).Name = "Statistics";
+            _thread = Aegis.Threading.ThreadFactory.CallPeriodically(1000, UpdateStatistics);
+            _thread.Name = "Statistics";
         }
 
 
@@ -51,8 +50,7 @@ namespace Server
             _btnStop.Enabled = false;
 
 
-            if (_cts != null)
-                _cts.Cancel();
+            Aegis.Threading.ThreadFactory.Stop(_thread);
             ServerMain.Instance.StopServer();
         }
 
@@ -63,35 +61,24 @@ namespace Server
             _btnStop.Enabled = false;
 
 
-            if (_cts != null)
-                _cts.Cancel();
+            Aegis.Threading.ThreadFactory.Stop(_thread);
             ServerMain.Instance.StopServer();
         }
 
 
-        private Boolean Run()
+        private Boolean UpdateStatistics()
         {
-            try
+            if (InvokeRequired)
+                Invoke((MethodInvoker)delegate { UpdateStatistics(); });
+            else
             {
-                if (InvokeRequired)
-                    Invoke((MethodInvoker)delegate { UpdateStatistics(); });
-                else
-                    UpdateStatistics();
-            }
-            catch (Exception)
-            {
+                _lbCachedUserCount.Text = UserManagement.UserManager.Count.ToString();
+                _lbCCU.Text = UserManagement.UserManager.CCU.ToString();
+                _lbCacheBoxItemCount.Text = Services.CacheBox.Count.ToString();
+                _lbTaskCount.Text = Aegis.Threading.AegisTask.TaskCount.ToString();
             }
 
             return true;
-        }
-
-
-        private void UpdateStatistics()
-        {
-            _lbCachedUserCount.Text = Services.UserData.UserManager.Count.ToString();
-            _lbCCU.Text = Services.UserData.UserManager.CCU.ToString();
-            _lbCacheBoxItemCount.Text = Services.CacheBox.Count.ToString();
-            _lbTaskCount.Text = Aegis.Threading.AegisTask.TaskCount.ToString();
         }
     }
 }

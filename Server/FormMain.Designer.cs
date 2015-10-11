@@ -1,4 +1,4 @@
-﻿namespace Server
+﻿namespace IndieAPI.Server
 {
     partial class FormMain
     {

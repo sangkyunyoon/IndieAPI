@@ -8,7 +8,7 @@ using Aegis.Data.MySql;
 
 
 
-namespace Server.Services
+namespace IndieAPI.Server.Services
 {
     public class Membership
     {

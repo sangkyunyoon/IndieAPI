@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Aegis id="21301" logLevel="2" mutexName="">
   <NetworkChannel name="NetworkClient"
-                  sessionClass="Server.Session.ClientSession"
+                  sessionClass="IndieAPI.Server.Session.ClientSession"
                   receiveBufferSize="8192"
                   initSessionPoolCount="5"
                   maxSessionPoolCount="100"
@@ -10,7 +10,7 @@
 
   <CustomData>
     <GameDB ipAddress="127.0.0.1" port="3306" userId="root" userPwd="1111" dbName="indie_gamedb" />
-    <AES IV="AEGIS For Indie!" Key="AEGIS Indie APIs" />
+    <AES IV="1sf_@skKKw#ns(*s" Key="nt_som5slm1NBB3 " />
     <UserManager ccuMaxTime="300" maxAliveTime="1800" />
     <CloudSheet storagePath=".\"
                 maxTableCount="10"

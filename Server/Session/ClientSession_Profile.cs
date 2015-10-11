@@ -8,7 +8,7 @@ using Aegis.Converter;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public partial class ClientSession
     {

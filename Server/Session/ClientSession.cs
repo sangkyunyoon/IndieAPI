@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Aegis;
 using Aegis.Threading;
 using Aegis.Network;
-using Server.Services.UserData;
+using IndieAPI.Server.UserManagement;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public partial class ClientSession : AsyncResultSession
     {

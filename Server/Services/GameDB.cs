@@ -10,7 +10,7 @@ using Aegis.Converter;
 
 
 
-namespace Server.Services
+namespace IndieAPI.Server.Services
 {
     public static class GameDB
     {

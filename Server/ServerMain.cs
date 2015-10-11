@@ -9,7 +9,7 @@ using Aegis.Configuration;
 
 
 
-namespace Server
+namespace IndieAPI.Server
 {
     public class ServerMain
     {
@@ -39,7 +39,7 @@ namespace Server
                     Global.Refresh();
                     Services.GameDB.Initialize();
                     Services.CacheBox.Instance.Initialize();
-                    Services.UserData.UserManager.Instance.Initialize();
+                    UserManagement.UserManager.Instance.Initialize();
                     Services.CloudSheet.Workbooks.Initialize();
                 }
                 Starter.StartNetwork();
@@ -61,7 +61,7 @@ namespace Server
         {
             Starter.Release();
             Services.CloudSheet.Workbooks.Release();
-            Services.UserData.UserManager.Instance.Release();
+            UserManagement.UserManager.Instance.Release();
             Services.CacheBox.Instance.Release();
             Services.GameDB.Release();
 

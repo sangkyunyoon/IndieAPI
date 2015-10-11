@@ -6,11 +6,12 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Threading;
-using Aegis.Network;
+using IndieAPI.Server.Services;
+using IndieAPI.Server.Services.Profiles;
 
 
 
-namespace Server.Services.UserData
+namespace IndieAPI.Server.UserManagement
 {
     public class User
     {

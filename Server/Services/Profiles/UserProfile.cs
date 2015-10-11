@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Aegis.Data.MySql;
+using IndieAPI.Server.UserManagement;
 
 
 
-namespace Server.Services.UserData
+namespace IndieAPI.Server.Services.Profiles
 {
     public class UserProfile
     {

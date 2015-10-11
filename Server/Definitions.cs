@@ -3,7 +3,7 @@ using System.Reflection;
 
 
 
-namespace Server
+namespace IndieAPI.Server
 {
     public static class Protocol
     {

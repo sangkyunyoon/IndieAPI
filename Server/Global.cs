@@ -9,7 +9,7 @@ using Aegis.Converter;
 
 
 
-namespace Server
+namespace IndieAPI.Server
 {
     public static class Global
     {

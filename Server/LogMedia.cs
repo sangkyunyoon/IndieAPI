@@ -5,7 +5,7 @@ using Aegis;
 
 
 
-namespace Server
+namespace IndieAPI.Server
 {
     public class LogTextFile : ILogMedia
     {

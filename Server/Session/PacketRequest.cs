@@ -8,7 +8,7 @@ using Aegis.Network;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public class PacketRequest : SecurePacket
     {

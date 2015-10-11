@@ -7,7 +7,7 @@ using Aegis;
 
 
 
-namespace Server.Services
+namespace IndieAPI.Server.Services
 {
     public partial class CacheBox
     {

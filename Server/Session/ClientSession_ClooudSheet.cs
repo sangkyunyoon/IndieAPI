@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Aegis;
 using Aegis.Network;
 using Aegis.Data.MySql;
-using Server.Services.CloudSheet;
+using IndieAPI.Server.Services.CloudSheet;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public partial class ClientSession
     {

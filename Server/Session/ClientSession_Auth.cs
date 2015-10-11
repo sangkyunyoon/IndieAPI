@@ -7,7 +7,7 @@ using Aegis.Network;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public partial class ClientSession
     {
@@ -51,7 +51,7 @@ namespace Server.Session
             {
                 if (result == ResultCode.Ok)
                 {
-                    _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    _user = UserManagement.UserManager.Instance.GetUser(userNo);
                     _user.LastSeqNo = reqPacket.SeqNo;
                     await _user.LoadFromDB();
 
@@ -78,7 +78,7 @@ namespace Server.Session
             {
                 if (result == ResultCode.Ok)
                 {
-                    _user = Services.UserData.UserManager.Instance.GetUser(userNo);
+                    _user = UserManagement.UserManager.Instance.GetUser(userNo);
                     _user.LastSeqNo = reqPacket.SeqNo;
                     await _user.LoadFromDB();
 

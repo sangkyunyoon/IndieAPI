@@ -42,8 +42,8 @@ namespace IndieAPI
             _aegisClient.HostPortNo = hostPortNo;
             _aegisClient.EnableSend = false;
 
-            _initAESIV = _aesIV = "AEGIS For Indie!";
-            _initAESKey = _aesKey = "AEGIS Indie APIs";
+            _initAESIV = _aesIV = "1sf_@skKKw#ns(*s";
+            _initAESKey = _aesKey = "nt_som5slm1NBB3 ";
             _handlerNetworkStatus = handler;
 
             _callbackQueue.NoMatchesPacket = OnNoMatchesPacket;
@@ -129,11 +129,11 @@ namespace IndieAPI
 
         private void OnDisconnect()
         {
+            _aegisClient.EnableSend = false;
+            OnNetworkStatusChanged(NetworkStatus.Disconnected);
+
             _aesIV = _initAESIV;
             _aesKey = _initAESKey;
-
-            OnNetworkStatusChanged(NetworkStatus.Disconnected);
-            _aegisClient.EnableSend = false;
         }
 
 
@@ -230,20 +230,6 @@ namespace IndieAPI
                 _queueSendPacket.Enqueue(packet);
                 _callbackQueue.AddCallback(packet.SeqNo, responseAction);
             }
-            /*
-            lock (_aegisClient)
-            {
-                Int32 seqNo = _nextSeqNo++;
-                packet.SeqNo = seqNo;
-                packet.Encrypt(_aesIV, _aesKey);
-
-                _callbackQueue.AddCallback(seqNo, responseAction);
-                _aegisClient.SendPacket(packet);
-
-                if (_nextSeqNo == Int32.MaxValue)
-                    _nextSeqNo = 0;
-            }
-            */
         }
     }
 }

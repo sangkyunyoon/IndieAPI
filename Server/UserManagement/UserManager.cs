@@ -9,7 +9,7 @@ using Aegis.Threading;
 
 
 
-namespace Server.Services.UserData
+namespace IndieAPI.Server.UserManagement
 {
     public class UserManager
     {
@@ -18,7 +18,7 @@ namespace Server.Services.UserData
         public static Int32 CCU { get { return Instance._ccu; } }
         private RWLock _lock = new RWLock();
         private Dictionary<Int32, User> _users = new Dictionary<Int32, User>();
-        private CancellationTokenSource _cts;
+        private Thread _thread;
         private Int32 _ccu;
 
 
@@ -33,18 +33,15 @@ namespace Server.Services.UserData
         public void Initialize()
         {
             _ccu = 0;
-            _cts = new CancellationTokenSource();
-            AegisTask.RunPeriodically(1000, _cts.Token, Run).Name = "UserManager";
+            _thread = ThreadFactory.CallPeriodically(1000, Run);
+            _thread.Name = "UserManager";
         }
 
 
         public void Release()
         {
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                _cts = null;
-            }
+            ThreadFactory.Stop(_thread);
+            _thread = null;
             _ccu = 0;
         }
 

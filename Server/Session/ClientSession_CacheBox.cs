@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Network;
-using Server.Services;
+using IndieAPI.Server.Services;
 
 
 
-namespace Server.Session
+namespace IndieAPI.Server.Session
 {
     public partial class ClientSession
     {
