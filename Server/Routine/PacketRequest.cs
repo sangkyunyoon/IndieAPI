@@ -8,7 +8,7 @@ using Aegis.Network;
 
 
 
-namespace IndieAPI.Server.Session
+namespace IndieAPI.Server.Routine
 {
     public class PacketRequest : SecurePacket
     {
@@ -50,7 +50,7 @@ namespace IndieAPI.Server.Session
         }
 
 
-        public static Boolean IsValidPacket(NetworkSession session, StreamBuffer buffer, out Int32 packetSize)
+        public static Boolean IsValidPacket(Session session, StreamBuffer buffer, out Int32 packetSize)
         {
             if (buffer.WrittenBytes < HeaderSize)
             {

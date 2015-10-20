@@ -99,20 +99,20 @@
     <Compile Include="UserManagement\User.cs" />
     <Compile Include="UserManagement\UserManager.cs" />
     <Compile Include="Services\Profiles\UserProfile.cs" />
-    <Compile Include="Session\ClientSession.cs" />
-    <Compile Include="Session\ClientSession_Auth.cs" />
-    <Compile Include="Session\ClientSession_CacheBox.cs" />
-    <Compile Include="Session\ClientSession_IMC.cs" />
-    <Compile Include="Session\ClientSession_Profile.cs" />
-    <Compile Include="Session\ClientSession_ClooudSheet.cs" />
+    <Compile Include="Routine\ClientSession.cs" />
+    <Compile Include="Routine\ClientSession_Auth.cs" />
+    <Compile Include="Routine\ClientSession_CacheBox.cs" />
+    <Compile Include="Routine\ClientSession_IMC.cs" />
+    <Compile Include="Routine\ClientSession_Profile.cs" />
+    <Compile Include="Routine\ClientSession_ClooudSheet.cs" />
     <Compile Include="Services\GameDB.cs" />
     <Compile Include="LogMedia.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerMain.cs" />
     <Compile Include="Services\Membership.cs" />
-    <Compile Include="Session\PacketRequest.cs" />
-    <Compile Include="Session\PacketResponse.cs" />
+    <Compile Include="Routine\PacketRequest.cs" />
+    <Compile Include="Routine\PacketResponse.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

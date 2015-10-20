@@ -36,13 +36,13 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.CommandText.Append("select regdate, lastlogindate, continuous_count, daily_count");
                 cmd.CommandText.Append($" from t_logincounts where userno={_user.UserNo};");
 
-                DataReader reader = cmd.Query();
-                if (reader.Read())
+                cmd.Query();
+                if (cmd.Reader.Read())
                 {
-                    RegDate = reader.GetDateTime(0);
-                    LastLoginDate = reader.GetDateTime(1);
-                    ContinuousCount = reader.GetByte(2);
-                    DailyCount = reader.GetByte(3);
+                    RegDate = cmd.Reader.GetDateTime(0);
+                    LastLoginDate = cmd.Reader.GetDateTime(1);
+                    ContinuousCount = cmd.Reader.GetByte(2);
+                    DailyCount = cmd.Reader.GetByte(3);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.BindParameter("@_1", ContinuousCount);
                 cmd.BindParameter("@_2", DailyCount);
                 cmd.BindParameter("@_3", _user.UserNo);
-                cmd.PostQuery();
+                cmd.PostQueryNoReader();
             }
         }
     }

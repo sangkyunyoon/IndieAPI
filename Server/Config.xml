@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Aegis id="21301" logLevel="2" mutexName="">
   <NetworkChannel name="NetworkClient"
-                  sessionClass="IndieAPI.Server.Session.ClientSession"
+                  sessionClass="IndieAPI.Server.Routine.ClientSession"
                   receiveBufferSize="8192"
                   initSessionPoolCount="5"
                   maxSessionPoolCount="100"

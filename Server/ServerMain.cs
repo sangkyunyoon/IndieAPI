@@ -34,7 +34,7 @@ namespace IndieAPI.Server
                 Logger.Write(LogType.Info, 2, $"INDIE-API Server ({Aegis.Configuration.Environment.ExecutingVersion})");
                 Logger.Write(LogType.Info, 2, $"Powered by AegisNetwork ({Aegis.Configuration.Environment.AegisVersion})");
 
-                Starter.Initialize("./Config.xml");
+                Starter.Initialize(1, "./Config.xml");
                 {
                     Global.Refresh();
                     Services.GameDB.Initialize();

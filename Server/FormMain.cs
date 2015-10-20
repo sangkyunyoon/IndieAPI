@@ -39,7 +39,7 @@ namespace IndieAPI.Server
             _tbLog.Text = "";
 
             ServerMain.Instance.StartServer(_tbLog);
-            _thread = Aegis.Threading.ThreadFactory.CallPeriodically(1000, UpdateStatistics);
+            _thread = Aegis.Threading.ThreadExtend.CallPeriodically(1000, UpdateStatistics);
             _thread.Name = "Statistics";
         }
 
@@ -49,8 +49,6 @@ namespace IndieAPI.Server
             _btnStart.Enabled = true;
             _btnStop.Enabled = false;
 
-
-            Aegis.Threading.ThreadFactory.Stop(_thread);
             ServerMain.Instance.StopServer();
         }
 
@@ -60,8 +58,6 @@ namespace IndieAPI.Server
             _btnStart.Enabled = true;
             _btnStop.Enabled = false;
 
-
-            Aegis.Threading.ThreadFactory.Stop(_thread);
             ServerMain.Instance.StopServer();
         }
 

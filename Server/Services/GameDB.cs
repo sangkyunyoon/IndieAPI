@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Aegis.Configuration;
+using Aegis;
 using Aegis.Data.MySql;
 using Aegis.Converter;
 
@@ -46,7 +46,7 @@ namespace IndieAPI.Server.Services
                 Starter.CustomData.GetValue("GameDB/dbName"),
                 Starter.CustomData.GetValue("GameDB/userId"),
                 Starter.CustomData.GetValue("GameDB/userPwd"));
-            _mysql.SetWorketQueue(4);
+            _mysql.SetThreadCount(4);
         }
 
 
@@ -62,7 +62,7 @@ namespace IndieAPI.Server.Services
 
         public static DBCommand NewCommand()
         {
-            return DBCommand.NewCommand(_mysql);
+            return new DBCommand(_mysql);
         }
     }
 }

@@ -56,10 +56,10 @@ namespace IndieAPI.Server.Services
             {
                 cmd.CommandText.Append("call sp_auth_register_guest(@uuid);");
                 cmd.BindParameter("@uuid", uuid);
-                cmd.PostQuery((reader) =>
+                cmd.PostQuery(() =>
                 {
-                    reader.Read();
-                    Int32 ret = reader.GetInt32(0);
+                    cmd.Reader.Read();
+                    Int32 ret = cmd.Reader.GetInt32(0);
                     if (ret == 0)
                         onComplete(ResultCode.Ok);
 
@@ -80,10 +80,10 @@ namespace IndieAPI.Server.Services
                 cmd.BindParameter("@uuid", uuid);
                 cmd.BindParameter("@userId", userId);
                 cmd.BindParameter("@pwd", passwordHash);
-                cmd.PostQuery((reader) =>
+                cmd.PostQuery(() =>
                 {
-                    reader.Read();
-                    Int32 ret = reader.GetInt32(0);
+                    cmd.Reader.Read();
+                    Int32 ret = cmd.Reader.GetInt32(0);
                     if (ret == 0)
                         onComplete(ResultCode.Ok);
 
@@ -103,11 +103,11 @@ namespace IndieAPI.Server.Services
             {
                 cmd.CommandText.Append("select userno from t_accounts where uuid=@uuid and isguest=1;");
                 cmd.BindParameter("@uuid", uuid);
-                cmd.PostQuery((reader) =>
+                cmd.PostQuery(() =>
                 {
-                    if (reader.Read() == true)
+                    if (cmd.Reader.Read() == true)
                     {
-                        Int32 userNo = reader.GetInt32(0);
+                        Int32 userNo = cmd.Reader.GetInt32(0);
                         onComplete(ResultCode.Ok, userNo);
                     }
                     else
@@ -127,12 +127,12 @@ namespace IndieAPI.Server.Services
                 cmd.CommandText.Append("select userno, uuid from t_accounts where userid=@userid and userpwd=@userpwd and isguest=0;");
                 cmd.BindParameter("@userid", userId);
                 cmd.BindParameter("@userpwd", passwordHash);
-                cmd.PostQuery((reader) =>
+                cmd.PostQuery(() =>
                 {
-                    if (reader.Read() == true)
+                    if (cmd.Reader.Read() == true)
                     {
-                        Int32 dbUserNo = reader.GetInt32(0);
-                        String dbUUID = reader.GetString(1);
+                        Int32 dbUserNo = cmd.Reader.GetInt32(0);
+                        String dbUUID = cmd.Reader.GetString(1);
 
 
                         if (dbUUID != uuid)

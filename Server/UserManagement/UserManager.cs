@@ -33,14 +33,14 @@ namespace IndieAPI.Server.UserManagement
         public void Initialize()
         {
             _ccu = 0;
-            _thread = ThreadFactory.CallPeriodically(1000, Run);
+            _thread = ThreadExtend.CallPeriodically(1000, Run);
             _thread.Name = "UserManager";
         }
 
 
         public void Release()
         {
-            ThreadFactory.Stop(_thread);
+            ThreadExtend.Cancel(_thread);
             _thread = null;
             _ccu = 0;
         }

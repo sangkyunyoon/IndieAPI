@@ -43,9 +43,9 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.CommandText.Append($"select textdata from t_textbox where userno={_user.UserNo};");
 
 
-                DataReader reader = cmd.Query();
-                if (reader.Read())
-                    _textData = reader.GetString(0);
+                cmd.Query();
+                if (cmd.Reader.Read())
+                    _textData = cmd.Reader.GetString(0);
                 else
                     _textData = "";
             }
@@ -60,7 +60,7 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.CommandText.Append(" on duplicate key update textdata=@data;");
                 cmd.BindParameter("@userno", _user.UserNo);
                 cmd.BindParameter("@data", _textData);
-                cmd.PostQuery();
+                cmd.PostQueryNoReader();
             }
         }
     }

@@ -34,12 +34,12 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.CommandText.Append("select nickname, level, exp");
                 cmd.CommandText.Append($" from t_profiles where userno={_user.UserNo};");
 
-                DataReader reader = cmd.Query();
-                if (reader.Read())
+                cmd.Query();
+                if (cmd.Reader.Read())
                 {
-                    Nickname = (reader.IsDBNull(0) ? null : reader.GetString(0));
-                    Level = reader.GetInt16(1);
-                    Exp = reader.GetInt16(2);
+                    Nickname = (cmd.Reader.IsDBNull(0) ? null : cmd.Reader.GetString(0));
+                    Level = cmd.Reader.GetInt16(1);
+                    Exp = cmd.Reader.GetInt16(2);
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace IndieAPI.Server.Services.Profiles
                 cmd.BindParameter("@_0", Nickname);
                 cmd.BindParameter("@_1", Level);
                 cmd.BindParameter("@_2", Exp);
-                cmd.PostQuery();
+                cmd.PostQueryNoReader();
             }
         }
     }

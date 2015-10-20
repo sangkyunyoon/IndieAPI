@@ -10,9 +10,9 @@ using IndieAPI.Server.UserManagement;
 
 
 
-namespace IndieAPI.Server.Session
+namespace IndieAPI.Server.Routine
 {
-    public partial class ClientSession : AsyncResultSession
+    public partial class ClientSession : Session
     {
         private User _user;
         private String _aesIV, _aesKey;
@@ -30,7 +30,7 @@ namespace IndieAPI.Server.Session
         }
 
 
-        private void OnAccepted(NetworkSession session)
+        private void OnAccepted(Session session)
         {
             SecurePacket ntfPacket = new SecurePacket(Protocol.CS_Hello_Ntf);
             Int32 seed = 0;
@@ -72,7 +72,7 @@ namespace IndieAPI.Server.Session
         }
 
 
-        private void OnClosed(NetworkSession session)
+        private void OnClosed(Session session)
         {
             if (_user != null)
             {
@@ -85,7 +85,7 @@ namespace IndieAPI.Server.Session
         }
 
 
-        private void OnReceived(NetworkSession session, StreamBuffer buffer)
+        private void OnReceived(Session session, StreamBuffer buffer)
         {
             PacketRequest reqPacket = new PacketRequest(buffer);
             reqPacket.Decrypt(_aesIV, _aesKey);
@@ -95,13 +95,10 @@ namespace IndieAPI.Server.Session
             //  Authentication Packets
             if ((reqPacket.PacketId >> 8) == 0x20)
             {
-                AegisTask.Run(() =>
-                {
-                    if (reqPacket.PacketId == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(reqPacket);
-                    else if (reqPacket.PacketId == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(reqPacket);
-                    else if (reqPacket.PacketId == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(reqPacket);
-                    else if (reqPacket.PacketId == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(reqPacket);
-                });
+                if (reqPacket.PacketId == Protocol.CS_Auth_RegisterGuest_Req) OnCS_Auth_RegisterGuest_Req(reqPacket);
+                else if (reqPacket.PacketId == Protocol.CS_Auth_RegisterMember_Req) OnCS_Auth_RegisterMember_Req(reqPacket);
+                else if (reqPacket.PacketId == Protocol.CS_Auth_LoginGuest_Req) OnCS_Auth_LoginGuest_Req(reqPacket);
+                else if (reqPacket.PacketId == Protocol.CS_Auth_LoginMember_Req) OnCS_Auth_LoginMember_Req(reqPacket);
             }
 
             //  Contents Packets
@@ -128,41 +125,38 @@ namespace IndieAPI.Server.Session
                 }
 
 
-                AegisTask.Run(() =>
+                try
                 {
-                    try
+                    switch (reqPacket.PacketId)
                     {
-                        switch (reqPacket.PacketId)
-                        {
-                            case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(reqPacket); break;
-                            case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(reqPacket); break;
-                            case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(reqPacket); break;
-                            case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(reqPacket); break;
+                        case Protocol.CS_Profile_GetData_Req: OnCS_Profile_GetData_Req(reqPacket); break;
+                        case Protocol.CS_Profile_SetData_Req: OnCS_Profile_SetData_Req(reqPacket); break;
+                        case Protocol.CS_Profile_Text_GetData_Req: OnCS_Profile_Text_GetData_Req(reqPacket); break;
+                        case Protocol.CS_Profile_Text_SetData_Req: OnCS_Profile_Text_SetData_Req(reqPacket); break;
 
-                            case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(reqPacket); break;
-                            case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(reqPacket); break;
+                        case Protocol.CS_CloudSheet_GetSheetList_Req: OnCS_CloudSheet_GetSheetList_Req(reqPacket); break;
+                        case Protocol.CS_CloudSheet_GetRecords_Req: OnCS_CloudSheet_GetRecords_Req(reqPacket); break;
 
-                            case Protocol.CS_IMC_ChannelList_Req: OnCS_IMC_ChannelList_Req(reqPacket); break;
-                            case Protocol.CS_IMC_Create_Req: OnCS_IMC_Create_Req(reqPacket); break;
-                            case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(reqPacket); break;
-                            case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(reqPacket); break;
-                            case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(reqPacket); break;
-                            case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(reqPacket); break;
+                        case Protocol.CS_IMC_ChannelList_Req: OnCS_IMC_ChannelList_Req(reqPacket); break;
+                        case Protocol.CS_IMC_Create_Req: OnCS_IMC_Create_Req(reqPacket); break;
+                        case Protocol.CS_IMC_Enter_Req: OnCS_IMC_Enter_Req(reqPacket); break;
+                        case Protocol.CS_IMC_Leave_Req: OnCS_IMC_Leave_Req(reqPacket); break;
+                        case Protocol.CS_IMC_UserList_Req: OnCS_IMC_UserList_Req(reqPacket); break;
+                        case Protocol.CS_IMC_SendMessage_Req: OnCS_IMC_SendMessage_Req(reqPacket); break;
 
-                            case Protocol.CS_CacheBox_SetValue_Req: OnCS_CacheBox_SetValue_Req(reqPacket); break;
-                            case Protocol.CS_CacheBox_SetExpireTime_Req: OnCS_CacheBox_SetExpireTime_Req(reqPacket); break;
-                            case Protocol.CS_CacheBox_GetValue_Req: OnCS_CacheBox_GetValue_Req(reqPacket); break;
+                        case Protocol.CS_CacheBox_SetValue_Req: OnCS_CacheBox_SetValue_Req(reqPacket); break;
+                        case Protocol.CS_CacheBox_SetExpireTime_Req: OnCS_CacheBox_SetExpireTime_Req(reqPacket); break;
+                        case Protocol.CS_CacheBox_GetValue_Req: OnCS_CacheBox_GetValue_Req(reqPacket); break;
 
-                            default:
-                                Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", reqPacket.PacketId);
-                                break;
-                        }
+                        default:
+                            Logger.Write(LogType.Err, 2, "Invalid pakcet received(PID=0x{0:X}).", reqPacket.PacketId);
+                            break;
                     }
-                    catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)
-                    {
-                        Logger.Write(LogType.Err, 2, "Packet buffer underflow(PID=0x{0:X}).", reqPacket.PacketId);
-                    }
-                });
+                }
+                catch (AegisException e) when (e.ResultCodeNo == AegisResult.BufferUnderflow)
+                {
+                    Logger.Write(LogType.Err, 2, "Packet buffer underflow(PID=0x{0:X}).", reqPacket.PacketId);
+                }
             }
         }
 

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Aegis;
 using Aegis.Threading;
+using IndieAPI.Server.Routine;
 using IndieAPI.Server.Services;
 using IndieAPI.Server.Services.Profiles;
 
@@ -17,7 +18,7 @@ namespace IndieAPI.Server.UserManagement
     {
         public Int32 LastSeqNo { get; set; }
         public Stopwatch LastAliveTick { get; set; }
-        public Session.ClientSession Session { get; set; }
+        public ClientSession Session { get; set; }
 
         public Int32 UserNo { get; }
         public UserProfile Profile { get; }

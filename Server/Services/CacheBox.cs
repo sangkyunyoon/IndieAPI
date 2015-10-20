@@ -31,14 +31,14 @@ namespace IndieAPI.Server.Services
 
         public void Initialize()
         {
-            _thread = ThreadFactory.CallPeriodically(1000, CheckExpiredItem);
+            _thread = ThreadExtend.CallPeriodically(1000, CheckExpiredItem);
             _thread.Name = "CacheBox";
         }
 
 
         public void Release()
         {
-            ThreadFactory.Stop(_thread);
+            ThreadExtend.Cancel(_thread);
         }
 
 

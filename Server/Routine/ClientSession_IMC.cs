@@ -10,7 +10,7 @@ using IndieAPI.Server.UserManagement;
 
 
 
-namespace IndieAPI.Server.Session
+namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
