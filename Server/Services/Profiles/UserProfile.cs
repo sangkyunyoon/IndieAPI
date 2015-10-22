@@ -27,20 +27,13 @@ namespace IndieAPI.Server.Services.Profiles
         }
 
 
-        public void LoadFromDB()
+        public void LoadFromDB(DataReader reader)
         {
-            using (DBCommand cmd = GameDB.NewCommand())
+            if (reader.Read())
             {
-                cmd.CommandText.Append("select nickname, level, exp");
-                cmd.CommandText.Append($" from t_profiles where userno={_user.UserNo};");
-
-                cmd.Query();
-                if (cmd.Reader.Read())
-                {
-                    Nickname = (cmd.Reader.IsDBNull(0) ? null : cmd.Reader.GetString(0));
-                    Level = cmd.Reader.GetInt16(1);
-                    Exp = cmd.Reader.GetInt16(2);
-                }
+                Nickname = (reader.IsDBNull(0) ? null : reader.GetString(0));
+                Level = reader.GetInt16(1);
+                Exp = reader.GetInt16(2);
             }
         }
 

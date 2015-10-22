@@ -36,15 +36,11 @@ namespace IndieAPI.Server.Services.CloudSheet
                     return;
 
 
-                lock (this)
-                {
-                    TableCollection = new Workbook(filename);
-                    _fileInfo = new FileInfo(filename);
+                TableCollection = new Workbook(filename);
+                _fileInfo = new FileInfo(filename);
 
-
-                    if (_fileInfo.Length > Global.MaxFileSize)
-                        throw new AegisException(ResultCode.CloudSheet_TooBigFileSize, "File size too large({0}).", filename);
-                }
+                if (_fileInfo.Length > Global.MaxFileSize)
+                    throw new AegisException(ResultCode.CloudSheet_TooBigFileSize, "File size too large({0}).", filename);
             }
 
 

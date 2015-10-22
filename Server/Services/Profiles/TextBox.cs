@@ -36,19 +36,11 @@ namespace IndieAPI.Server.Services.Profiles
         }
 
 
-        public void LoadFromDB()
+        public void LoadFromDB(DataReader reader)
         {
-            using (DBCommand cmd = GameDB.NewCommand())
-            {
-                cmd.CommandText.Append($"select textdata from t_textbox where userno={_user.UserNo};");
-
-
-                cmd.Query();
-                if (cmd.Reader.Read())
-                    _textData = cmd.Reader.GetString(0);
-                else
-                    _textData = "";
-            }
+            _textData = "";
+            if (reader.Read())
+                _textData = reader.GetString(0);
         }
 
 

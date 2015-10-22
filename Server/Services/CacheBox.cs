@@ -15,7 +15,6 @@ namespace IndieAPI.Server.Services
     {
         public static CacheBox Instance { get { return Singleton<CacheBox>.Instance; } }
         public static Int32 Count { get { return Instance._cached.Count(); } }
-        private RWLock _lock = new RWLock();
         private Dictionary<String, CacheItem> _cached = new Dictionary<String, CacheItem>();
         private Thread _thread;
 
@@ -44,22 +43,19 @@ namespace IndieAPI.Server.Services
 
         private Boolean CheckExpiredItem()
         {
-            List<CacheItem> expiredItems;
-            DateTime now = DateTime.Now;
-
-
-            using (_lock.ReaderLock)
+            SpinWorker.Dispatch(() =>
             {
+                List<CacheItem> expiredItems;
+                DateTime now = DateTime.Now;
+
+
                 expiredItems = _cached.Values
                                       .Where(v => v.ExpireTime != -1 && now > DateTime.FromOADate(v.ExpireTime))
                                       .ToList();
-            }
 
-            using (_lock.WriterLock)
-            {
                 foreach (CacheItem item in expiredItems)
                     _cached.Remove(item.Key);
-            }
+            });
 
             return true;
         }

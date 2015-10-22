@@ -48,14 +48,31 @@ namespace IndieAPI.Server.UserManagement
         }
 
 
-        public async Task LoadFromDB()
+        public void LoadFromDB(Action actionOnLoaded)
         {
-            await AegisTask.Run(() =>
+            using (var cmd = GameDB.NewCommand())
             {
-                Profile.LoadFromDB();
-                LoginCounter.LoadFromDB();
-                TextBox.LoadFromDB();
-            });
+                cmd.CommandText.Append("select nickname, level, exp");
+                cmd.CommandText.Append($" from t_profiles where userno={UserNo};");
+
+                cmd.CommandText.Append("select regdate, lastlogindate, continuous_count, daily_count");
+                cmd.CommandText.Append($" from t_logincounts where userno={UserNo};");
+
+                cmd.CommandText.Append($"select textdata from t_textbox where userno={UserNo};");
+                cmd.PostQuery(() =>
+                {
+                    Profile.LoadFromDB(cmd.Reader);
+
+                    cmd.Reader.NextResult();
+                    LoginCounter.LoadFromDB(cmd.Reader);
+
+                    cmd.Reader.NextResult();
+                    TextBox.LoadFromDB(cmd.Reader);
+
+
+                    actionOnLoaded();
+                });
+            }
         }
     }
 }

@@ -47,21 +47,28 @@ namespace IndieAPI.Server.Routine
             PacketResponse resPacket = new PacketResponse(reqPacket);
 
 
-            Services.Membership.Instance.LoginGuest(uuid, async (result, userNo) =>
+            Services.Membership.Instance.LoginGuest(uuid, (result, userNo) =>
             {
                 if (result == ResultCode.Ok)
                 {
                     _user = UserManagement.UserManager.Instance.GetUser(userNo);
                     _user.LastSeqNo = reqPacket.SeqNo;
-                    await _user.LoadFromDB();
 
-                    _user.LoginCounter.OnLoggedIn();
+                    _user.LoadFromDB(() =>
+                    {
+                        _user.LoginCounter.OnLoggedIn();
+
+                        resPacket.PutInt32(result);
+                        resPacket.PutInt32(userNo);
+                        SendPacket(resPacket);
+                    });
                 }
-
-
-                resPacket.PutInt32(result);
-                resPacket.PutInt32(userNo);
-                SendPacket(resPacket);
+                else
+                {
+                    resPacket.PutInt32(result);
+                    resPacket.PutInt32(userNo);
+                    SendPacket(resPacket);
+                }
             });
         }
 
@@ -74,21 +81,28 @@ namespace IndieAPI.Server.Routine
             PacketResponse resPacket = new PacketResponse(reqPacket);
 
 
-            Services.Membership.Instance.LoginMember(uuid, userId, userPwd, async (result, userNo) =>
+            Services.Membership.Instance.LoginMember(uuid, userId, userPwd, (result, userNo) =>
             {
                 if (result == ResultCode.Ok)
                 {
                     _user = UserManagement.UserManager.Instance.GetUser(userNo);
                     _user.LastSeqNo = reqPacket.SeqNo;
-                    await _user.LoadFromDB();
 
-                    _user.LoginCounter.OnLoggedIn();
+                    _user.LoadFromDB(() =>
+                    {
+                        _user.LoginCounter.OnLoggedIn();
+
+                        resPacket.PutInt32(result);
+                        resPacket.PutInt32(userNo);
+                        SendPacket(resPacket);
+                    });
                 }
-
-
-                resPacket.PutInt32(result);
-                resPacket.PutInt32(userNo);
-                SendPacket(resPacket);
+                else
+                {
+                    resPacket.PutInt32(result);
+                    resPacket.PutInt32(userNo);
+                    SendPacket(resPacket);
+                }
             });
         }
     }

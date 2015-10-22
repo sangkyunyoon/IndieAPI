@@ -58,13 +58,17 @@ namespace IndieAPI.Server.Services
                 cmd.BindParameter("@uuid", uuid);
                 cmd.PostQuery(() =>
                 {
-                    cmd.Reader.Read();
-                    Int32 ret = cmd.Reader.GetInt32(0);
-                    if (ret == 0)
-                        onComplete(ResultCode.Ok);
+                    if (cmd.Reader.Read() == true)
+                    {
+                        Int32 ret = cmd.Reader.GetInt32(0);
+                        if (ret == 0)
+                            onComplete(ResultCode.Ok);
 
-                    else if (ret == 1)
-                        onComplete(ResultCode.AlreadyExistsUUID);
+                        else if (ret == 1)
+                            onComplete(ResultCode.AlreadyExistsUUID);
+                    }
+                    else
+                        onComplete(ResultCode.UnknownError);
                 });
             }
         }
@@ -82,16 +86,20 @@ namespace IndieAPI.Server.Services
                 cmd.BindParameter("@pwd", passwordHash);
                 cmd.PostQuery(() =>
                 {
-                    cmd.Reader.Read();
-                    Int32 ret = cmd.Reader.GetInt32(0);
-                    if (ret == 0)
-                        onComplete(ResultCode.Ok);
+                    if (cmd.Reader.Read() == true)
+                    {
+                        Int32 ret = cmd.Reader.GetInt32(0);
+                        if (ret == 0)
+                            onComplete(ResultCode.Ok);
 
-                    else if (ret == 1)
-                        onComplete(ResultCode.AlreadyExistsUUID);
+                        else if (ret == 1)
+                            onComplete(ResultCode.AlreadyExistsUUID);
 
-                    else if (ret == 2)
-                        onComplete(ResultCode.AlreadyExistsUserId);
+                        else if (ret == 2)
+                            onComplete(ResultCode.AlreadyExistsUserId);
+                    }
+                    else
+                        onComplete(ResultCode.UnknownError);
                 });
             }
         }

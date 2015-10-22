@@ -17,24 +17,18 @@ namespace IndieAPI.Server.Routine
         private void OnCS_IMC_ChannelList_Req(PacketRequest reqPacket)
         {
             PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok, 4096);
+            Int32 count = 0, idxCount;
 
 
-            lock (CastChannel.Channels)
+            idxCount = resPacket.PutInt32(count);
+            foreach (var channel in CastChannel.Channels)
             {
-                Int32 count = 0, idxCount;
-
-
-                idxCount = resPacket.PutInt32(count);
-                foreach (var channel in CastChannel.Channels)
-                {
-                    resPacket.PutInt32(channel.ChannelNo);
-                    resPacket.PutStringAsUtf16(channel.Name);
-                    ++count;
-                }
-
-                resPacket.OverwriteInt32(idxCount, count);
+                resPacket.PutInt32(channel.ChannelNo);
+                resPacket.PutStringAsUtf16(channel.Name);
+                ++count;
             }
 
+            resPacket.OverwriteInt32(idxCount, count);
             SendPacket(resPacket);
         }
 
@@ -157,14 +151,11 @@ namespace IndieAPI.Server.Routine
                 resPacket.ResultCodeNo = ResultCode.Ok;
                 idxCount = resPacket.PutInt32(count);
 
-                using (_user.CastChannel.ReaderLock)
+                foreach (var user in _user.CastChannel.Users)
                 {
-                    foreach (var user in _user.CastChannel.Users)
-                    {
-                        resPacket.PutInt32(user.UserNo);
-                        resPacket.PutStringAsUtf16(user.Profile.Nickname);
-                        ++count;
-                    }
+                    resPacket.PutInt32(user.UserNo);
+                    resPacket.PutStringAsUtf16(user.Profile.Nickname);
+                    ++count;
                 }
 
                 resPacket.OverwriteInt32(idxCount, count);

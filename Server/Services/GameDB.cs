@@ -46,7 +46,6 @@ namespace IndieAPI.Server.Services
                 Starter.CustomData.GetValue("GameDB/dbName"),
                 Starter.CustomData.GetValue("GameDB/userId"),
                 Starter.CustomData.GetValue("GameDB/userPwd"));
-            _mysql.SetThreadCount(4);
         }
 
 

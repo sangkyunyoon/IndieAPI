@@ -29,21 +29,14 @@ namespace IndieAPI.Server.Services.Profiles
         }
 
 
-        public void LoadFromDB()
+        public void LoadFromDB(DataReader reader)
         {
-            using (DBCommand cmd = GameDB.NewCommand())
+            if (reader.Read())
             {
-                cmd.CommandText.Append("select regdate, lastlogindate, continuous_count, daily_count");
-                cmd.CommandText.Append($" from t_logincounts where userno={_user.UserNo};");
-
-                cmd.Query();
-                if (cmd.Reader.Read())
-                {
-                    RegDate = cmd.Reader.GetDateTime(0);
-                    LastLoginDate = cmd.Reader.GetDateTime(1);
-                    ContinuousCount = cmd.Reader.GetByte(2);
-                    DailyCount = cmd.Reader.GetByte(3);
-                }
+                RegDate = reader.GetDateTime(0);
+                LastLoginDate = reader.GetDateTime(1);
+                ContinuousCount = reader.GetByte(2);
+                DailyCount = reader.GetByte(3);
             }
         }
 
