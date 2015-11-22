@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IndieAPI;
+using TestClient.WinFormHelper;
 
 
 
@@ -21,16 +22,16 @@ namespace TestClient
         }
 
 
-        public void OnInitView()
+        public void OnViewEntered()
         {
             _tbDuration.Text = "0";
-            FormMain.SetMessage(Color.Black, "Ready");
+            FormMain.SetMessageReady();
         }
 
 
         private void OnClick_Back(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_Service_Profile);
+            UIViews.ChangeView<FormService_Profile>();
         }
 
 
@@ -51,25 +52,25 @@ namespace TestClient
         {
             if (_cbImmortal.Checked == true)
             {
-                IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, -1, OnResponse_SetValue);
+                NetworkAPI.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, -1, OnResponse_SetValue);
             }
             else
             {
                 Int32 duration = Int32.Parse(_tbDuration.Text);
                 if (duration == -1)
-                    IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, _dtExpireTime.Value, OnResponse_SetValue);
+                    NetworkAPI.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, _dtExpireTime.Value, OnResponse_SetValue);
                 else
-                    IDAPI.Request.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, duration, OnResponse_SetValue);
+                    NetworkAPI.CacheBox_SetValue(_tbKey.Text, _tbValue.Text, duration, OnResponse_SetValue);
             }
         }
 
 
-        private void OnResponse_SetValue(Response response)
+        private void OnResponse_SetValue(ResponseBase response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Blue, "Ok");
+                FormMain.SetMessageBlue("Ok");
             else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+                FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
         }
 
 
@@ -79,34 +80,34 @@ namespace TestClient
             if (Int32.TryParse(_tbDuration.Text, out duration) == false ||
                 duration == 0)
             {
-                IDAPI.Request.CacheBox_SetExpireTime(_tbKey.Text, _dtExpireTime.Value, OnResponse_SetExpireTime);
+                NetworkAPI.CacheBox_SetExpireTime(_tbKey.Text, _dtExpireTime.Value, OnResponse_SetExpireTime);
             }
             else
             {
-                IDAPI.Request.CacheBox_SetExpireTime(_tbKey.Text, duration, OnResponse_SetExpireTime);
+                NetworkAPI.CacheBox_SetExpireTime(_tbKey.Text, duration, OnResponse_SetExpireTime);
             }
         }
 
 
-        private void OnResponse_SetExpireTime(Response response)
+        private void OnResponse_SetExpireTime(ResponseBase response)
         {
             if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Blue, "Ok");
+                FormMain.SetMessageBlue("Ok");
             else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+                FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
         }
 
 
         private void OnClick_GetValue(object sender, EventArgs e)
         {
-            IDAPI.Request.CacheBox_GetValue(_tbKey.Text,
+            NetworkAPI.CacheBox_GetValue(_tbKey.Text,
                 (response) =>
                 {
                     if (response.ResultCodeNo == ResultCode.Ok)
-                        FormMain.SetMessage(Color.Blue, "Ok");
+                        FormMain.SetMessageBlue("Ok");
                     else
                     {
-                        FormMain.SetMessage(Color.Red, response.ResultString);
+                        FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
                         return;
                     }
 

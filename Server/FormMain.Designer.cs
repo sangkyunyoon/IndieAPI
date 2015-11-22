@@ -82,7 +82,7 @@
             // _tbLog
             // 
             this._tbLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._tbLog.Location = new System.Drawing.Point(15, 227);
+            this._tbLog.Location = new System.Drawing.Point(15, 161);
             this._tbLog.MaxLength = 1048576;
             this._tbLog.Multiline = true;
             this._tbLog.Name = "_tbLog";
@@ -153,7 +153,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(621, 473);
+            this.ClientSize = new System.Drawing.Size(470, 397);
             this.Controls.Add(this._lbCacheBoxItemCount);
             this.Controls.Add(this.label4);
             this.Controls.Add(this._lbCachedUserCount);

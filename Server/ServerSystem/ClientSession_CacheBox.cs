@@ -13,9 +13,9 @@ namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
-        private void OnCS_CacheBox_SetValue_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_SetValue_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
             String value = reqPacket.GetStringFromUtf16();
             Int32 durationMinutes = reqPacket.GetInt32();
@@ -43,9 +43,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_CacheBox_SetExpireTime_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_SetExpireTime_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok);
             String key = reqPacket.GetStringFromUtf16();
             Int32 durationMinutes = reqPacket.GetInt32();
             Double expireTime = reqPacket.GetDouble();
@@ -72,9 +72,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_CacheBox_GetValue_Req(PacketRequest reqPacket)
+        private void OnCS_CacheBox_GetValue_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, 65535);
             String key = reqPacket.GetStringFromUtf16();
 
 

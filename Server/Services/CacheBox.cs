@@ -16,7 +16,7 @@ namespace IndieAPI.Server.Services
         public static CacheBox Instance { get { return Singleton<CacheBox>.Instance; } }
         public static Int32 Count { get { return Instance._cached.Count(); } }
         private Dictionary<String, CacheItem> _cached = new Dictionary<String, CacheItem>();
-        private Thread _thread;
+        private ThreadCancellable _thread;
 
 
 
@@ -30,14 +30,15 @@ namespace IndieAPI.Server.Services
 
         public void Initialize()
         {
-            _thread = ThreadExtend.CallPeriodically(1000, CheckExpiredItem);
-            _thread.Name = "CacheBox";
+            _thread = ThreadCancellable.CallPeriodically(1000, CheckExpiredItem);
+            _thread.Thread.Name = "CacheBox";
         }
 
 
         public void Release()
         {
-            ThreadExtend.Cancel(_thread);
+            _thread?.Cancel();
+            _thread = null;
         }
 
 

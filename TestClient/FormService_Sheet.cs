@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IndieAPI;
+using TestClient.WinFormHelper;
 
 
 
@@ -21,41 +22,38 @@ namespace TestClient
         }
 
 
-        public void OnInitView()
+        public void OnViewEntered()
         {
-            FormMain.SetMessage(Color.Black, "Ready");
+            FormMain.SetMessageReady();
         }
 
 
         private void OnClick_Back(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_Service_Profile);
+            UIViews.ChangeView<FormService_Profile>();
         }
 
 
         private void OnClick_RefreshSheet(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Black, "Requesting 'Storage_Sheet_Refresh'...");
-            IDAPI.Request.Storage_Sheet_Refresh(_tbFilename.Text, OnResponse_RefreshSheet);
-        }
-
-
-        private void OnResponse_RefreshSheet(Response response)
-        {
-            _lvSheets.Items.Clear();
-            _lvData.Columns.Clear();
-            _lvData.Items.Clear();
-
-            foreach (var sheet in IDAPI.Request.Workbook.Sheets)
+            FormMain.SetMessageBlue("Requesting 'Storage_Sheet_Refresh'...");
+            NetworkAPI.Storage_Sheet_Refresh(_tbFilename.Text, (response) =>
             {
-                ListViewItem lvi = new ListViewItem();
-                lvi.Text = sheet.Name;
-                lvi.SubItems.Add(sheet.RecordCount.ToString());
+                _lvSheets.Items.Clear();
+                _lvData.Columns.Clear();
+                _lvData.Items.Clear();
 
-                _lvSheets.Items.Add(lvi);
-            }
+                foreach (var sheet in NetworkAPI.Workbook.Sheets)
+                {
+                    ListViewItem lvi = new ListViewItem();
+                    lvi.Text = sheet.Name;
+                    lvi.SubItems.Add(sheet.RecordCount.ToString());
 
-            FormMain.SetMessage(Color.Black, "Ready");
+                    _lvSheets.Items.Add(lvi);
+                }
+
+                FormMain.SetMessageReady();
+            });
         }
 
 
@@ -65,7 +63,7 @@ namespace TestClient
                 return;
 
             ListViewItem lviSheet = _lvSheets.SelectedItems[0];
-            var sheet = IDAPI.Request.Workbook.GetSheet(lviSheet.Text);
+            var sheet = NetworkAPI.Workbook.GetSheet(lviSheet.Text);
 
 
             _lvData.Columns.Clear();

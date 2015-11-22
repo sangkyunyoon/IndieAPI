@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TestClient.WinFormHelper;
+using IndieAPI;
 
 
 
@@ -14,33 +16,7 @@ namespace TestClient
 {
     public partial class FormMain : Form
     {
-        private struct FormData
-        {
-            public Int32 ID;
-            public Form Form;
-            public FormData(Int32 id, Form form)
-            {
-                ID = id;
-                Form = form;
-            }
-        }
-        public const Int32 View_Login = 0;
-        public const Int32 View_Service_Profile = 1;
-        public const Int32 View_Service_Sheet = 2;
-        public const Int32 View_Chat = 3;
-        public const Int32 View_CacheBox = 4;
-
-
-        public static FormMain Instance { get; private set; }
-        private Form _curForm;
-        private FormData[] _forms =
-        {
-            new FormData(View_Login, new FormLogin()),
-            new FormData(View_Service_Profile, new FormService_Profile()),
-            new FormData(View_Service_Sheet, new FormService_Sheet()),
-            new FormData(View_Chat, new FormService_Chat()),
-            new FormData(View_CacheBox, new FormService_CacheBox()),
-        };
+        private static FormMain _instance;
 
 
 
@@ -49,72 +25,95 @@ namespace TestClient
         public FormMain()
         {
             InitializeComponent();
-            Instance = this;
 
-
-            foreach (FormData item in _forms)
+            _instance = this;
+            NetworkAPI.Initialize();
+            NetworkAPI.NetworkStatusChanged += OnNetworkStatusChanged;
+            this.CreateTimer(10, () =>
             {
-                item.Form.Text = "";
-                item.Form.TopLevel = false;
-                item.Form.ControlBox = false;
-                item.Form.FormBorderStyle = FormBorderStyle.None;
-                this.Controls.Add(item.Form);
-            }
+                NetworkAPI.Update();
+            }).Start();
 
-            ChangeView(View_Login);
+            UIViews.Initialize(this, _panelContent);
+            UIViews.ChangeView<FormLogin>();
+
+
+            SetMessageReady();
         }
 
 
-        public static void SetMessage(Color foreColor, String format, params object[] args)
+        public static void OnNetworkStatusChanged(Aegis.Client.NetworkStatus status)
         {
-            if (Instance._tbMesssage.InvokeRequired)
+            _instance.PerformOnMainThread(() =>
             {
-                Instance.Invoke((MethodInvoker)delegate { SetMessage(foreColor, format, args); });
-            }
-            else
-            {
-                Instance._tbMesssage.ForeColor = foreColor;
-                Instance._tbMesssage.Text = String.Format(format, args);
-            }
+                if (status == Aegis.Client.NetworkStatus.Connected)
+                    _instance._lbConnectionStatus.Text = "Connected";
+
+                else if (status == Aegis.Client.NetworkStatus.ConnectionFailed)
+                    _instance._lbConnectionStatus.Text = "Connection failed";
+
+                else if (status == Aegis.Client.NetworkStatus.Disconnected)
+                    _instance._lbConnectionStatus.Text = "Disconnected";
+
+                else if (status == Aegis.Client.NetworkStatus.SessionForceClosed)
+                    _instance._lbConnectionStatus.Text = "Force closed";
+            });
         }
 
 
-        public static void ChangeView(Int32 viewType)
+        private void OnClick_LoginPage(object sender, EventArgs e)
         {
-            if (Instance.InvokeRequired)
-            {
-                Instance.Invoke((MethodInvoker)delegate { ChangeView(viewType); });
-            }
-            else
-            {
-                if (Instance._curForm != null)
-                {
-                    Instance._curForm.Parent = null;
-                    Instance._curForm.Hide();
-                }
-
-
-                Instance._curForm = Instance._forms[viewType].Form;
-                Instance._curForm.Parent = Instance._panelContent;
-                Instance._curForm.Show();
-
-
-                System.Reflection.MethodInfo method = Instance._curForm.GetType().GetMethod("OnInitView");
-                if (method != null)
-                    method.Invoke(Instance._curForm, null);
-            }
-        }
-
-
-        private void OnFormClosed(object sender, FormClosedEventArgs e)
-        {
-            IDAPI.Release();
+            UIViews.ChangeView<FormLogin>();
         }
 
 
         private void OnClick_Disconnect(object sender, EventArgs e)
         {
-            IDAPI.Request.Disconnect();
+            NetworkAPI.Disconnect();
         }
+
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkAPI.Release();
+        }
+
+
+        #region Methods for SetMessage
+        public static void SetMessage(String message, params object[] args)
+        {
+            _instance.PerformOnMainThread(() =>
+            {
+                _instance._lbMessage.Text = String.Format(message, args);
+            });
+        }
+
+
+        public static void SetMessage(Color foreColor, String message, params object[] args)
+        {
+            _instance.PerformOnMainThread(() =>
+            {
+                _instance._lbMessage.ForeColor = foreColor;
+                _instance._lbMessage.Text = String.Format(message, args);
+            });
+        }
+
+
+        public static void SetMessageRed(String message, params object[] args)
+        {
+            SetMessage(Color.Red, message, args);
+        }
+
+
+        public static void SetMessageBlue(String message, params object[] args)
+        {
+            SetMessage(Color.Blue, message, args);
+        }
+
+
+        public static void SetMessageReady()
+        {
+            SetMessage(Color.Black, "Ready");
+        }
+        #endregion
     }
 }

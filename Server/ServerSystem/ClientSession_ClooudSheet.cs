@@ -14,10 +14,10 @@ namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
-        private void OnCS_CloudSheet_GetSheetList_Req(PacketRequest reqPacket)
+        private void OnCS_CloudSheet_GetSheetList_Req(SecurePacketRequest reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
-            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, 65535);
 
 
             try
@@ -55,12 +55,12 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_CloudSheet_GetRecords_Req(PacketRequest reqPacket)
+        private void OnCS_CloudSheet_GetRecords_Req(SecurePacketRequest reqPacket)
         {
             String filename = reqPacket.GetStringFromUtf16();
             String sheetName = reqPacket.GetStringFromUtf16();
             UInt32 startRowNo = reqPacket.GetUInt32();
-            PacketResponse resPacket = new PacketResponse(reqPacket, 65535);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, 65535);
 
 
             try

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IndieAPI;
+using TestClient.WinFormHelper;
 
 
 
@@ -21,15 +22,12 @@ namespace TestClient
         }
 
 
-        public void OnInitView()
+        public void OnViewEntered()
         {
             _tbServerIp.Text = "192.168.0.100";
             _tbServerPort.Text = "10100";
             _tbGuest_UUID.Text = "Device_1";
             _tbMember_UUID.Text = "Device_1";
-
-
-            IDAPI.Initialize(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
         }
 
 
@@ -39,22 +37,20 @@ namespace TestClient
         {
             if (_tbGuest_UUID.Text.Length == 0)
             {
-                FormMain.SetMessage(Color.Red, "Input Guest UUID value.");
+                FormMain.SetMessageRed("Input Guest UUID value.");
                 _tbGuest_UUID.Focus();
                 return;
             }
 
 
-            IDAPI.Request.Auth_RegisterGuest(_tbGuest_UUID.Text, OnResponse_Auth_RegisterGuest);
-        }
-
-
-        private void OnResponse_Auth_RegisterGuest(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Blue, "Guest registration completed.");
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+            NetworkAPI.SetServer(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
+            NetworkAPI.Auth_RegisterGuest(_tbGuest_UUID.Text, (response) =>
+            {
+                if (response.ResultCodeNo == ResultCode.Ok)
+                    FormMain.SetMessageBlue("Guest registration completed.");
+                else
+                    FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+            });
         }
 
 
@@ -70,16 +66,14 @@ namespace TestClient
             }
 
 
-            IDAPI.Request.Auth_LoginGuest(_tbGuest_UUID.Text, OnResponse_Auth_LoginGuest);
-        }
-
-
-        private void OnResponse_Auth_LoginGuest(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.ChangeView(FormMain.View_Service_Profile);
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+            NetworkAPI.SetServer(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
+            NetworkAPI.Auth_LoginGuest(_tbGuest_UUID.Text, (response) =>
+            {
+                if (response.ResultCodeNo == ResultCode.Ok)
+                    UIViews.ChangeView<FormService_Profile>();
+                else
+                    FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+            });
         }
 
 
@@ -107,20 +101,18 @@ namespace TestClient
             }
 
 
-            IDAPI.Request.Auth_RegisterMember(
+            NetworkAPI.SetServer(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
+            NetworkAPI.Auth_RegisterMember(
                 _tbMember_UUID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
-                OnResponse_Auth_RegisterMember);
-        }
-
-
-        private void OnResponse_Auth_RegisterMember(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Blue, "Member registration completed.");
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+                (response) =>
+                {
+                    if (response.ResultCodeNo == ResultCode.Ok)
+                        FormMain.SetMessageRed("Member registration completed.");
+                    else
+                        FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+                });
         }
 
 
@@ -148,20 +140,18 @@ namespace TestClient
             }
 
 
-            IDAPI.Request.Auth_LoginMember(
+            NetworkAPI.SetServer(_tbServerIp.Text, _tbServerPort.Text.ToInt32());
+            NetworkAPI.Auth_LoginMember(
                 _tbMember_UUID.Text,
                 _tbMember_UserId.Text,
                 _tbMember_UserPwd.Text,
-                OnResponse_Auth_LoginMember);
-        }
-
-
-        private void OnResponse_Auth_LoginMember(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.ChangeView(FormMain.View_Service_Profile);
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+                (response) =>
+                {
+                    if (response.ResultCodeNo == ResultCode.Ok)
+                        UIViews.ChangeView<FormService_Profile>();
+                    else
+                        FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+                });
         }
     }
 }

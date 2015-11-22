@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using Aegis;
 using Aegis.Network;
 
@@ -10,7 +7,7 @@ using Aegis.Network;
 
 namespace IndieAPI.Server.Routine
 {
-    public class PacketResponse : SecurePacket
+    public class SecurePacketResponse : SecurePacket
     {
         public new const Int32 HeaderSize = SecurePacket.HeaderSize + 4;
         public Int32 ResultCodeNo
@@ -23,54 +20,36 @@ namespace IndieAPI.Server.Routine
 
 
 
-        private PacketResponse()
+        private SecurePacketResponse()
         {
         }
 
 
-        public PacketResponse(PacketRequest requestPacket, UInt16 capacity = 0)
+        public SecurePacketResponse(SecurePacketRequest requestPacket, UInt16 capacity = 0)
         {
             if (capacity > 0)
                 Capacity(capacity);
 
             PacketId = (UInt16)(requestPacket.PacketId + 1);
             SeqNo = requestPacket.SeqNo;
+            ResultCodeNo = 0;
         }
 
 
-        public PacketResponse(PacketRequest requestPacket, Int32 resultCode, UInt16 capacity = 0)
+        public SecurePacketResponse(SecurePacketRequest requestPacket, Int32 resultCode, UInt16 capacity = 0)
         {
             if (capacity > 0)
                 Capacity(capacity);
 
             PacketId = (UInt16)(requestPacket.PacketId + 1);
             SeqNo = requestPacket.SeqNo;
-            ResultCodeNo = resultCode;
-        }
-
-
-        public PacketResponse(UInt16 packetId, UInt16 capacity = 0)
-        {
-            if (capacity > 0)
-                Capacity(capacity);
-
-            PacketId = packetId;
-        }
-
-
-        public PacketResponse(UInt16 packetId, Int32 resultCode, UInt16 capacity = 0)
-        {
-            if (capacity > 0)
-                Capacity(capacity);
-
-            PacketId = packetId;
             ResultCodeNo = resultCode;
         }
 
 
         public override StreamBuffer Clone()
         {
-            PacketResponse packet = new PacketResponse();
+            SecurePacketResponse packet = new SecurePacketResponse();
             packet.Write(Buffer);
 
             packet.ResetReadIndex();
@@ -78,20 +57,6 @@ namespace IndieAPI.Server.Routine
             packet.Read(ReadBytes);
 
             return packet;
-        }
-
-
-        public new static Boolean IsValidPacket(StreamBuffer buffer, out Int32 packetSize)
-        {
-            if (buffer.WrittenBytes < HeaderSize)
-            {
-                packetSize = 0;
-                return false;
-            }
-
-            //  최초 2바이트를 수신할 패킷의 크기로 처리
-            packetSize = buffer.GetUInt16(0);
-            return (packetSize > 0 && buffer.WrittenBytes >= packetSize);
         }
 
 

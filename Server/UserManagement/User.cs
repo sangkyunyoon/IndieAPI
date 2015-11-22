@@ -17,7 +17,7 @@ namespace IndieAPI.Server.UserManagement
     public class User
     {
         public Int32 LastSeqNo { get; set; }
-        public Stopwatch LastAliveTick { get; set; }
+        public Stopwatch LastPulse { get; }
         public ClientSession Session { get; set; }
 
         public Int32 UserNo { get; }
@@ -38,7 +38,20 @@ namespace IndieAPI.Server.UserManagement
             LoginCounter = new LoginCounter(this);
             TextBox = new TextBox(this);
 
-            LastAliveTick = Stopwatch.StartNew();
+            LastPulse = Stopwatch.StartNew();
+        }
+
+
+        public void Logout()
+        {
+            if (Session == null)
+                return;
+
+            CastChannel?.Leave(this);
+            CastChannel = null;
+
+            Session.Close();
+            Session = null;
         }
 
 
@@ -48,7 +61,7 @@ namespace IndieAPI.Server.UserManagement
         }
 
 
-        public void LoadFromDB(Action actionOnLoaded)
+        public void LoadFromDB(Action actionOnComplete)
         {
             using (var cmd = GameDB.NewCommand())
             {
@@ -59,19 +72,21 @@ namespace IndieAPI.Server.UserManagement
                 cmd.CommandText.Append($" from t_logincounts where userno={UserNo};");
 
                 cmd.CommandText.Append($"select textdata from t_textbox where userno={UserNo};");
-                cmd.PostQuery(() =>
-                {
-                    Profile.LoadFromDB(cmd.Reader);
+                cmd.PostQuery(
+                    () =>
+                    {
+                        Profile.LoadFromDB(cmd.Reader);
 
-                    cmd.Reader.NextResult();
-                    LoginCounter.LoadFromDB(cmd.Reader);
+                        cmd.Reader.NextResult();
+                        LoginCounter.LoadFromDB(cmd.Reader);
 
-                    cmd.Reader.NextResult();
-                    TextBox.LoadFromDB(cmd.Reader);
-
-
-                    actionOnLoaded();
-                });
+                        cmd.Reader.NextResult();
+                        TextBox.LoadFromDB(cmd.Reader);
+                    },
+                    (e) =>
+                    {
+                        actionOnComplete();
+                    });
             }
         }
     }

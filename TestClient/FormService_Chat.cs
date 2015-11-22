@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IndieAPI;
-using Aegis.Client;
+using TestClient.WinFormHelper;
 
 
 
@@ -20,16 +20,16 @@ namespace TestClient
         {
             InitializeComponent();
 
-            IDAPI.Request.IMC_EnteredUser += OnEnteredUser;
-            IDAPI.Request.IMC_LeavedUser += OnLeavedUser;
-            IDAPI.Request.IMC_Message += OnMessage;
+            NetworkAPI.IMC_EnteredUser += OnEnteredUser;
+            NetworkAPI.IMC_LeavedUser += OnLeavedUser;
+            NetworkAPI.IMC_Message += OnMessage;
         }
 
 
-        public void OnInitView()
+        public void OnViewEntered()
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'IMC_ChannelList'...");
-            IDAPI.Request.IMC_ChannelList(OnResponse_IMC_ChannelList);
+            FormMain.SetMessageBlue("Requesting 'IMC_ChannelList'...");
+            NetworkAPI.IMC_ChannelList(OnResponse_IMC_ChannelList);
         }
 
 
@@ -46,7 +46,7 @@ namespace TestClient
             }
 
 
-            FormMain.SetMessage(Color.Black, "Ready");
+            FormMain.SetMessageReady();
         }
 
 
@@ -54,16 +54,16 @@ namespace TestClient
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Create'...");
 
-            IDAPI.Request.IMC_Create(_tbCreateChannelName.Text, (response) =>
+            NetworkAPI.IMC_Create(_tbCreateChannelName.Text, (response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
-                    FormMain.SetMessage(Color.Red, response.ResultString);
+                    FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
                 else
                 {
                     _lbRoomTitle.Text = String.Format("{0} - {1}", response.ChannelNo, response.ChannelName);
 
-                    FormMain.SetMessage(Color.Blue, "Requesting 'IMC_UserList'...");
-                    IDAPI.Request.IMC_UserList(OnResponse_IMC_UserList);
+                    FormMain.SetMessageBlue( "Requesting 'IMC_UserList'...");
+                    NetworkAPI.IMC_UserList(OnResponse_IMC_UserList);
                 }
             });
         }
@@ -71,8 +71,8 @@ namespace TestClient
 
         private void OnClick_RefreshChannel(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'IMC_ChannelList'...");
-            IDAPI.Request.IMC_ChannelList(OnResponse_IMC_ChannelList);
+            FormMain.SetMessageBlue("Requesting 'IMC_ChannelList'...");
+            NetworkAPI.IMC_ChannelList(OnResponse_IMC_ChannelList);
         }
 
 
@@ -82,34 +82,34 @@ namespace TestClient
                 return;
 
 
-            FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Enter'...");
+            FormMain.SetMessageBlue("Requesting 'IMC_Enter'...");
 
             Int32 channelNo = Int32.Parse(_lvChannel.SelectedItems[0].Text);
-            IDAPI.Request.IMC_Enter(channelNo, (response) =>
+            NetworkAPI.IMC_Enter(channelNo, (response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
                 {
-                    FormMain.SetMessage(Color.Red, response.ResultString);
+                    FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
                     return;
                 }
                 _lbRoomTitle.Text = String.Format("{0} - {1}", response.ChannelNo, response.ChannelName);
 
 
-                FormMain.SetMessage(Color.Blue, "Requesting 'IMC_UserList'...");
-                IDAPI.Request.IMC_UserList(OnResponse_IMC_UserList);
+                FormMain.SetMessageBlue("Requesting 'IMC_UserList'...");
+                NetworkAPI.IMC_UserList(OnResponse_IMC_UserList);
             });
         }
 
 
         private void OnClick_Leave(object sender, EventArgs e)
         {
-            FormMain.SetMessage(Color.Blue, "Requesting 'IMC_Leave'...");
+            FormMain.SetMessageBlue("Requesting 'IMC_Leave'...");
 
-            IDAPI.Request.IMC_Leave((response) =>
+            NetworkAPI.IMC_Leave((response) =>
             {
                 if (response.ResultCodeNo != ResultCode.Ok)
                 {
-                    FormMain.SetMessage(Color.Red, response.ResultString);
+                    FormMain.SetMessage(Color.Red, ResultCode.ToString(response.ResultCodeNo));
                     return;
                 }
 
@@ -117,38 +117,38 @@ namespace TestClient
                 _lvUser.Items.Clear();
                 _tbChatLog.Text = "";
 
-                FormMain.ChangeView(FormMain.View_Service_Profile);
+                UIViews.ChangeView<FormService_Profile>();
             });
         }
 
 
         private void OnClick_SendMessage(object sender, EventArgs e)
         {
-            StreamBuffer message = new StreamBuffer();
+            var message = new Aegis.Client.Network.StreamBuffer();
             message.PutStringAsUtf16(_tbChat.Text);
 
 
             //  Send a message to all users (Broadcasting)
             if (_lvUser.SelectedItems.Count == 0)
             {
-                IDAPI.Request.IMC_SendMessage(0, message, (response) =>
+                NetworkAPI.IMC_SendMessage(0, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
-                        FormMain.SetMessage(Color.Red, response.ResultString);
+                        FormMain.SetMessage(Color.Red, ResultCode.ToString(response.ResultCodeNo));
                     else
-                        FormMain.SetMessage(Color.Black, "Ready");
+                        FormMain.SetMessageReady();
                 });
             }
             //  Send a message to one user (Unicasting)
             else
             {
                 Int32 targetUserNo = Int32.Parse(_lvUser.SelectedItems[0].Text);
-                IDAPI.Request.IMC_SendMessage(targetUserNo, message, (response) =>
+                NetworkAPI.IMC_SendMessage(targetUserNo, message, (response) =>
                 {
                     if (response.ResultCodeNo != ResultCode.Ok)
-                        FormMain.SetMessage(Color.Red, response.ResultString);
+                        FormMain.SetMessage(Color.Red, ResultCode.ToString(response.ResultCodeNo));
                     else
-                        FormMain.SetMessage(Color.Black, "Ready");
+                        FormMain.SetMessageReady();
                 });
             }
 
@@ -170,7 +170,7 @@ namespace TestClient
                 _lvUser.Items.Add(lvi);
             }
 
-            FormMain.SetMessage(Color.Black, "Ready");
+            FormMain.SetMessageReady();
         }
 
 

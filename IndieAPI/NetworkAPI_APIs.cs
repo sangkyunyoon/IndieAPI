@@ -3,136 +3,154 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Aegis.Client;
+using Aegis.Client.Network;
 using IndieAPI.CloudSheet;
 
 
 
 namespace IndieAPI
 {
-    public partial class Request
+    public static partial class NetworkAPI
     {
         ////////////////////////////////////////////////////////////////////////////////
         //  Authentication
-        public void Auth_RegisterGuest(string uuid, APICallbackHandler<Response> callback)
+        private static Int32 _userNo;
+
+
+        public static void Auth_RegisterGuest(string uuid, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterGuest_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Auth_RegisterGuest_Req"));
             reqPacket.PutInt32(0);
             reqPacket.PutStringAsUtf16(uuid);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void Auth_RegisterMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public static void Auth_RegisterMember(string uuid, string userId, string userPwd, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_RegisterMember_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Auth_RegisterMember_Req"));
             reqPacket.PutInt32(0);
             reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void Auth_LoginGuest(string uuid, APICallbackHandler<Response> callback)
+        public static void Auth_LoginGuest(string uuid, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginGuest_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Auth_LoginGuest_Req"));
             reqPacket.PutInt32(0);
             reqPacket.PutStringAsUtf16(uuid);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                               (resPacket) =>
+                               {
+                                   Int32 ret = resPacket.GetInt32();
+                                   if (ret == ResultCode.Ok)
+                                       _userNo = resPacket.GetInt32();
+
+                                   callback(new ResponseBase(resPacket));
+                               });
         }
 
 
-        public void Auth_LoginMember(string uuid, string userId, string userPwd, APICallbackHandler<Response> callback)
+        public static void Auth_LoginMember(string uuid, string userId, string userPwd, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Auth_LoginMember_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Auth_LoginMember_Req"));
             reqPacket.PutInt32(0);
             reqPacket.PutStringAsUtf16(uuid);
             reqPacket.PutStringAsUtf16(userId);
             reqPacket.PutStringAsUtf16(userPwd);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                               (resPacket) =>
+                               {
+                                   Int32 ret = resPacket.GetInt32();
+                                   if (ret == ResultCode.Ok)
+                                       _userNo = resPacket.GetInt32();
+
+                                   callback(new ResponseBase(resPacket));
+                               });
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
         //  Profile
-        public void Profile_GetData(APICallbackHandler<Response_Profile> callback)
+        public static void Profile_GetData(APICallbackHandler<Response_Profile> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Profile_GetData_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Profile_GetData_Req"));
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_Profile(resPacket)); });
         }
 
 
-        public void Profile_SetData(string nickname, Int16 level, Int16 exp, APICallbackHandler<Response> callback)
+        public static void Profile_SetData(string nickname, Int16 level, Int16 exp, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Profile_SetData_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Profile_SetData_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(nickname);
             reqPacket.PutInt16(level);
             reqPacket.PutInt16(exp);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void Profile_GetTextData(APICallbackHandler<Response_Profile_Text> callback)
+        public static void Profile_GetTextData(APICallbackHandler<Response_Profile_Text> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Profile_Text_GetData_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Profile_Text_GetData_Req"));
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_Profile_Text(resPacket)); });
         }
 
 
-        public void Profile_SetTextData(string text, APICallbackHandler<Response> callback)
+        public static void Profile_SetTextData(string text, APICallbackHandler<ResponseBase> callback)
         {
             if (text.Length > 32500)
                 throw new AegisException("The 'text' length must be less than 32500.");
 
 
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_Profile_Text_SetData_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_Profile_Text_SetData_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(text);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
         //  CloudSheet
-        private int _sheetRequestedNo;
-        private string _sheetFilename, _sheetName;
-        public Workbook Workbook { get; private set; }
+        private static int _sheetRequestedNo;
+        private static string _sheetFilename, _sheetName;
+        public static Workbook Workbook { get; private set; }
 
 
 
 
 
-        public void Storage_Sheet_Refresh(string filename, APICallbackHandler<Response> callback)
+        public static void Storage_Sheet_Refresh(string filename, APICallbackHandler<ResponseBase> callback)
         {
             _sheetFilename = filename;
 
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CloudSheet_GetSheetList_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CloudSheet_GetSheetList_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(_sheetFilename);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                 (resPacket) =>
                 {
-                    Response response = new Response(resPacket);
+                    ResponseBase response = new ResponseBase(resPacket);
                     if (response.ResultCodeNo != ResultCode.Ok)
                     {
                         callback(response);
@@ -145,7 +163,7 @@ namespace IndieAPI
         }
 
 
-        private void OnRecv_Storage_Sheet_GetSheetList(SecurePacket packet, APICallbackHandler<Response> callback)
+        private static void OnRecv_Storage_Sheet_GetSheetList(SecurePacket packet, APICallbackHandler<ResponseBase> callback)
         {
             int sheetCount = packet.GetInt32();
             while (sheetCount-- > 0)
@@ -168,7 +186,7 @@ namespace IndieAPI
 
             if (Workbook.Sheets.Count() == 0)
             {
-                callback(new Response(ResultCode.Ok));
+                callback(new ResponseBase(ResultCode.Ok));
                 return;
             }
 
@@ -177,16 +195,16 @@ namespace IndieAPI
             _sheetName = Workbook.Sheets[_sheetRequestedNo].Name;
 
 
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CloudSheet_GetRecords_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CloudSheet_GetRecords_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(_sheetFilename);
             reqPacket.PutStringAsUtf16(_sheetName);
             reqPacket.PutUInt32(0);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                 (resPacket) =>
                 {
-                    Response response = new Response(resPacket);
+                    ResponseBase response = new ResponseBase(resPacket);
                     if (response.ResultCodeNo != ResultCode.Ok)
                     {
                         callback(response);
@@ -198,7 +216,7 @@ namespace IndieAPI
         }
 
 
-        private void OnRecv_Storage_Sheet_GetRecords(SecurePacket packet, APICallbackHandler<Response> callback)
+        private static void OnRecv_Storage_Sheet_GetRecords(SecurePacket packet, APICallbackHandler<ResponseBase> callback)
         {
             try
             {
@@ -221,16 +239,16 @@ namespace IndieAPI
 
                 if (hasMore)
                 {
-                    SecurePacket reqPacket = new SecurePacket(Protocol.CS_CloudSheet_GetRecords_Req);
+                    SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CloudSheet_GetRecords_Req"));
                     reqPacket.PutInt32(_userNo);
                     reqPacket.PutStringAsUtf16(_sheetFilename);
                     reqPacket.PutStringAsUtf16(_sheetName);
                     reqPacket.PutUInt32(rowNo + 1);
 
-                    SendPacket(reqPacket,
+                    _request.SendPacket(reqPacket,
                         (resPacket) =>
                         {
-                            Response response = new Response(resPacket);
+                            ResponseBase response = new ResponseBase(resPacket);
                             if (response.ResultCodeNo != ResultCode.Ok)
                             {
                                 callback(response);
@@ -248,16 +266,16 @@ namespace IndieAPI
                         table = Workbook.Sheets[_sheetRequestedNo];
                         _sheetName = table.Name;
 
-                        SecurePacket reqPacket = new SecurePacket(Protocol.CS_CloudSheet_GetRecords_Req);
+                        SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CloudSheet_GetRecords_Req"));
                         reqPacket.PutInt32(_userNo);
                         reqPacket.PutStringAsUtf16(_sheetFilename);
                         reqPacket.PutStringAsUtf16(_sheetName);
                         reqPacket.PutUInt32(0);
 
-                        SendPacket(reqPacket,
+                        _request.SendPacket(reqPacket,
                             (resPacket) =>
                             {
-                                Response response = new Response(resPacket);
+                                ResponseBase response = new ResponseBase(resPacket);
                                 if (response.ResultCodeNo != ResultCode.Ok)
                                 {
                                     callback(response);
@@ -269,154 +287,154 @@ namespace IndieAPI
                     }
                     else
                     {
-                        callback(new Response(packet));
+                        callback(new ResponseBase(packet));
                     }
                 }
             }
             catch (Exception)
             {
-                callback(new Response(ResultCode.UnknownError));
+                callback(new ResponseBase(ResultCode.UnknownError));
             }
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
         //  Instant Messaging Channel
-        public NotifyPacketHandler<Response_IMC_EnteredUser> IMC_EnteredUser { get; set; }
-        public NotifyPacketHandler<Response_IMC_LeavedUser> IMC_LeavedUser { get; set; }
-        public NotifyPacketHandler<Response_IMC_Message> IMC_Message { get; set; }
+        public static NotifyPacketHandler<Response_IMC_EnteredUser> IMC_EnteredUser { get; set; }
+        public static NotifyPacketHandler<Response_IMC_LeavedUser> IMC_LeavedUser { get; set; }
+        public static NotifyPacketHandler<Response_IMC_Message> IMC_Message { get; set; }
 
 
 
 
 
-        public void IMC_ChannelList(APICallbackHandler<Response_IMC_ChannelList> callback)
+        public static void IMC_ChannelList(APICallbackHandler<Response_IMC_ChannelList> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_ChannelList_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_ChannelList_Req"));
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_IMC_ChannelList(resPacket)); });
         }
 
 
-        public void IMC_Create(string channelName, APICallbackHandler<Response_IMC_Create> callback)
+        public static void IMC_Create(string channelName, APICallbackHandler<Response_IMC_Create> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_Create_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_Create_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(channelName);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_IMC_Create(resPacket)); });
         }
 
 
-        public void IMC_Enter(int channelNo, APICallbackHandler<Response_IMC_Enter> callback)
+        public static void IMC_Enter(int channelNo, APICallbackHandler<Response_IMC_Enter> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_Enter_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_Enter_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutInt32(channelNo);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_IMC_Enter(resPacket)); });
         }
 
 
-        public void IMC_Leave(APICallbackHandler<Response> callback)
+        public static void IMC_Leave(APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_Leave_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_Leave_Req"));
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void IMC_UserList(APICallbackHandler<Response_IMC_UserList> callback)
+        public static void IMC_UserList(APICallbackHandler<Response_IMC_UserList> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_UserList_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_UserList_Req"));
             reqPacket.PutInt32(_userNo);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_IMC_UserList(resPacket)); });
         }
 
 
-        public void IMC_SendMessage(int targetUserNo, StreamBuffer data, APICallbackHandler<Response> callback)
+        public static void IMC_SendMessage(int targetUserNo, StreamBuffer data, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_IMC_SendMessage_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_IMC_SendMessage_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutInt32(targetUserNo);
             reqPacket.Write(data.Buffer);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////
         //  CacheBox
-        public void CacheBox_SetValue(string key, string value, int durationMinutes, APICallbackHandler<Response> callback)
+        public static void CacheBox_SetValue(string key, string value, int durationMinutes, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CacheBox_SetValue_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutStringAsUtf16(value);
             reqPacket.PutInt32(durationMinutes);
             reqPacket.PutDouble(-1);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void CacheBox_SetValue(string key, string value, DateTime expireTime, APICallbackHandler<Response> callback)
+        public static void CacheBox_SetValue(string key, string value, DateTime expireTime, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CacheBox_SetValue_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutStringAsUtf16(value);
             reqPacket.PutInt32(-1);
             reqPacket.PutDouble(expireTime.ToUniversalTime().ToOADate());
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void CacheBox_SetExpireTime(string key, int durationMinutes, APICallbackHandler<Response> callback)
+        public static void CacheBox_SetExpireTime(string key, int durationMinutes, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CacheBox_SetExpireTime_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutInt32(durationMinutes);
             reqPacket.PutDouble(-1);
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void CacheBox_SetExpireTime(string key, DateTime expireTime, APICallbackHandler<Response> callback)
+        public static void CacheBox_SetExpireTime(string key, DateTime expireTime, APICallbackHandler<ResponseBase> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_SetExpireTime_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CacheBox_SetExpireTime_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
             reqPacket.PutInt32(-1);
             reqPacket.PutDouble(expireTime.ToUniversalTime().ToOADate());
 
-            SendPacket(reqPacket,
-                       (resPacket) => { callback(new Response(resPacket)); });
+            _request.SendPacket(reqPacket,
+                       (resPacket) => { callback(new ResponseBase(resPacket)); });
         }
 
 
-        public void CacheBox_GetValue(string key, APICallbackHandler<Response_CacheBox_Value> callback)
+        public static void CacheBox_GetValue(string key, APICallbackHandler<Response_CacheBox_Value> callback)
         {
-            SecurePacket reqPacket = new SecurePacket(Protocol.CS_CacheBox_GetValue_Req);
+            SecurePacket reqPacket = new SecurePacket(Protocol.GetID("CS_CacheBox_GetValue_Req"));
             reqPacket.PutInt32(_userNo);
             reqPacket.PutStringAsUtf16(key);
 
-            SendPacket(reqPacket,
+            _request.SendPacket(reqPacket,
                        (resPacket) => { callback(new Response_CacheBox_Value(resPacket)); });
         }
     }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IndieAPI;
+using TestClient.WinFormHelper;
 
 
 
@@ -21,13 +22,13 @@ namespace TestClient
         }
 
 
-        public void OnInitView()
+        public void OnViewEntered()
         {
             _tbTextData.Text = "";
 
 
-            FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetData'...");
-            IDAPI.Request.Profile_GetData(OnResponse_Profile);
+            FormMain.SetMessageBlue("Requesting 'Profile_GetData'...");
+            NetworkAPI.Profile_GetData(OnResponse_Profile);
         }
 
 
@@ -43,75 +44,66 @@ namespace TestClient
             _tbDailyCount.Text = response.LoginDailyCount.ToString();
 
 
-            FormMain.SetMessage(Color.Black, "Ready");
+            FormMain.SetMessageReady();
         }
 
 
         private void OnClick_UpdateProfile(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetData'...");
-            IDAPI.Request.Profile_SetData(
+            NetworkAPI.Profile_SetData(
                 _tbNickname.Text,
                 Int16.Parse(_tbLevel.Text),
                 Int16.Parse(_tbExp.Text),
-                OnResponse_SetProfileData);
-        }
-
-
-        private void OnResponse_SetProfileData(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Black, "Ready");
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+                (response) =>
+                {
+                    if (response.ResultCodeNo == ResultCode.Ok)
+                        FormMain.SetMessageReady();
+                    else
+                        FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+                });
         }
 
 
         private void OnClick_GetTextData(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_GetTextData'...");
-            IDAPI.Request.Profile_GetTextData(OnResponse_GetTextData);
-        }
-
-
-        private void OnResponse_GetTextData(Response_Profile_Text response)
-        {
-            _tbTextData.Text = response.TextData;
-            FormMain.SetMessage(Color.Black, "Ready");
+            NetworkAPI.Profile_GetTextData((response) =>
+            {
+                _tbTextData.Text = response.TextData;
+                FormMain.SetMessageReady();
+            });
         }
 
 
         private void OnClick_SetTextData(object sender, EventArgs e)
         {
             FormMain.SetMessage(Color.Blue, "Requesting 'Profile_SetTextData'...");
-            IDAPI.Request.Profile_SetTextData(_tbTextData.Text, OnResponse_SetTextData);
-        }
-
-
-        private void OnResponse_SetTextData(Response response)
-        {
-            if (response.ResultCodeNo == ResultCode.Ok)
-                FormMain.SetMessage(Color.Black, "Ready");
-            else
-                FormMain.SetMessage(Color.Red, response.ResultString);
+            NetworkAPI.Profile_SetTextData(_tbTextData.Text, (response) =>
+            {
+                if (response.ResultCodeNo == ResultCode.Ok)
+                    FormMain.SetMessageReady();
+                else
+                    FormMain.SetMessageRed(ResultCode.ToString(response.ResultCodeNo));
+            });
         }
 
 
         private void OnClick_CloudSheet(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_Service_Sheet);
+            UIViews.ChangeView<FormService_Sheet>();
         }
 
 
         private void OnClick_Chatting(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_Chat);
+            UIViews.ChangeView<FormService_Chat>();
         }
 
 
         private void OnClick_CacheBox(object sender, EventArgs e)
         {
-            FormMain.ChangeView(FormMain.View_CacheBox);
+            UIViews.ChangeView<FormService_CacheBox>();
         }
     }
 }

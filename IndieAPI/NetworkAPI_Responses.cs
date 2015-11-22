@@ -3,36 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Aegis.Client;
+using Aegis.Client.Network;
 
 
 
 namespace IndieAPI
 {
-    public class Response
+    public class ResponseBase : Response
     {
-        public readonly int ResultCodeNo;
-        public readonly string ResultString;
-        public readonly StreamBuffer Packet;
-
-
-        internal Response(SecurePacket packet)
+        internal ResponseBase(SecurePacket packet)
+            : base(packet)
         {
-            packet.SkipHeader();
-            Packet = packet;
-
-            ResultCodeNo = packet.GetInt32();
-            ResultString = ResultCode.ToString(ResultCodeNo);
         }
 
 
-        internal Response(int resultCodeNo)
+        internal ResponseBase(int resultCodeNo)
+            : base(resultCodeNo)
         {
-            ResultCodeNo = resultCodeNo;
         }
     }
 
 
-    public class Response_Profile : Response
+    public class Response_Profile : ResponseBase
     {
         public readonly string Nickname;
         public readonly Int16 Level;
@@ -63,7 +55,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_Profile_Text : Response
+    public class Response_Profile_Text : ResponseBase
     {
         public readonly string TextData;
 
@@ -80,7 +72,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_ChannelList : Response
+    public class Response_IMC_ChannelList : ResponseBase
     {
         public struct ChannelInfo
         {
@@ -111,7 +103,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Create : Response
+    public class Response_IMC_Create : ResponseBase
     {
         public readonly int ChannelNo;
         public readonly string ChannelName;
@@ -130,7 +122,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Enter : Response
+    public class Response_IMC_Enter : ResponseBase
     {
         public readonly int ChannelNo;
         public readonly string ChannelName;
@@ -149,7 +141,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_EnteredUser : Response
+    public class Response_IMC_EnteredUser : ResponseBase
     {
         public readonly int UserNo;
         public readonly string Nickname;
@@ -168,7 +160,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_LeavedUser : Response
+    public class Response_IMC_LeavedUser : ResponseBase
     {
         public readonly int UserNo;
 
@@ -185,7 +177,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_UserList : Response
+    public class Response_IMC_UserList : ResponseBase
     {
         public struct UserData
         {
@@ -216,7 +208,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_IMC_Message : Response
+    public class Response_IMC_Message : ResponseBase
     {
         public readonly int SenderUserNo;
         public readonly StreamBuffer Message;
@@ -235,7 +227,7 @@ namespace IndieAPI
     }
 
 
-    public class Response_CacheBox_Value : Response
+    public class Response_CacheBox_Value : ResponseBase
     {
         public readonly string Value;
         public readonly int DurationMinutes;

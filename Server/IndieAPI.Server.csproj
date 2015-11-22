@@ -32,26 +32,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aegis, Version=0.1.25.1, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -60,6 +40,10 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,6 +67,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
+    <Compile Include="ServerSystem\LogMedia.cs" />
+    <Compile Include="ServerSystem\SecurePacketRequest.cs" />
+    <Compile Include="ServerSystem\SecurePacketResponse.cs" />
     <Compile Include="Services\CacheBox_Method.cs" />
     <Compile Include="Services\CacheBox_Item.cs" />
     <Compile Include="Services\CacheBox.cs" />
@@ -99,20 +86,17 @@
     <Compile Include="UserManagement\User.cs" />
     <Compile Include="UserManagement\UserManager.cs" />
     <Compile Include="Services\Profiles\UserProfile.cs" />
-    <Compile Include="Routine\ClientSession.cs" />
-    <Compile Include="Routine\ClientSession_Auth.cs" />
-    <Compile Include="Routine\ClientSession_CacheBox.cs" />
-    <Compile Include="Routine\ClientSession_IMC.cs" />
-    <Compile Include="Routine\ClientSession_Profile.cs" />
-    <Compile Include="Routine\ClientSession_ClooudSheet.cs" />
+    <Compile Include="ServerSystem\ClientSession.cs" />
+    <Compile Include="ServerSystem\ClientSession_Auth.cs" />
+    <Compile Include="ServerSystem\ClientSession_CacheBox.cs" />
+    <Compile Include="ServerSystem\ClientSession_IMC.cs" />
+    <Compile Include="ServerSystem\ClientSession_Profile.cs" />
+    <Compile Include="ServerSystem\ClientSession_ClooudSheet.cs" />
     <Compile Include="Services\GameDB.cs" />
-    <Compile Include="LogMedia.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerMain.cs" />
+    <Compile Include="ServerSystem\ServerMain.cs" />
     <Compile Include="Services\Membership.cs" />
-    <Compile Include="Routine\PacketRequest.cs" />
-    <Compile Include="Routine\PacketResponse.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -140,9 +124,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config.xml" />
+    <Content Include="Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

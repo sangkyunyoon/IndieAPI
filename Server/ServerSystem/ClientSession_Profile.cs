@@ -12,9 +12,9 @@ namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
-        private void OnCS_Profile_GetData_Req(PacketRequest reqPacket)
+        private void OnCS_Profile_GetData_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok);
             resPacket.PutStringAsUtf16(_user.Profile.Nickname ?? "");
             resPacket.PutInt16(_user.Profile.Level);
             resPacket.PutInt16(_user.Profile.Exp);
@@ -27,9 +27,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_Profile_SetData_Req(PacketRequest reqPacket)
+        private void OnCS_Profile_SetData_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok);
 
 
             _user.Profile.Nickname = reqPacket.GetStringFromUtf16();
@@ -41,18 +41,18 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_Profile_Text_GetData_Req(PacketRequest reqPacket)
+        private void OnCS_Profile_Text_GetData_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok, 65535);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok, 65535);
             resPacket.PutStringAsUtf16(_user.TextBox.TextData);
 
             SendPacket(resPacket);
         }
 
 
-        private void OnCS_Profile_Text_SetData_Req(PacketRequest reqPacket)
+        private void OnCS_Profile_Text_SetData_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok);
 
             _user.TextBox.TextData = reqPacket.GetStringFromUtf16();
             SendPacket(resPacket);

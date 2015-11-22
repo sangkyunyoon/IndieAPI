@@ -54,6 +54,14 @@
             NetworkChannel을 생성하고 네트워킹을 시작합니다.
             </summary>
         </member>
+        <member name="M:Aegis.Starter.CreateNetworkChannel(System.String)">
+            <summary>
+            새로운 NetworkChannel을 생성합니다.
+            이 Method는 NetworkChannel.CreateChannel와 동일합니다.
+            </summary>
+            <param name="channelName">생성할 NetworkChannel의 고유이름</param>
+            <returns>생성된 NetworkChannel 객체</returns>
+        </member>
         <member name="M:Aegis.Starter.StartNetwork(System.String)">
             <summary>
             지정된 NetworkChannel만을 생성하고 네트워킹을 시작합니다.
@@ -154,7 +162,7 @@
             이 NetworkChannel 객체의 고유한 이름입니다.
             </summary>
         </member>
-        <member name="P:Aegis.Network.NetworkChannel.SessionManager">
+        <member name="P:Aegis.Network.NetworkChannel.Acceptor">
             <summary>
             이 NetworkChannel에서 사용하는 Session 객체를 관리합니다.
             </summary>
@@ -185,8 +193,8 @@
             네트워크 작업을 시작합니다.
             </summary>
             <param name="generator">Session 객체를 생성하는 Delegator를 설정합니다. SessionManager에서는 내부적으로 Session Pool을 관리하는데, Pool에 객체가 부족할 때 이 Delegator가 호출됩니다. 그러므로 이 Delegator에서는 ObjectPool 대신 new를 사용해 인스턴스를 생성하는 것이 좋습니다.</param>
-            <param name="initPoolSize">최초에 생성할 Session의 개수를 지정합니다.</param>
-            <param name="maxPoolSize">Session 객체의 최대개수를 지정합니다. 0이 입력되면 Session 생성시 최대개수를 무시합니다.</param>
+            <param name="initPoolCount">처음 생성할 Session의 개수를 지정합니다.</param>
+            <param name="maxPoolCount">생성할 수 있는 Session의 최대개수를 지정합니다. 0이 입력되면 최대개수를 무시합니다.</param>
             <returns>현재 NetworkChannel 객체를 반환합니다.</returns>
         </member>
         <member name="M:Aegis.Network.NetworkChannel.StopNetwork">
@@ -410,22 +418,6 @@
             이 함수가 호출되면 ReadIndex는 4에 위치하지만, WriteIndex는 변하지 않습니다.
             </summary>
         </member>
-        <member name="P:Aegis.Network.SessionManager.MaxSessionPoolSize">
-            <summary>
-            최대 값으로 지정된 Session의 개수를 가져옵니다.
-            이 값은 NetworkChannel을 Start할 때 지정한 값입니다.
-            </summary>
-        </member>
-        <member name="P:Aegis.Network.SessionManager.ActiveSessionCount">
-            <summary>
-            현재 활성화 상태인 Session 개수를 가져옵니다.
-            </summary>
-        </member>
-        <member name="P:Aegis.Network.SessionManager.ActiveSessions">
-            <summary>
-            현재 활성화 상태인 Session 목록을 가져옵니다.
-            </summary>
-        </member>
         <member name="M:Aegis.Randomizer`1.Next">
             <summary>
             지정되지 않은 범위 내에서 임의 값을 반환합니다.
@@ -471,13 +463,13 @@
             <param name="max">최대값</param>
             <returns>임의 값</returns>
         </member>
-        <member name="M:Aegis.SpinWorker.Work(System.Action)">
+        <member name="M:Aegis.Threading.SpinWorker.Work(System.Action)">
             <summary>
             actionWork 작업을 WorkerThread에서 실행합니다.
             </summary>
             <param name="actionWork">수행할 작업</param>
         </member>
-        <member name="M:Aegis.SpinWorker.Work(System.Action,System.Action)">
+        <member name="M:Aegis.Threading.SpinWorker.Work(System.Action,System.Action)">
             <summary>
             비동기 백그라운드 작업과 결과처리 작업으로 이루어진 기능을 실행합니다.
             actionWork는 WorkerThread에 의해 비동기로 실행되고, actionWork 작업이 끝나면
@@ -487,7 +479,7 @@
             <param name="actionWork">비동기로 실행할 작업</param>
             <param name="actionDispatch">DispatchThread에서 실행할 작업</param>
         </member>
-        <member name="M:Aegis.SpinWorker.Dispatch(System.Action)">
+        <member name="M:Aegis.Threading.SpinWorker.Dispatch(System.Action)">
             <summary>
             actionDispatch 작업을 DispatchThread에서 실행합니다.
             </summary>
@@ -558,35 +550,6 @@
             <summary>
             Async 계열의 Socket API를 사용하여 원격지의 호스트와 네트워킹을 할 수 있는 기능을 제공합니다.
             </summary>
-        </member>
-        <member name="M:Aegis.Logger.AddLogger(Aegis.ILogMedia)">
-            <summary>
-            사용할 LogMedia를 추가합니다.
-            이미 추가된 인스턴스인 경우 무시됩니다.
-            </summary>
-            <param name="media">추가할 LogMedia 인스턴스</param>
-        </member>
-        <member name="M:Aegis.Logger.RemoveLogger(Aegis.ILogMedia)">
-            <summary>
-            LogMedia 목록에서 지정한 LogMedia를 제거합니다.
-            정상적으로 제거된 경우 해당 LogMedia의 Release가 호출됩니다.
-            </summary>
-            <param name="media">제거할 LogMedia 인스턴스</param>
-        </member>
-        <member name="M:Aegis.Logger.Release">
-            <summary>
-            전체 LogMedia를 제거하고 사용중인 리소스를 반환합니다.
-            사용중인 LogMedia의 Release가 호출됩니다.
-            </summary>
-        </member>
-        <member name="M:Aegis.Logger.Write(Aegis.LogType,System.Int32,System.String,System.Object[])">
-            <summary>
-            추가된 ILogMedia 전체에 로그 문자열을 전달합니다.
-            </summary>
-            <param name="type">로그의 종류. EnabledType에 정의되지 않으면 무시됩니다.</param>
-            <param name="level">로그의 레벨. EnabledLevel보다 큰 경우 무시됩니다.</param>
-            <param name="format">로그 문자열</param>
-            <param name="args">로그 문자열의 인자</param>
         </member>
         <member name="T:Aegis.MinMaxValue`1">
             <summary>

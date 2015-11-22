@@ -11,40 +11,40 @@ namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
-        private void OnCS_Auth_RegisterGuest_Req(PacketRequest reqPacket)
+        private void OnCS_Auth_RegisterGuest_Req(SecurePacketRequest reqPacket)
         {
             String uuid = reqPacket.GetStringFromUtf16();
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             Services.Membership.Instance.RegisterGuest(uuid, (result) =>
             {
-                resPacket.PutInt32(result);
+                resPacket.ResultCodeNo = result;
                 SendPacket(resPacket);
             });
         }
 
 
-        private void OnCS_Auth_RegisterMember_Req(PacketRequest reqPacket)
+        private void OnCS_Auth_RegisterMember_Req(SecurePacketRequest reqPacket)
         {
             String uuid = reqPacket.GetStringFromUtf16();
             String userId = reqPacket.GetStringFromUtf16();
             String userPwd = reqPacket.GetStringFromUtf16();
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             Services.Membership.Instance.RegisterMember(uuid, userId, userPwd, (result) =>
             {
-                resPacket.PutInt32(result);
+                resPacket.ResultCodeNo = result;
                 SendPacket(resPacket);
             });
         }
 
 
-        private void OnCS_Auth_LoginGuest_Req(PacketRequest reqPacket)
+        private void OnCS_Auth_LoginGuest_Req(SecurePacketRequest reqPacket)
         {
             String uuid = reqPacket.GetStringFromUtf16();
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             Services.Membership.Instance.LoginGuest(uuid, (result, userNo) =>
@@ -58,14 +58,14 @@ namespace IndieAPI.Server.Routine
                     {
                         _user.LoginCounter.OnLoggedIn();
 
-                        resPacket.PutInt32(result);
+                        resPacket.ResultCodeNo = result;
                         resPacket.PutInt32(userNo);
                         SendPacket(resPacket);
                     });
                 }
                 else
                 {
-                    resPacket.PutInt32(result);
+                    resPacket.ResultCodeNo = result;
                     resPacket.PutInt32(userNo);
                     SendPacket(resPacket);
                 }
@@ -73,12 +73,12 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_Auth_LoginMember_Req(PacketRequest reqPacket)
+        private void OnCS_Auth_LoginMember_Req(SecurePacketRequest reqPacket)
         {
             String uuid = reqPacket.GetStringFromUtf16();
             String userId = reqPacket.GetStringFromUtf16();
             String userPwd = reqPacket.GetStringFromUtf16();
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             Services.Membership.Instance.LoginMember(uuid, userId, userPwd, (result, userNo) =>
@@ -92,14 +92,14 @@ namespace IndieAPI.Server.Routine
                     {
                         _user.LoginCounter.OnLoggedIn();
 
-                        resPacket.PutInt32(result);
+                        resPacket.ResultCodeNo = result;
                         resPacket.PutInt32(userNo);
                         SendPacket(resPacket);
                     });
                 }
                 else
                 {
-                    resPacket.PutInt32(result);
+                    resPacket.ResultCodeNo = result;
                     resPacket.PutInt32(userNo);
                     SendPacket(resPacket);
                 }

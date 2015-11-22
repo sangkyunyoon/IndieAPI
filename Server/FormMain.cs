@@ -5,8 +5,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -15,7 +13,7 @@ namespace IndieAPI.Server
 {
     public partial class FormMain : Form
     {
-        private Thread _thread;
+        private Timer _timer;
 
 
 
@@ -38,18 +36,23 @@ namespace IndieAPI.Server
             _btnStop.Enabled = true;
             _tbLog.Text = "";
 
-            ServerMain.Instance.StartServer(_tbLog);
-            _thread = Aegis.Threading.ThreadExtend.CallPeriodically(1000, UpdateStatistics);
-            _thread.Name = "Statistics";
+
+            ServerSystem.ServerMain.Instance.StartServer(_tbLog);
+
+            _timer = new System.Windows.Forms.Timer();
+            _timer.Interval = 1000;
+            _timer.Tick += OnTimer;
+            _timer.Start();
         }
 
 
         private void OnClick_Stop(object sender, EventArgs e)
         {
+            _timer.Stop();
             _btnStart.Enabled = true;
             _btnStop.Enabled = false;
 
-            ServerMain.Instance.StopServer();
+            ServerSystem.ServerMain.Instance.StopServer();
         }
 
 
@@ -58,23 +61,16 @@ namespace IndieAPI.Server
             _btnStart.Enabled = true;
             _btnStop.Enabled = false;
 
-            ServerMain.Instance.StopServer();
+            ServerSystem.ServerMain.Instance.StopServer();
         }
 
 
-        private Boolean UpdateStatistics()
+        private void OnTimer(object sender, EventArgs e)
         {
-            if (InvokeRequired)
-                Invoke((MethodInvoker)delegate { UpdateStatistics(); });
-            else
-            {
-                _lbCachedUserCount.Text = UserManagement.UserManager.Count.ToString();
-                _lbCCU.Text = UserManagement.UserManager.CCU.ToString();
-                _lbCacheBoxItemCount.Text = Services.CacheBox.Count.ToString();
-                _lbTaskCount.Text = Aegis.Threading.AegisTask.TaskCount.ToString();
-            }
-
-            return true;
+            _lbCachedUserCount.Text = UserManagement.UserManager.Count.ToString();
+            _lbCCU.Text = UserManagement.UserManager.CCU.ToString();
+            _lbCacheBoxItemCount.Text = Services.CacheBox.Count.ToString();
+            _lbTaskCount.Text = Aegis.Threading.AegisTask.TaskCount.ToString();
         }
     }
 }

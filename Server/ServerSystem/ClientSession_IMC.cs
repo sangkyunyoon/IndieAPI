@@ -14,9 +14,9 @@ namespace IndieAPI.Server.Routine
 {
     public partial class ClientSession
     {
-        private void OnCS_IMC_ChannelList_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_ChannelList_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, ResultCode.Ok, 4096);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, ResultCode.Ok, 4096);
             Int32 count = 0, idxCount;
 
 
@@ -33,9 +33,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_IMC_Create_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_Create_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             try
@@ -64,9 +64,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_IMC_Enter_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_Enter_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             try
@@ -81,7 +81,7 @@ namespace IndieAPI.Server.Routine
 
                 _user.CastChannel.Enter(_user);
                 {
-                    SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_EnteredUser_Ntf);
+                    SecurePacket ntfPacket = new SecurePacket(Protocol.GetID("CS_IMC_EnteredUser_Ntf"));
                     ntfPacket.PutInt32(ResultCode.Ok);
                     ntfPacket.PutInt32(_user.UserNo);
                     ntfPacket.PutStringAsUtf16(_user.Profile.Nickname);
@@ -104,9 +104,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_IMC_Leave_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_Leave_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
 
 
             try
@@ -117,7 +117,7 @@ namespace IndieAPI.Server.Routine
 
                 _user.CastChannel.Leave(_user);
                 {
-                    SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_LeavedUser_Ntf);
+                    SecurePacket ntfPacket = new SecurePacket(Protocol.GetID("CS_IMC_LeavedUser_Ntf"));
                     ntfPacket.PutInt32(ResultCode.Ok);
                     ntfPacket.PutInt32(_user.UserNo);
 
@@ -138,9 +138,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_IMC_UserList_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_UserList_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket, 4096);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket, 4096);
 
 
             try
@@ -170,9 +170,9 @@ namespace IndieAPI.Server.Routine
         }
 
 
-        private void OnCS_IMC_SendMessage_Req(PacketRequest reqPacket)
+        private void OnCS_IMC_SendMessage_Req(SecurePacketRequest reqPacket)
         {
-            PacketResponse resPacket = new PacketResponse(reqPacket);
+            SecurePacketResponse resPacket = new SecurePacketResponse(reqPacket);
             Int32 targetUserNo = reqPacket.GetInt32();
 
 
@@ -186,7 +186,7 @@ namespace IndieAPI.Server.Routine
 
             try
             {
-                SecurePacket ntfPacket = new SecurePacket(Protocol.CS_IMC_Message_Ntf, (UInt16)reqPacket.ReadableSize);
+                SecurePacket ntfPacket = new SecurePacket(Protocol.GetID("CS_IMC_Message_Ntf"), (UInt16)reqPacket.ReadableSize);
                 ntfPacket.PutInt32(ResultCode.Ok);
                 ntfPacket.PutInt32(_user.UserNo);
                 ntfPacket.Write(reqPacket.Buffer, reqPacket.ReadBytes, reqPacket.ReadableSize);

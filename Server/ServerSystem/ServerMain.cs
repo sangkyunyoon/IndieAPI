@@ -9,7 +9,7 @@ using Aegis.Configuration;
 
 
 
-namespace IndieAPI.Server
+namespace IndieAPI.Server.ServerSystem
 {
     public class ServerMain
     {
@@ -26,11 +26,11 @@ namespace IndieAPI.Server
 
         public void StartServer(System.Windows.Forms.TextBox ctrl)
         {
-            Logger.AddLogger(new LogTextBox(ctrl));
-
-
             try
             {
+                Routine.LogMedia.SetTextBoxLogger(ctrl);
+                Routine.LogMedia.SetTextFileLogger(@".\log", "IndieAPIServer");
+
                 Logger.Write(LogType.Info, 2, $"INDIE-API Server ({Aegis.Configuration.Environment.ExecutingVersion})");
                 Logger.Write(LogType.Info, 2, $"Powered by AegisNetwork ({Aegis.Configuration.Environment.AegisVersion})");
 
@@ -66,7 +66,7 @@ namespace IndieAPI.Server
             Services.GameDB.Release();
 
             Logger.Write(LogType.Info, 2, "Server stopped.");
-            Logger.Release();
+            Routine.LogMedia.DeleteAllLogger();
         }
     }
 }

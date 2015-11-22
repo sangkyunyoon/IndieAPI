@@ -17,7 +17,7 @@ namespace IndieAPI.Server.UserManagement
         public static Int32 Count { get { return Instance._users.Count(); } }
         public static Int32 CCU { get { return Instance._ccu; } }
         private Dictionary<Int32, User> _users = new Dictionary<Int32, User>();
-        private Thread _thread;
+        private ThreadCancellable _thread;
         private Int32 _ccu;
 
 
@@ -32,14 +32,14 @@ namespace IndieAPI.Server.UserManagement
         public void Initialize()
         {
             _ccu = 0;
-            _thread = ThreadExtend.CallPeriodically(1000, Run);
-            _thread.Name = "UserManager";
+            _thread = ThreadCancellable.CallPeriodically(1000, Run);
+            _thread.Thread.Name = "UserManager";
         }
 
 
         public void Release()
         {
-            ThreadExtend.Cancel(_thread);
+            _thread?.Cancel();
             _thread = null;
             _ccu = 0;
         }
@@ -73,8 +73,9 @@ namespace IndieAPI.Server.UserManagement
         }
 
 
-        public void RemoveUser(User user)
+        private void RemoveUser(User user)
         {
+            user.Logout();
            _users.Remove(user.UserNo);
         }
 
@@ -85,18 +86,18 @@ namespace IndieAPI.Server.UserManagement
             {
                 //  Calculate CCU
                 _ccu = _users.Values
-                             .Where(v => v.LastAliveTick.ElapsedMilliseconds / 1000 < Global.UserManager_CCUMaxTime)
+                             .Where(v => v.LastPulse.ElapsedMilliseconds / 1000 < Global.UserManager_CCUMaxTime)
                              .Count();
 
 
                 //  Check Expired User
                 List<User> expiredUsers;
                 expiredUsers = _users.Values
-                                     .Where(v => v.LastAliveTick.ElapsedMilliseconds / 1000 >= Global.UserManager_MaxAliveTime)
+                                     .Where(v => v.LastPulse.ElapsedMilliseconds / 1000 >= Global.UserManager_MaxAliveTime)
                                      .ToList();
 
                 foreach (User user in expiredUsers)
-                    _users.Remove(user.UserNo);
+                    RemoveUser(user);
             });
 
             return true;

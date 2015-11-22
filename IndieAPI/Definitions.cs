@@ -1,24 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 
 
 namespace IndieAPI
 {
-    public delegate void NetworkStatusChanged(NetworkStatus status);
     public delegate void NotifyPacketHandler<T>(T response);
-
-
-
-    public enum NetworkStatus
-    {
-        Connected = 1,
-        ConnectionFailed,
-        Disconnected,
-        SessionForceClosed
-    }
 
 
 
@@ -26,66 +13,66 @@ namespace IndieAPI
 
     public static class Protocol
     {
-        public const UInt16 CS_Hello_Ntf = 0x1000;
-        public const UInt16 CS_ForceClosing_Ntf = 0x1001;
+        private static readonly Dictionary<UInt16, String> _ids = new Dictionary<UInt16, String>()
+        {
+            {0x1000, "CS_Hello_Ntf"},
+            {0x1001, "CS_ForceClosing_Ntf"},
 
 
-        //  Authentication
-        public const UInt16 CS_Auth_RegisterGuest_Req = 0x2001;
-        public const UInt16 CS_Auth_RegisterGuest_Res = 0x2002;
-        public const UInt16 CS_Auth_RegisterMember_Req = 0x2003;
-        public const UInt16 CS_Auth_RegisterMember_Res = 0x2004;
-
-        public const UInt16 CS_Auth_LoginGuest_Req = 0x2005;
-        public const UInt16 CS_Auth_LoginGuest_Res = 0x2006;
-        public const UInt16 CS_Auth_LoginMember_Req = 0x2007;
-        public const UInt16 CS_Auth_LoginMember_Res = 0x2008;
+            //  Authentication
+            {0x2001, "CS_Auth_RegisterGuest_Req"}, {0x2002, "CS_Auth_RegisterGuest_Res"},
+            {0x2003, "CS_Auth_RegisterMember_Req"}, {0x2004, "CS_Auth_RegisterMember_Res"},
+            {0x2005, "CS_Auth_LoginGuest_Req"}, {0x2006, "CS_Auth_LoginGuest_Res"},
+            {0x2007, "CS_Auth_LoginMember_Req"}, {0x2008, "CS_Auth_LoginMember_Res"},
 
 
-        //  User Profile
-        public const UInt16 CS_Profile_GetData_Req = 0x2101;
-        public const UInt16 CS_Profile_GetData_Res = 0x2102;
-        public const UInt16 CS_Profile_SetData_Req = 0x2103;
-        public const UInt16 CS_Profile_SetData_Res = 0x2104;
-        public const UInt16 CS_Profile_Text_GetData_Req = 0x2105;
-        public const UInt16 CS_Profile_Text_GetData_Res = 0x2106;
-        public const UInt16 CS_Profile_Text_SetData_Req = 0x2107;
-        public const UInt16 CS_Profile_Text_SetData_Res = 0x2108;
+            //  User Profile
+            {0x2101, "CS_Profile_GetData_Req"}, {0x2102, "CS_Profile_GetData_Res"},
+            {0x2103, "CS_Profile_SetData_Req"}, {0x2104, "CS_Profile_SetData_Res"},
+            {0x2105, "CS_Profile_Text_GetData_Req"}, {0x2106, "CS_Profile_Text_GetData_Res"},
+            {0x2107, "CS_Profile_Text_SetData_Req"}, {0x2108, "CS_Profile_Text_SetData_Res"},
 
 
-        //  CloudSheet
-        public const UInt16 CS_CloudSheet_GetSheetList_Req = 0x2211;
-        public const UInt16 CS_CloudSheet_GetSheetList_Res = 0x2212;
-        public const UInt16 CS_CloudSheet_GetRecords_Req = 0x2213;
-        public const UInt16 CS_CloudSheet_GetRecords_Res = 0x2214;
+            //  CloudSheet
+            {0x2211, "CS_CloudSheet_GetSheetList_Req"}, {0x2212, "CS_CloudSheet_GetSheetList_Res"},
+            {0x2213, "CS_CloudSheet_GetRecords_Req"}, {0x2214, "CS_CloudSheet_GetRecords_Res"},
 
 
-        //  Instant Messaging Channel
-        public const UInt16 CS_IMC_ChannelList_Req = 0x2301;
-        public const UInt16 CS_IMC_ChannelList_Res = 0x2302;
-        public const UInt16 CS_IMC_Create_Req = 0x2303;
-        public const UInt16 CS_IMC_Create_Res = 0x2304;
-        public const UInt16 CS_IMC_Enter_Req = 0x2305;
-        public const UInt16 CS_IMC_Enter_Res = 0x2306;
-        public const UInt16 CS_IMC_EnteredUser_Ntf = 0x2307;
-        public const UInt16 CS_IMC_Leave_Req = 0x2308;
-        public const UInt16 CS_IMC_Leave_Res = 0x2309;
-        public const UInt16 CS_IMC_LeavedUser_Ntf = 0x230A;
-
-        public const UInt16 CS_IMC_UserList_Req = 0x230B;
-        public const UInt16 CS_IMC_UserList_Res = 0x230C;
-        public const UInt16 CS_IMC_SendMessage_Req = 0x230D;
-        public const UInt16 CS_IMC_SendMessage_Res = 0x230E;
-        public const UInt16 CS_IMC_Message_Ntf = 0x230F;
+            //  Instant Messaging Channel
+            {0x2301, "CS_IMC_ChannelList_Req"}, {0x2302, "CS_IMC_ChannelList_Res"},
+            {0x2303, "CS_IMC_Create_Req"}, {0x2304, "CS_IMC_Create_Res"},
+            {0x2305, "CS_IMC_Enter_Req"}, {0x2306, "CS_IMC_Enter_Res"},
+            {0x2307, "CS_IMC_EnteredUser_Ntf"},
+            {0x2308, "CS_IMC_Leave_Req"}, {0x2309, "CS_IMC_Leave_Res"},
+            {0x230A, "CS_IMC_LeavedUser_Ntf"},
+            {0x230B, "CS_IMC_UserList_Req"}, {0x230C, "CS_IMC_UserList_Res"},
+            {0x230D, "CS_IMC_SendMessage_Req"}, {0x230E, "CS_IMC_SendMessage_Res"},
+            {0x230F, "CS_IMC_Message_Ntf"},
 
 
-        //  CacheBox
-        public const UInt16 CS_CacheBox_SetValue_Req = 0x2401;
-        public const UInt16 CS_CacheBox_SetValue_Res = 0x2402;
-        public const UInt16 CS_CacheBox_SetExpireTime_Req = 0x2403;
-        public const UInt16 CS_CacheBox_SetExpireTime_Res = 0x2404;
-        public const UInt16 CS_CacheBox_GetValue_Req = 0x2405;
-        public const UInt16 CS_CacheBox_GetValue_Res = 0x2406;
+            //  CacheBox
+            {0x2401, "CS_CacheBox_SetValue_Req"}, {0x2402, "CS_CacheBox_SetValue_Res"},
+            {0x2403, "CS_CacheBox_SetExpireTime_Req"}, {0x2404, "CS_CacheBox_SetExpireTime_Res"},
+            {0x2405, "CS_CacheBox_GetValue_Req"}, {0x2406, "CS_CacheBox_GetValue_Res"},
+        };
+        public static UInt16 GetID(String name)
+        {
+            foreach (var id in _ids)
+            {
+                if (id.Value == name)
+                    return id.Key;
+            }
+
+            throw new Exception(String.Format("Invalid protocol name({0}).", name));
+        }
+        public static String GetName(UInt16 id)
+        {
+            String name;
+            if (_ids.TryGetValue(id, out name) == true)
+                return name;
+
+            throw new Exception(String.Format("Invalid protocol id(0x{0:X}).", id));
+        }
     }
 
 
